@@ -1,0 +1,39 @@
+
+EM=em++ -02 -s ALLOW_MEMORY_GROWTH=1
+CC=emcc -02 -s ALLOW_MEMORY_GROWTH=1
+DIR=../
+
+MESSAGES= $(DIR)DeleteAllAnnotation.cpp $(DIR)EmptyMessage.cpp $(DIR)HextileMessage.cpp $(DIR)Message.cpp $(DIR)WhiteboardMessage.cpp
+ZSRC = libz/adler32.c libz/compress.c libz/crc32.c libz/deflate.c libz/gzclose.c libz/gzlib.c libz/gzread.c \
+	libz/gzwrite.c libz/infback.c libz/inffast.c libz/inflate.c libz/inftrees.c libz/trees.c libz/uncompr.c libz/zutil.c
+SRC= $(DIR)Audio.cpp $(DIR)ColorConverter.cpp $(DIR)Constants.cpp $(DIR)Downloader.cpp $(DIR)Inflater.cpp $(DIR)Player.cpp $(DIR)ProtocolPreferences.cpp $(DIR)SizedArray.cpp $(DIR)Video.cpp $(DIR)main.cpp $(MESSAGES)
+
+EXPORT=-s "EXPORTED_FUNCTIONS=['_main', '_on_play', '_on_pause', '_set_path']"
+PRELOAD= --preload-file Diskrete_Strukturen_2013_11_21_a/Diskrete_Strukturen_2013_11_21.mp3 --preload-file Diskrete_Strukturen_2013_11_21_a/Diskrete_Strukturen_2013_11_21.ttt
+
+#STATICLIB= libz.bc
+
+CFLAGS=-O
+TEST_LDFLAGS=-L. libz.a
+
+fileplayer.html: $(SRC)
+	$(EM) $(SRC) $(EXPORT) -o $@ $(PRELOAD) libz.bc libcurl.la
+
+libz.bc: $(ZSRC)
+	$(CC) $(ZSRC) -s EXPORT_ALL=1 -o $@
+
+#libz/%.o: libz/%.c
+#	$(EM) -fPIC -c $< -o $@
+
+OBJS = libz/adler32.o libz/compress.o libz/crc32.o libz/deflate.o libz/gzclose.o libz/gzlib.o libz/gzread.o \
+	libz/gzwrite.o libz/infback.o libz/inffast.o libz/inflate.o libz/inftrees.o libz/trees.o libz/uncompr.o libz/zutil.o
+libz/adler32.o libz/zutil.o: libz/zutil.h libz/zlib.h libz/zconf.h
+libz/gzclose.o libz/gzlib.o libz/gzread.o libz/gzwrite.o: libz/zlib.h libz/zconf.h libz/gzguts.h
+libz/compress.o libz/example.o libz/minigzip.o libz/uncompr.o: libz/zlib.h libz/zconf.h
+libz/crc32.o: libz/zutil.h libz/zlib.h libz/zconf.h libz/crc32.h
+libz/deflate.o: libz/deflate.h libz/zutil.h libz/zlib.h libz/zconf.h
+libz/infback.o libz/inflate.o: libz/zutil.h libz/zlib.h libz/zconf.h libz/inftrees.h libz/inflate.h libz/inffast.h libz/inffixed.h
+libz/inffast.o: libz/zutil.h libz/zlib.h libz/zconf.h libz/inftrees.h libz/inflate.h libz/inffast.h
+libz/inftrees.o: libz/zutil.h libz/zlib.h libz/zconf.h libz/inftrees.h
+libz/trees.o: libz/deflate.h libz/zutil.h libz/zlib.h libz/zconf.h libz/trees.h
+

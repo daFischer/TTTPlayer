@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="90">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <itemPath>Audio.h</itemPath>
+      <itemPath>ColorConverter.h</itemPath>
+      <itemPath>Constants.h</itemPath>
+      <itemPath>DeleteAllAnnotation.h</itemPath>
+      <itemPath>Downloader.h</itemPath>
+      <itemPath>EmptyMessage.h</itemPath>
+      <itemPath>HextileMessage.h</itemPath>
+      <itemPath>Inflater.h</itemPath>
+      <itemPath>Message.h</itemPath>
+      <itemPath>Player.h</itemPath>
+      <itemPath>ProtocolPreferences.h</itemPath>
+      <itemPath>SizedArray.h</itemPath>
+      <itemPath>Video.h</itemPath>
+      <itemPath>WhiteboardMessage.h</itemPath>
+      <itemPath>main.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <logicalFolder name="TestFiles" displayName="Test Files" projectFiles="true">
+      </logicalFolder>
+      <itemPath>Audio.cpp</itemPath>
+      <itemPath>ColorConverter.cpp</itemPath>
+      <itemPath>Constants.cpp</itemPath>
+      <itemPath>DeleteAllAnnotation.cpp</itemPath>
+      <itemPath>Downloader.cpp</itemPath>
+      <itemPath>EmptyMessage.cpp</itemPath>
+      <itemPath>HextileMessage.cpp</itemPath>
+      <itemPath>Inflater.cpp</itemPath>
+      <itemPath>Message.cpp</itemPath>
+      <itemPath>Player.cpp</itemPath>
+      <itemPath>ProtocolPreferences.cpp</itemPath>
+      <itemPath>SizedArray.cpp</itemPath>
+      <itemPath>Video.cpp</itemPath>
+      <itemPath>WhiteboardMessage.cpp</itemPath>
+      <itemPath>main.cpp</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <commandlineTool>g++</commandlineTool>
+          <commandLine>-lSDL</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tttplayer</output>
+          <linkerLibItems>
+            <linkerLibLibItem>SDL</linkerLibLibItem>
+            <linkerLibLibItem>SDL_mixer</linkerLibLibItem>
+            <linkerLibLibItem>curl</linkerLibLibItem>
+          </linkerLibItems>
+          <commandLine>-lz</commandLine>
+        </linkerTool>
+      </compileType>
+      <item path="Audio.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Audio.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ColorConverter.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="ColorConverter.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Constants.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Constants.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="DeleteAllAnnotation.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="DeleteAllAnnotation.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Downloader.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Downloader.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="EmptyMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="EmptyMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="HextileMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="HextileMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Inflater.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Inflater.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Message.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Message.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Player.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Player.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ProtocolPreferences.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="ProtocolPreferences.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SizedArray.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SizedArray.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Video.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Video.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="WhiteboardMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="WhiteboardMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="main.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+    <conf name="Release" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+      </compileType>
+      <item path="Audio.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Audio.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ColorConverter.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="ColorConverter.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Constants.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Constants.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="DeleteAllAnnotation.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="DeleteAllAnnotation.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Downloader.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Downloader.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="EmptyMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="EmptyMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="HextileMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="HextileMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Inflater.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Inflater.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Message.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Message.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Player.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Player.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ProtocolPreferences.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="ProtocolPreferences.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SizedArray.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="SizedArray.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Video.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Video.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="WhiteboardMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="WhiteboardMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="main.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>

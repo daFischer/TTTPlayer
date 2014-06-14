@@ -1,0 +1,27 @@
+
+EM=em++ -02 -s ALLOW_MEMORY_GROWTH=1
+AR=emar
+RANLIB=ranlib
+
+libz.bc: $(OBJS)
+	$(AR) $@ $(OBJS)
+	-@ ($(RANLIB) $@ || true) >/dev/null 2>&1
+
+match.bc: match.S
+	$(EM) match.S > _match.s
+	$(EM) -c _match.s
+	mv _match.bc match.bc
+	rm -f _match.s
+
+OBJC = adler32.bc compress.bc crc32.bc deflate.bc gzclose.bc gzlib.bc gzread.bc \
+	gzwrite.bc infback.bc inffast.bc inflate.bc inftrees.bc trees.bc uncompr.bc zutil.bc
+adler32.bc zutil.bc: zutil.h zlib.h zconf.h
+gzclose.bc gzlib.bc gzread.bc gzwrite.bc: zlib.h zconf.h gzguts.h
+compress.bc example.bc minigzip.bc uncompr.bc: zlib.h zconf.h
+crc32.bc: zutil.h zlib.h zconf.h crc32.h
+deflate.bc: deflate.h zutil.h zlib.h zconf.h
+infback.bc inflate.bc: zutil.h zlib.h zconf.h inftrees.h inflate.h inffast.h inffixed.h
+inffast.bc: zutil.h zlib.h zconf.h inftrees.h inflate.h inffast.h
+inftrees.bc: zutil.h zlib.h zconf.h inftrees.h
+trees.bc: deflate.h zutil.h zlib.h zconf.h trees.h
+
