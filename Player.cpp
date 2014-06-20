@@ -12,7 +12,7 @@ Player *player;
 Player::Player(const char* cpath, const char* cfilename) {
     
     paused=false;
-    progress=0;
+    
     player=this;
     
     //Initialize BOTH SDL video and SDL audio
@@ -25,9 +25,16 @@ Player::Player(const char* cpath, const char* cfilename) {
     std::string filename=cfilename;
     std::string path=cpath;
     
-    downloader = new Downloader((char*) (path+"/"+filename+"_a/"+filename+".ttt").c_str());
-    video=new Video(downloader);
-    audioURL=(path+"/"+filename+"_a/"+filename);
+    audio=new Audio((path+"/"+filename+"_a/"+filename).c_str());
+    video=new Video((path+"/"+filename+"_a/"+filename+".ttt").c_str());
+    
+    if(video->failed||audio->failed)
+    {
+        printf("Audio failed: %s\nVideo failed: %s\n",audio->failed ? "true" : "false",video->failed ? "true" : "false");
+        return;
+    }
+    
+    audio->play();
     
     printf("start looping\n");
 #ifdef EMSCRIPTEN
@@ -47,46 +54,7 @@ Player::Player(const char* cpath, const char* cfilename) {
 
 void Player::loop()
 {
-    switch(progress)
-    {
-        case 0:
-            if(video->failed)
-            {
-                printf("Video failed\n");
-                progress=-1;
-                delete(downloader);
-            }
-            else
-            if(video->isReady())
-            {
-                printf("Video ready\n");
-                progress++;
-                video->startReading();
-                //downloader->retarget((char*) audioURL.c_str());
-                audio=new Audio(audioURL.c_str());
-            }
-            break;
-        case 1:
-            if(audio->failed)
-            {
-                printf("Audio failed\n");
-                progress=-1;
-                delete(downloader);
-            }
-            else
-            if(downloader->ready)
-            {
-                printf("both finished\n");
-                progress++;
-                delete(downloader);
-                audio->play();
-                video->update(audio->getTime());
-            }
-            break;
-        case 2:
-            video->update(audio->getTime());
-            break;
-    }
+    video->update(audio->getTime());
     
     SDL_Event event;
     while (SDL_PollEvent(&event)) 

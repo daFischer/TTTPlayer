@@ -13,10 +13,7 @@
 #include <fstream>
 #include <zlib.h>
 #include <assert.h>
-#include <curl/curl.h>
-
 #include "SizedArray.h"
-#include "Downloader.h"
 
 using namespace std;
 
@@ -24,7 +21,7 @@ using namespace std;
 
 class Inflater {
 public:
-    Inflater(Downloader* d);
+    Inflater(FILE* f);
     ~Inflater();
     bool readByte(char* Byte);
     bool readSizedArray(SizedArray* sArray);
@@ -35,7 +32,7 @@ public:
     bool endOfFile();
     
 private:
-    Downloader* source;
+    FILE* source;
     unsigned char in[CHUNK];
     unsigned char out[CHUNK];
     int outOffset;

@@ -39,7 +39,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/ColorConverter.o \
 	${OBJECTDIR}/Constants.o \
 	${OBJECTDIR}/DeleteAllAnnotation.o \
-	${OBJECTDIR}/Downloader.o \
 	${OBJECTDIR}/EmptyMessage.o \
 	${OBJECTDIR}/HextileMessage.o \
 	${OBJECTDIR}/Inflater.o \
@@ -66,7 +65,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-lSDL -lSDL_mixer -lcurl
+LDLIBSOPTIONS=-lSDL -lSDL_mixer -lalut -lopenal
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -95,11 +94,6 @@ ${OBJECTDIR}/DeleteAllAnnotation.o: DeleteAllAnnotation.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/DeleteAllAnnotation.o DeleteAllAnnotation.cpp
-
-${OBJECTDIR}/Downloader.o: Downloader.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Downloader.o Downloader.cpp
 
 ${OBJECTDIR}/EmptyMessage.o: EmptyMessage.cpp 
 	${MKDIR} -p ${OBJECTDIR}

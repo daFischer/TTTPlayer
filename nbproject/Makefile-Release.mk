@@ -39,7 +39,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/ColorConverter.o \
 	${OBJECTDIR}/Constants.o \
 	${OBJECTDIR}/DeleteAllAnnotation.o \
-	${OBJECTDIR}/Downloader.o \
 	${OBJECTDIR}/EmptyMessage.o \
 	${OBJECTDIR}/HextileMessage.o \
 	${OBJECTDIR}/Inflater.o \
@@ -95,11 +94,6 @@ ${OBJECTDIR}/DeleteAllAnnotation.o: DeleteAllAnnotation.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/DeleteAllAnnotation.o DeleteAllAnnotation.cpp
-
-${OBJECTDIR}/Downloader.o: Downloader.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Downloader.o Downloader.cpp
 
 ${OBJECTDIR}/EmptyMessage.o: EmptyMessage.cpp 
 	${MKDIR} -p ${OBJECTDIR}

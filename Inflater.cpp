@@ -2,17 +2,16 @@
  * File:   Inflater.cpp
  * Author: user
  * using http://zlib.net/zlib_how.html
- * using http://curl.haxx.se/libcurl/c/fopen.html
  * 
  * Created on May 8, 2014, 12:46 PM
  */
 
 #include "Inflater.h"
 
-Inflater::Inflater(Downloader* d)
+Inflater::Inflater(FILE* f)
 {
     //printf("Constructor of Inflater\n");
-    source=d;
+    source=f;
     outOffset=0;
     
     // allocate inflate state
@@ -28,8 +27,8 @@ Inflater::Inflater(Downloader* d)
         return;
     }
     
-    strm.avail_in = source->read((char*)in, CHUNK);        //from the outer loop of the example
-    if (source->error) {
+    strm.avail_in = fread(in, 1, CHUNK, source);        //from the outer loop of the example
+    if (ferror(source)) {
         (void)inflateEnd(&strm);
         ret = Z_ERRNO;
     }
@@ -84,8 +83,8 @@ bool Inflater::readByte(char* Byte)
         if(strm.avail_out != 0)     //Array in has to be refilled
         {
             //printf("Refill Array in\n");
-            strm.avail_in = source->read((char*)in, CHUNK);
-            if (source->error) {
+            strm.avail_in = fread(in, 1, CHUNK, source);
+            if (ferror(source)) {
                 (void)inflateEnd(&strm);
                 return ret = Z_ERRNO;
             }

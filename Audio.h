@@ -11,9 +11,12 @@
 #include <stdio.h>
 #include <time.h>
 #include <string>
+#include <sys/stat.h>
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_mixer.h>
+#include <AL/al.h>
+#include <AL/alut.h>
+
+#define BUFFER_SIZE 4096
 
 using namespace std;
 
@@ -23,23 +26,32 @@ class Audio {
 public:
     Audio(const char*);
     void play();
-    virtual ~Audio();
-    //void finished();
+    void finished();
     int getTime();
-    int setPosition(double pos);
-    double getDuration();
-    
+    bool setPosition(int time);
+    int getDuration();
+
     bool failed;
-    bool finished;
 private:
-    int audio_rate;			//Frequency of audio playback
-    Uint16 audio_format;                //Format of the audio we're playing
-    int audio_channels;			//2 channels = stereo
-    int audio_buffers;                  //Size of the audio buffers in memory
-    int musicPlaying;
-    Mix_Music *music;                   //Pointer to our music, in memory
-    int startTime;
-    int currentTime;
+    bool readAudio(const char* path, string type);
+    
+    ALuint source;
+    ALuint buffer;
+    ALCdevice *device;
+    ALCcontext *context;
+    //ALsizei size;
+    //ALsizei frequency; //Frequency of audio playback
+    //ALenum format; //Format of the audio we're playing
+    //ALvoid* data;
+
+    //unsigned char *buf;
+    //int pid;
+    //int files[2];
+    //FILE *f;
+
+    int playing;
+    //int startTime;
+    //int currentTime;
 };
 
 #endif	/* AUDIO_H */

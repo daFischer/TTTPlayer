@@ -32,9 +32,6 @@ public:
     virtual ~Player();
     
 private:
-    Downloader* downloader;
-    string audioURL;
-    int progress;
     Audio *audio;
     Video *video;
     bool paused;

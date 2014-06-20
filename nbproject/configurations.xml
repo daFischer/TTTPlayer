@@ -8,7 +8,6 @@
       <itemPath>ColorConverter.h</itemPath>
       <itemPath>Constants.h</itemPath>
       <itemPath>DeleteAllAnnotation.h</itemPath>
-      <itemPath>Downloader.h</itemPath>
       <itemPath>EmptyMessage.h</itemPath>
       <itemPath>HextileMessage.h</itemPath>
       <itemPath>Inflater.h</itemPath>
@@ -33,7 +32,6 @@
       <itemPath>ColorConverter.cpp</itemPath>
       <itemPath>Constants.cpp</itemPath>
       <itemPath>DeleteAllAnnotation.cpp</itemPath>
-      <itemPath>Downloader.cpp</itemPath>
       <itemPath>EmptyMessage.cpp</itemPath>
       <itemPath>HextileMessage.cpp</itemPath>
       <itemPath>Inflater.cpp</itemPath>
@@ -70,7 +68,8 @@
           <linkerLibItems>
             <linkerLibLibItem>SDL</linkerLibLibItem>
             <linkerLibLibItem>SDL_mixer</linkerLibLibItem>
-            <linkerLibLibItem>curl</linkerLibLibItem>
+            <linkerLibLibItem>alut</linkerLibLibItem>
+            <linkerLibLibItem>openal</linkerLibLibItem>
           </linkerLibItems>
           <commandLine>-lz</commandLine>
         </linkerTool>
@@ -90,10 +89,6 @@
       <item path="DeleteAllAnnotation.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="DeleteAllAnnotation.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Downloader.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Downloader.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="EmptyMessage.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -171,10 +166,6 @@
       <item path="DeleteAllAnnotation.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="DeleteAllAnnotation.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Downloader.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Downloader.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="EmptyMessage.cpp" ex="false" tool="1" flavor2="0">
       </item>

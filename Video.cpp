@@ -6,25 +6,17 @@
  */
 
 #include "Video.h"
+#include "Message.h"
 
-Video::Video(Downloader* d) {
+Video::Video(const char* path) {
     
     original=true;
     failed=false;
-    finished=false;
-    
-    downloader = d;
-    downloader->download();
-}
-
-void Video::startReading(){
-    
-    downloader->read(prefs.versionMsg, 12);
-    //FILE* f = fopen (path , "r");
-    //fread(prefs.versionMsg, 1, 12, f);
+    FILE* f = fopen (path , "r");
+    fread(prefs.versionMsg, 1, 12, f);
     // TODO: test version
     
-    Inflater* inflater = new Inflater(downloader);
+    Inflater* inflater=new Inflater(f);
     
     if(readServerInit(inflater))
     printf("Video Initialization success: \n%s\n", prefs.name);
@@ -60,6 +52,7 @@ void Video::startReading(){
 
 void Video::update(int zeit)
 {
+    //printf("%d\n",zeit);
     //printf("%d>=%d || %d>%d\n",currentMessage,numMessages,messages[currentMessage]->timestamp,timestamp);
     while(currentMessage<numMessages)
     {
@@ -147,6 +140,3 @@ void Video::readExtensions(Inflater* in){
 Video::~Video() {
 }
 
-bool Video::isReady(){
-    return downloader->ready;
-}

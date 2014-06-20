@@ -16,7 +16,6 @@
 #include <zlib.h>
 #include <time.h>
 #include <assert.h>
-#include <curl/curl.h>
 
 #include "Inflater.h"
 #include "ProtocolPreferences.h"
@@ -29,20 +28,14 @@ using namespace std;
 
 class Video {
 public:
-    Video(Downloader*);
+    Video(const char* path);
     //Video(const Video& orig);
     virtual ~Video();
-    void startReading();
-    bool isReady();
     void update(int zeit);
     
     bool failed;
-    bool finished;
     
-private:
-    void ready();
-    
-    Downloader* downloader;
+private:    
     SDL_Surface *screen;			//Pointer to the main screen surface
     Message** messages;
     int numMessages;

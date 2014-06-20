@@ -30,11 +30,11 @@ extern "C" void set_path(string p);
 
 bool paused=false;
 #ifdef EMSCRIPTEN
-const string path = "http://www.theether.heliohost.org";
+const string path = "";
 #else
-const string path = "http://www.theether.heliohost.org";
+const string path = "/home/user/Development/C/TTT/Lectures";
 #endif
-string filename = "Diskrete_Strukturen_2013_11_21";
+string filename = "Diskrete_Strukturen_2013_11_26";
 
 extern "C" void set_path(string p);
 
