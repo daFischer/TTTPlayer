@@ -13,7 +13,7 @@
 
       .emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
       div.emscripten { text-align: center; }      
-      div.emscripten_border { border: 1px solid black; }
+      div.emscripten_border { border: 1px solid black; display: inline-block;}
       /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
       canvas.emscripten {
         border: 0px none;
@@ -23,7 +23,7 @@
         margin:0px none;
         padding:0px none;
         float:bottom;
-        width: 100%;
+        width:100%;
       }
 
       #emscripten_logo {
@@ -1206,7 +1206,7 @@
 <span id='controls'>
   <span><input type="checkbox" id="resize">Resize canvas</span>
   <span><input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer &nbsp;&nbsp;&nbsp;</span>
-  <span><input type="button" value="Fullscreen" onclick="Module.requestFullScreen(document.getElementById('pointerLock').checked, document.getElementById('resize').checked)">
+  <span><input type="button" value="Fullscreen" onclick="Module.requestFullScreen(document.getElementById('pointerLock').checked, false)">
   </span>
 </span>
 
@@ -1215,9 +1215,9 @@
     </div>
 
     
-    <div class="emscripten_border">
+    <div class="emscripten_border" id="canvas_div">
       <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
-      <audio class="emscripten" id ="audioplayer" onloadeddata="x_audioLoaded()" onseeking="x_seeked=true;" controls>
+      <audio class="emscripten" id ="audioplayer" onloadeddata="x_audioLoaded()" onseeking="x_seeked=true;" >
         <source src="TTT/Diskrete_Strukturen_2013_11_26_a/Diskrete_Strukturen_2013_11_26.ogg" type="audio/ogg">
         <source src="TTT/Diskrete_Strukturen_2013_11_26_a/Diskrete_Strukturen_2013_11_26.mp3" type="audio/mp3">
         <source src="TTT/Diskrete_Strukturen_2013_11_26_a/Diskrete_Strukturen_2013_11_26.wav" type="audio/wav">

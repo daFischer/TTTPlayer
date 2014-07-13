@@ -27,6 +27,7 @@
 #include "Audio.h"
 #endif
 #include "Video.h"
+#include "Controls.h"
 
 using namespace std;
 
@@ -39,6 +40,7 @@ public:
 private:
     AudioInterface *audio;
     Video *video;
+    Controls* controls;
     bool paused;
     const char* filename;
 #ifndef EMSCRIPTEN

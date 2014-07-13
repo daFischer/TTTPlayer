@@ -22,10 +22,12 @@ using namespace std;
 class AudioJS: public AudioInterface{
 public:
     AudioJS();
-    void play();
+    void togglePlay();
     int getPosition();
+    void setPosition(int pos);
     int getDuration();
     bool hasFailed();
+    void changeVolume(float volume);
 private:
     int duration;
     

@@ -40,6 +40,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/AudioJS.o \
 	${OBJECTDIR}/ColorConverter.o \
 	${OBJECTDIR}/Constants.o \
+	${OBJECTDIR}/Controls.o \
 	${OBJECTDIR}/DeleteAllAnnotation.o \
 	${OBJECTDIR}/EmptyMessage.o \
 	${OBJECTDIR}/HextileMessage.o \
@@ -101,6 +102,11 @@ ${OBJECTDIR}/Constants.o: Constants.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Constants.o Constants.cpp
+
+${OBJECTDIR}/Controls.o: Controls.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Controls.o Controls.cpp
 
 ${OBJECTDIR}/DeleteAllAnnotation.o: DeleteAllAnnotation.cpp 
 	${MKDIR} -p ${OBJECTDIR}

@@ -32,6 +32,8 @@ public:
     //Video(const Video& orig);
     virtual ~Video();
     void update(int zeit);
+    SDL_Surface* getScreen();
+    void toggleFullscreen();
     
     bool failed;
     

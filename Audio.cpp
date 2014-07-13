@@ -64,14 +64,19 @@ Audio::Audio(const char* path) {
     failed=false;
 }
 
-void Audio::play(){
-    //Play the audio file
-    printf("play1\n");
-    alSourcePlay(source);
-    printf("play2\n");
-    printf("Start playing for %d ms\n",getDuration());
-    //The audio is playing!
-    
+void Audio::togglePlay(){
+    ALint state;
+    alGetSourcei(source, AL_SOURCE_STATE, &state);
+    if (state != AL_PLAYING)
+    {
+        //Play the audio file
+        alSourcePlay(source);
+        printf("play2\n");
+    }
+    else
+    {
+        alSourcePause(source);
+    }
 }
 
 int Audio::getPosition()
@@ -87,15 +92,18 @@ int Audio::getPosition()
 }
 
 
-/*bool Audio::setPosition(int time)
+void Audio::setPosition(int pos)
 {
-    ALfloat pos=(ALfloat)pos/1000.0;
-    alSourcef(source, AL_SEC_OFFSET, pos);
+    ALfloat time=(ALfloat)pos/1000.0;
+    alSourcef(source, AL_SEC_OFFSET, time);
     if(alGetError()== AL_NO_ERROR)
-        return true;
-    else
-        return false;
-}*/
+        printf("Audio.cpp: set Position error");
+}
+
+void Audio::changeVolume(float volume){
+    ALfloat v=volume;
+    alSourcef(source,AL_GAIN,v);
+}
 
 int Audio::getDuration()
 {

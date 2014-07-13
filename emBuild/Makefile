@@ -6,9 +6,9 @@ DIR=../
 MESSAGES= $(DIR)DeleteAllAnnotation.cpp $(DIR)EmptyMessage.cpp $(DIR)HextileMessage.cpp $(DIR)Message.cpp $(DIR)WhiteboardMessage.cpp
 ZSRC = libz/adler32.c libz/compress.c libz/crc32.c libz/deflate.c libz/gzclose.c libz/gzlib.c libz/gzread.c \
 	libz/gzwrite.c libz/infback.c libz/inffast.c libz/inflate.c libz/inftrees.c libz/trees.c libz/uncompr.c libz/zutil.c
-SRC= $(DIR)AudioInterface.cpp $(DIR)AudioJS.cpp $(DIR)ColorConverter.cpp $(DIR)Constants.cpp $(DIR)Inflater.cpp $(DIR)Player.cpp $(DIR)ProtocolPreferences.cpp $(DIR)SizedArray.cpp $(DIR)Video.cpp $(DIR)main.cpp $(MESSAGES)
+SRC= $(DIR)AudioInterface.cpp $(DIR)AudioJS.cpp $(DIR)ColorConverter.cpp $(DIR)Constants.cpp $(DIR)Controls.cpp $(DIR)Inflater.cpp $(DIR)Player.cpp $(DIR)ProtocolPreferences.cpp $(DIR)SizedArray.cpp $(DIR)Video.cpp $(DIR)main.cpp $(MESSAGES)
 
-EXPORT=-s "EXPORTED_FUNCTIONS=['_main', '_on_play', '_on_pause', '_set_path']"
+EXPORT=-s "EXPORTED_FUNCTIONS=['_main', '_on_play', '_on_pause', '_set_path', '_getOnFullScreenButton']"
 PRELOAD= --preload-file TTT/Diskrete_Strukturen_2013_11_26_a/Diskrete_Strukturen_2013_11_26.ttt
 
 #STATICLIB= libz.bc

@@ -16,14 +16,21 @@ AudioJS::AudioJS() {
     printf("Duration: %d min\n",duration/60000);
 }
 
-void AudioJS::play(){
+void AudioJS::togglePlay(){
     EM_ASM(
-        x_play();
+        x_togglePlay();
     );
 }
 
 int AudioJS::getDuration(){
     return duration;
+}
+
+void AudioJS::setPosition(int pos){
+    EM_ASM_INT({
+        x_setDuration($0);
+        return 0;
+    },pos);
 }
 
 int AudioJS::getPosition(){
@@ -34,6 +41,12 @@ int AudioJS::getPosition(){
 
 bool AudioJS::hasFailed(){
     return false;
+}
+
+void AudioJS::changeVolume(float volume){
+    EM_ASM_INT({
+        x_changeVolume($0);
+    },volume);
 }
 
 #endif

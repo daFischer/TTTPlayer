@@ -11,7 +11,7 @@ AudioInterface::AudioInterface(){
     
 }
 
-void AudioInterface::play(){
+void AudioInterface::togglePlay(){
 }
 
 int AudioInterface::getDuration(){
@@ -20,6 +20,12 @@ int AudioInterface::getDuration(){
 
 int AudioInterface::getPosition(){
     return 0;
+}
+
+void AudioInterface::setPosition(int pos){
+}
+
+void AudioInterface::changeVolume(float volume){
 }
 
 bool AudioInterface::hasFailed(){

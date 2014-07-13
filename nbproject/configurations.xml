@@ -6,8 +6,10 @@
                    projectFiles="true">
       <itemPath>Audio.h</itemPath>
       <itemPath>AudioInterface.h</itemPath>
+      <itemPath>AudioJS.h</itemPath>
       <itemPath>ColorConverter.h</itemPath>
       <itemPath>Constants.h</itemPath>
+      <itemPath>Controls.h</itemPath>
       <itemPath>DeleteAllAnnotation.h</itemPath>
       <itemPath>EmptyMessage.h</itemPath>
       <itemPath>HextileMessage.h</itemPath>
@@ -31,8 +33,10 @@
       </logicalFolder>
       <itemPath>Audio.cpp</itemPath>
       <itemPath>AudioInterface.cpp</itemPath>
+      <itemPath>AudioJS.cpp</itemPath>
       <itemPath>ColorConverter.cpp</itemPath>
       <itemPath>Constants.cpp</itemPath>
+      <itemPath>Controls.cpp</itemPath>
       <itemPath>DeleteAllAnnotation.cpp</itemPath>
       <itemPath>EmptyMessage.cpp</itemPath>
       <itemPath>HextileMessage.cpp</itemPath>
@@ -51,8 +55,6 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>AudioJS.cpp</itemPath>
-    <itemPath>AudioJS.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -97,6 +99,10 @@
       <item path="Constants.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Constants.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Controls.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Controls.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="DeleteAllAnnotation.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -182,6 +188,10 @@
       <item path="Constants.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Constants.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Controls.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Controls.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="DeleteAllAnnotation.cpp" ex="false" tool="1" flavor2="0">
       </item>

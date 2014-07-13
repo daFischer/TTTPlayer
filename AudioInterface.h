@@ -16,10 +16,12 @@ class AudioInterface {
 public:
     AudioInterface();
     
-    virtual void play();
+    virtual void togglePlay();
     virtual int getPosition();
+    virtual void setPosition(int pos);
     virtual int getDuration();
     virtual bool hasFailed();
+    virtual void changeVolume(float volume);
     
 };
 

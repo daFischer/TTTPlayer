@@ -33,11 +33,12 @@ using namespace std;
 class Audio: public AudioInterface{
 public:
     Audio(const char*);
-    void play();
+    void togglePlay();
     int getPosition();
-    //bool setPosition(int time);
+    void setPosition(int pos);
     int getDuration();
     bool hasFailed();
+    void changeVolume(float volume);
 
 private:
     bool failed;

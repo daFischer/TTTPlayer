@@ -7,6 +7,7 @@
 
 #include "Player.h"
 #include "AudioJS.h"
+#include "Controls.h"
 
 Player *player;
 
@@ -39,11 +40,13 @@ Player::Player(const char* cpath, const char* cfilename) {
         return;
     }
     
-    audio->play();
+    controls=new Controls(video,audio);
+    
+    audio->togglePlay();
     
     printf("start looping\n");
 #ifdef EMSCRIPTEN
-    emscripten_set_main_loop(emLoop,30,1);
+    emscripten_set_main_loop(emLoop,0,0);
 #else
     quit = false;
     while(true)
@@ -63,6 +66,7 @@ void Player::loop()
     
     SDL_Event event;
     while (SDL_PollEvent(&event)) 
+    {
         if (event.type == SDL_KEYDOWN) {
             switch(event.key.keysym.sym) {
 #ifndef EMSCRIPTEN
@@ -74,7 +78,16 @@ void Player::loop()
                 default:
                     break;
             }
+        }
+        else if(event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT)
+            controls->registerClick(event.button.x,event.button.y);
+        else if(event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT)
+            controls->registerMouseUp();
+        else if(event.type == SDL_MOUSEMOTION)
+            controls->registerMovement(event.motion.x,event.motion.y);
     }
+    
+    controls->update();
 }
 
 void emLoop()

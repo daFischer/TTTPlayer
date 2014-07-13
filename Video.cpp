@@ -6,7 +6,6 @@
  */
 
 #include "Video.h"
-#include "Message.h"
 
 Video::Video(const char* path) {
     
@@ -61,6 +60,18 @@ void Video::update(int zeit)
         printf("Stamp: %d, #Messages: %d, current Message: %d\n",messages[currentMessage]->timestamp,numMessages,currentMessage);
         messages[currentMessage]->paint(screen, &prefs);
         currentMessage++;
+    }
+}
+
+SDL_Surface* Video::getScreen(){
+    return screen;
+}
+
+void Video::toggleFullscreen(){
+    return; //doesn't work yet, but not really important
+    {
+        printf("toggle fullscreen %d,%d\n",screen->flags,screen->flags & SDL_FULLSCREEN);
+        screen=SDL_SetVideoMode(screen->w, screen->h, screen->format->BitsPerPixel, screen->flags ^ SDL_FULLSCREEN);
     }
 }
 
