@@ -5,6 +5,7 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>Audio.h</itemPath>
+      <itemPath>AudioInterface.h</itemPath>
       <itemPath>ColorConverter.h</itemPath>
       <itemPath>Constants.h</itemPath>
       <itemPath>DeleteAllAnnotation.h</itemPath>
@@ -29,6 +30,7 @@
       <logicalFolder name="TestFiles" displayName="Test Files" projectFiles="true">
       </logicalFolder>
       <itemPath>Audio.cpp</itemPath>
+      <itemPath>AudioInterface.cpp</itemPath>
       <itemPath>ColorConverter.cpp</itemPath>
       <itemPath>Constants.cpp</itemPath>
       <itemPath>DeleteAllAnnotation.cpp</itemPath>
@@ -49,6 +51,8 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>AudioJS.cpp</itemPath>
+    <itemPath>AudioJS.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -77,6 +81,14 @@
       <item path="Audio.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Audio.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="AudioInterface.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="AudioInterface.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="AudioJS.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="AudioJS.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ColorConverter.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -154,6 +166,14 @@
       <item path="Audio.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Audio.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="AudioInterface.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="AudioInterface.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="AudioJS.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="AudioJS.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ColorConverter.cpp" ex="false" tool="1" flavor2="0">
       </item>

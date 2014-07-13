@@ -2,45 +2,37 @@
  * File:   Audio.cpp
  * Author: user
  * http://wiki.delphigl.com/index.php/OpenAL-Funktions%C3%BCbersicht
+ * http://www.codeproject.com/Articles/656543/The-LAME-wrapper-An-audio-converter
+ * https://github.com/sopel39/audioconverter.js
  * Created on April 30, 2014, 3:39 PM
  */
 
 #include "Audio.h"
 
+ALbyte Audio::fileBuffer[100000];
+
 Audio::Audio(const char* path) {
     
     //settings
-    playing=0;
     failed=true;
     int error;
     struct stat statbuf;
     
-    if(!(device = alcOpenDevice(NULL)))
+    int n=0;
+    char c=0;
+    char* cc=&c;
+    alutInit(&n,&cc);
+    if((error=alutGetError()) != ALUT_ERROR_NO_ERROR)
     {
-        printf("no device\n");
-        return;
-    }
-    if(!(context = alcCreateContext(device, NULL)))
-    {
-        printf("no context\n");
-        return;
-    }
-    if(!alcMakeContextCurrent(context))
-    {
-        printf("no current\n");
-        return;
-    }
-    if((error = alcGetError(device)) != ALC_NO_ERROR)
-    {
-        printf("alc error: %d\n", error);
+        printf("Error0 (Audio): %d\n",error);
         return;
     }
     
     alGenBuffers(1, &buffer); //Generate buffer
     alGenSources(1, &source);           //Generate source
-    if(alGetError() != AL_NO_ERROR)
+    if((error=alGetError()) != AL_NO_ERROR)
     {
-        printf("Error (Audio)\n");
+        printf("Error2 (Audio): %d\n",error);
         return;
     }
     //Load our audio file from disk
@@ -51,16 +43,15 @@ Audio::Audio(const char* path) {
     for(int i=0;i<sizeof(extension);i++)                //try loading audio of all possible extensions
     {
         filename=path+extension[i];
-        if(readAudio(filename.c_str(),extension[i]))        
-        {
-            printf("loaded %s\n",filename.c_str());
+        buffer=alutCreateBufferFromFile(filename.c_str());
+        if((error=alutGetError())==ALUT_ERROR_NO_ERROR)
             break;
-        }
+        printf("Couldn't load %s: %d\n",filename.c_str(),error);
         if(i == sizeof(extension) -1)
+        {
             alDeleteBuffers(1, &buffer);
+        }
     }
-    
-    //alBufferData(buffer,format,data,size,frequency);        //fill buffer with audio data
     
     alSourcei (source, AL_BUFFER, buffer);
     
@@ -75,87 +66,28 @@ Audio::Audio(const char* path) {
 
 void Audio::play(){
     //Play the audio file
+    printf("play1\n");
     alSourcePlay(source);
+    printf("play2\n");
     printf("Start playing for %d ms\n",getDuration());
-    
-    /*if(Mix_PlayMusic(audio, 0) == -1) 
-    {
-        printf("Unable to play audio file: %s\n", Mix_GetError());
-        return;
-    }*/
-    
     //The audio is playing!
-    playing = 1;
     
-    //startTime=0;
-    
-    /*printf("Setting time\n");
-    if(setPosition(30)==0)
-        printf("Unable to set Position\n");*/
-    
-    //Make sure that the finished() function is called when the audio stops playing
-    //Mix_HookMusicFinished(audioFinished);
 }
 
-bool Audio::readAudio(const char* path, string type){
-    
-    struct stat statbuf;
-    if(stat(path, &statbuf) != 0 || !S_ISREG(statbuf.st_mode))
-    {
-        printf("No %s file found.\n", type.c_str());
-        continue;
-    }
-    int error;
-    
-    switch(type)
-    {
-        case ".mp3":
-            return false;
-            break;
-        case ".mp2":
-            return false;
-            break;
-        case ".ogg":
-            return false;
-            break;
-        case ".wav":
-            FILE* f = fopen (path , "r");
-            alBufferData(buffer,format,data,size,freq);
-            
-            if((error = alGetError()) != AL_NO_ERROR)
-            {
-                printf("No %s file loaded: %d\n", type.c_str(), error);
-                continue;
-            }
-            break;
-    }
-}
-
-/*static void audioFinished()
-{
-    printf("Finished the Audio\n");
-}
-
-void Audio::finished()
-{
-    //Audio is done!
-    printf("Finished the Audio2\n");
-    playing = 0;
-}*/
-
-int Audio::getTime()
+int Audio::getPosition()
 {
     ALfloat time;
     alGetSourcef(source, AL_SEC_OFFSET, &time);
     
-    if(alGetError()!= AL_NO_ERROR)
-        printf("getTime error\n");
+    int error;
+    if((error = alGetError())!= AL_NO_ERROR)
+        printf("getTime error: %d\n", error);
     //printf("%f\n",(float) time);
     return (int)(time*1000);
 }
 
 
-bool Audio::setPosition(int time)
+/*bool Audio::setPosition(int time)
 {
     ALfloat pos=(ALfloat)pos/1000.0;
     alSourcef(source, AL_SEC_OFFSET, pos);
@@ -163,7 +95,7 @@ bool Audio::setPosition(int time)
         return true;
     else
         return false;
-}
+}*/
 
 int Audio::getDuration()
 {
@@ -186,4 +118,9 @@ int Audio::getDuration()
         printf("getDuration error\n");
     
     return (int)(seconds*1000);
+}
+
+bool Audio::hasFailed()
+{
+    return failed;
 }

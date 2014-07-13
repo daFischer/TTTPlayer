@@ -30,9 +30,9 @@ extern "C" void set_path(string p);
 
 bool paused=false;
 #ifdef EMSCRIPTEN
-const string path = "";
+const string path = "TTT";
 #else
-const string path = "/home/user/Development/C/TTT/Lectures";
+const string path = "/home/user/NetBeansProjects/TTTPlayer/emBuild/TTT";
 #endif
 string filename = "Diskrete_Strukturen_2013_11_26";
 

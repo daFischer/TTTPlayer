@@ -20,7 +20,12 @@
 #include <fstream>
 #include <time.h>
 
+#include "AudioInterface.h"
+#ifdef EMSCRIPTEN
+#include "AudioJS.h"
+#else
 #include "Audio.h"
+#endif
 #include "Video.h"
 
 using namespace std;
@@ -32,9 +37,10 @@ public:
     virtual ~Player();
     
 private:
-    Audio *audio;
+    AudioInterface *audio;
     Video *video;
     bool paused;
+    const char* filename;
 #ifndef EMSCRIPTEN
     bool quit;
 #endif

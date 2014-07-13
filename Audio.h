@@ -14,44 +14,36 @@
 #include <sys/stat.h>
 
 #include <AL/al.h>
+#ifdef EMSCRIPTEN
+#include "alut.h"
+#else
 #include <AL/alut.h>
+#endif
+#include <SDL/SDL.h>
+#include <SDL/SDL_mixer.h>
 
-#define BUFFER_SIZE 4096
+#include "AudioInterface.h"
+
+#define BUFFER_SIZE 100000
 
 using namespace std;
 
-static void audioFinished();
+//static void audioFinished();
 
-class Audio {
+class Audio: public AudioInterface{
 public:
     Audio(const char*);
     void play();
-    void finished();
-    int getTime();
-    bool setPosition(int time);
+    int getPosition();
+    //bool setPosition(int time);
     int getDuration();
+    bool hasFailed();
 
-    bool failed;
 private:
-    bool readAudio(const char* path, string type);
-    
+    bool failed;
     ALuint source;
     ALuint buffer;
-    ALCdevice *device;
-    ALCcontext *context;
-    //ALsizei size;
-    //ALsizei frequency; //Frequency of audio playback
-    //ALenum format; //Format of the audio we're playing
-    //ALvoid* data;
-
-    //unsigned char *buf;
-    //int pid;
-    //int files[2];
-    //FILE *f;
-
-    int playing;
-    //int startTime;
-    //int currentTime;
+    static ALbyte fileBuffer[100000];
 };
 
 #endif	/* AUDIO_H */

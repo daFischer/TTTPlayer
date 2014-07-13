@@ -6,6 +6,7 @@
  */
 
 #include "Player.h"
+#include "AudioJS.h"
 
 Player *player;
 
@@ -25,12 +26,16 @@ Player::Player(const char* cpath, const char* cfilename) {
     std::string filename=cfilename;
     std::string path=cpath;
     
-    audio=new Audio((path+"/"+filename+"_a/"+filename).c_str());
     video=new Video((path+"/"+filename+"_a/"+filename+".ttt").c_str());
+#ifdef EMSCRIPTEN
+    audio=new AudioJS();
+#else
+    audio=new Audio((path+"/"+filename+"_a/"+filename).c_str());
+#endif
     
-    if(video->failed||audio->failed)
+    if(video->failed||audio->hasFailed())
     {
-        printf("Audio failed: %s\nVideo failed: %s\n",audio->failed ? "true" : "false",video->failed ? "true" : "false");
+        printf("Audio failed: %s\nVideo failed: %s\n",audio->hasFailed() ? "true" : "false",video->failed ? "true" : "false");
         return;
     }
     
@@ -54,7 +59,7 @@ Player::Player(const char* cpath, const char* cfilename) {
 
 void Player::loop()
 {
-    video->update(audio->getTime());
+    video->update(audio->getPosition());
     
     SDL_Event event;
     while (SDL_PollEvent(&event)) 

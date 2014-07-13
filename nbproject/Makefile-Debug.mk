@@ -36,6 +36,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/Audio.o \
+	${OBJECTDIR}/AudioInterface.o \
+	${OBJECTDIR}/AudioJS.o \
 	${OBJECTDIR}/ColorConverter.o \
 	${OBJECTDIR}/Constants.o \
 	${OBJECTDIR}/DeleteAllAnnotation.o \
@@ -79,6 +81,16 @@ ${OBJECTDIR}/Audio.o: Audio.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Audio.o Audio.cpp
+
+${OBJECTDIR}/AudioInterface.o: AudioInterface.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/AudioInterface.o AudioInterface.cpp
+
+${OBJECTDIR}/AudioJS.o: AudioJS.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/AudioJS.o AudioJS.cpp
 
 ${OBJECTDIR}/ColorConverter.o: ColorConverter.cpp 
 	${MKDIR} -p ${OBJECTDIR}
