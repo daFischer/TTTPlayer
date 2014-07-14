@@ -24,6 +24,7 @@ public:
     ~HextileMessage();
     void paint(SDL_Surface *screen, ProtocolPreferences* prefs);
     int getCoveredArea();
+    bool completeScreen(int w, int h);
     
 private:
     void handleHextileSubrect(SDL_Surface *screen, ProtocolPreferences* prefs, int tx, int ty, int tw, int th);

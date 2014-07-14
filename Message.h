@@ -21,7 +21,8 @@ class Message {
 public:
     virtual ~Message();
     virtual void paint(SDL_Surface *screen, ProtocolPreferences* prefs);
-    bool isEmpty();
+    virtual bool isEmpty();
+    virtual bool completeScreen(int w, int h);
     
     bool updateFlag;
     int timestamp;

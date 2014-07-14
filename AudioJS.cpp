@@ -13,7 +13,7 @@ AudioJS::AudioJS() {
     duration = EM_ASM_INT({
         return x_getDuration();
     },0);
-    printf("Duration: %d min\n",duration/60000);
+    printf("Duration: %d min\n",duration/60);
 }
 
 void AudioJS::togglePlay(){
@@ -28,7 +28,7 @@ int AudioJS::getDuration(){
 
 void AudioJS::setPosition(int pos){
     EM_ASM_INT({
-        x_setDuration($0);
+        x_setPosition($0);
         return 0;
     },pos);
 }

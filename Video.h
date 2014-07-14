@@ -34,6 +34,7 @@ public:
     void update(int zeit);
     SDL_Surface* getScreen();
     void toggleFullscreen();
+    void seekPosition(int position);
     
     bool failed;
     

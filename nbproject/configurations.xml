@@ -17,6 +17,7 @@
       <itemPath>Message.h</itemPath>
       <itemPath>Player.h</itemPath>
       <itemPath>ProtocolPreferences.h</itemPath>
+      <itemPath>RawMessage.h</itemPath>
       <itemPath>SizedArray.h</itemPath>
       <itemPath>Video.h</itemPath>
       <itemPath>WhiteboardMessage.h</itemPath>
@@ -44,6 +45,7 @@
       <itemPath>Message.cpp</itemPath>
       <itemPath>Player.cpp</itemPath>
       <itemPath>ProtocolPreferences.cpp</itemPath>
+      <itemPath>RawMessage.cpp</itemPath>
       <itemPath>SizedArray.cpp</itemPath>
       <itemPath>Video.cpp</itemPath>
       <itemPath>WhiteboardMessage.cpp</itemPath>
@@ -131,6 +133,10 @@
       <item path="ProtocolPreferences.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="ProtocolPreferences.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="RawMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="RawMessage.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SizedArray.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -220,6 +226,10 @@
       <item path="ProtocolPreferences.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="ProtocolPreferences.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="RawMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="RawMessage.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="SizedArray.cpp" ex="false" tool="1" flavor2="0">
       </item>

@@ -48,6 +48,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Message.o \
 	${OBJECTDIR}/Player.o \
 	${OBJECTDIR}/ProtocolPreferences.o \
+	${OBJECTDIR}/RawMessage.o \
 	${OBJECTDIR}/SizedArray.o \
 	${OBJECTDIR}/Video.o \
 	${OBJECTDIR}/WhiteboardMessage.o \
@@ -142,6 +143,11 @@ ${OBJECTDIR}/ProtocolPreferences.o: ProtocolPreferences.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ProtocolPreferences.o ProtocolPreferences.cpp
+
+${OBJECTDIR}/RawMessage.o: RawMessage.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/RawMessage.o RawMessage.cpp
 
 ${OBJECTDIR}/SizedArray.o: SizedArray.cpp 
 	${MKDIR} -p ${OBJECTDIR}

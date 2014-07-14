@@ -22,3 +22,8 @@ void EmptyMessage::paint(SDL_Surface *screen, ProtocolPreferences* prefs)
 {
     
 }
+
+bool EmptyMessage::completeScreen(int w, int h){
+    return false;
+}
+

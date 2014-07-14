@@ -13,6 +13,7 @@ Controls::Controls(Video* video, AudioInterface* audio) {
     this->video=video;
     this->audio=audio;
     
+    duration=audio->getDuration();
     ProtocolPreferences prefs;
     
     //TODO: might make these relative to video's height
@@ -30,9 +31,9 @@ Controls::Controls(Video* video, AudioInterface* audio) {
 
     mouseOnFullScreenButton=false;
 #ifdef EMSCRIPTEN
-    EM_ASM_INT({
-        x_setupFullScreen($0, $1);
-    }, 48, height);
+    EM_ASM(
+        x_setupFullScreen();
+    );
 #endif
 }
 
@@ -52,6 +53,7 @@ void Controls::registerClick(Uint16 mx, Uint16 my){
         else if(mx<=128 && mx>=64)
             volumeClicked=true;
     }
+    registerMovement(mx,my);
 }
 
 void Controls::registerMouseUp(){
@@ -80,7 +82,7 @@ extern "C" bool getOnFullScreenButton(){
 void Controls::update(){
     if(!timeLineClicked && timeLineChange>=0)
     {
-        skipTo(audio->getDuration()*timeLineChange/width);
+        skipTo(duration*timeLineChange/width);
         timeLineChange=-1;
     }
     
@@ -121,11 +123,14 @@ void Controls::draw(){
     SDL_FillRect(screen, &rect, 0xff338844);
     
     //timeLine background
-    redefineRect(&rect, 0, y-timeLineHeight+2, width, timeLineHeight-2);
+    redefineRect(&rect, 0, y-timeLineHeight, width, timeLineHeight);
     SDL_FillRect(screen, &rect, 0xff333333);
     
     //timeLine foreground
-    redefineRect(&rect, 0, y-timeLineHeight, width*audio->getPosition()/audio->getDuration(), timeLineHeight);
+    if(timeLineChange==-1)
+        redefineRect(&rect, 0, y-timeLineHeight, audio->getPosition()*width/duration, timeLineHeight);
+    else
+        redefineRect(&rect, 0, y-timeLineHeight, timeLineChange, timeLineHeight);
     SDL_FillRect(screen, &rect, 0xffaa0000);
     
     SDL_UpdateRect(screen, 0,y-timeLineHeight,width,height+timeLineHeight); 
@@ -139,7 +144,8 @@ void Controls::redefineRect(SDL_Rect* rect, int x, int y, int w, int h){
 }
 
 void Controls::skipTo(int position){
-    
+    audio->setPosition(position);
+    video->seekPosition(position);
 }
 
 void Controls::changeVolume(float volume){

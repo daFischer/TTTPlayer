@@ -26,17 +26,16 @@ using namespace std;
 
 extern "C" void on_pause();
 extern "C" void on_play();
-extern "C" void set_path(string p);
+//extern "C" const char* set_path(const char* p);
 
 bool paused=false;
 #ifdef EMSCRIPTEN
 const string path = "TTT";
+string filename = "";
 #else
 const string path = "/home/user/NetBeansProjects/TTTPlayer/emBuild/TTT";
+string filename = "Programmiersprachen_2013_10_21";
 #endif
-string filename = "Diskrete_Strukturen_2013_11_26";
-
-extern "C" void set_path(string p);
 
 int main();
 

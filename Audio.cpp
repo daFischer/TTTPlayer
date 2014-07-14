@@ -88,16 +88,17 @@ int Audio::getPosition()
     if((error = alGetError())!= AL_NO_ERROR)
         printf("getTime error: %d\n", error);
     //printf("%f\n",(float) time);
-    return (int)(time*1000);
+    return (int)time;
 }
 
 
 void Audio::setPosition(int pos)
 {
-    ALfloat time=(ALfloat)pos/1000.0;
+    ALfloat time=(ALfloat)pos;
     alSourcef(source, AL_SEC_OFFSET, time);
-    if(alGetError()== AL_NO_ERROR)
-        printf("Audio.cpp: set Position error");
+    uint error;
+    if((error=alGetError()) != AL_NO_ERROR)
+        printf("Audio.cpp: set Position error: %d\n", error);
 }
 
 void Audio::changeVolume(float volume){
@@ -125,7 +126,7 @@ int Audio::getDuration()
     if(alGetError()!= AL_NO_ERROR)
         printf("getDuration error\n");
     
-    return (int)(seconds*1000);
+    return (int)seconds;
 }
 
 bool Audio::hasFailed()

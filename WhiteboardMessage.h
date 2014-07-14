@@ -18,6 +18,7 @@ public:
     WhiteboardMessage(int timestamp, int pageNumber, ProtocolPreferences* prefs);
     ~WhiteboardMessage();
     void paint(SDL_Surface *screen, ProtocolPreferences* prefs);
+    bool completeScreen(int w, int h);
     
 private:
 

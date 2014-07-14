@@ -40,6 +40,7 @@ private:
     bool volumeClicked;
     float volume;
     int y;
+    int duration;
     void togglePlay();
     void toggleFullscreen();
     void skipTo(int position);

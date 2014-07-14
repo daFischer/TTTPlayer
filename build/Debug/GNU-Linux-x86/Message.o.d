@@ -1,7 +1,7 @@
 build/Debug/GNU-Linux-x86/Message.o: Message.cpp Message.h Inflater.h \
  SizedArray.h ProtocolPreferences.h Constants.h EmptyMessage.h \
  HextileMessage.h ColorConverter.h WhiteboardMessage.h \
- DeleteAllAnnotation.h
+ DeleteAllAnnotation.h RawMessage.h
 
 Message.h:
 
@@ -22,3 +22,5 @@ ColorConverter.h:
 WhiteboardMessage.h:
 
 DeleteAllAnnotation.h:
+
+RawMessage.h:

@@ -17,6 +17,7 @@ public:
     ~EmptyMessage();
     void paint(SDL_Surface *screen, ProtocolPreferences* prefs);
     bool isEmpty();
+    bool completeScreen(int w, int h);
     
 private:
 

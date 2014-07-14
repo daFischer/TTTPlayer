@@ -10,14 +10,14 @@ var x_getSeek=function(){
 }
 
 var x_getPosition=function(){
-	return x_audio.currentTime*1000;
+	return x_audio.currentTime;
 }
 var x_setPosition=function(pos){
-	x_audio.currentTime=pos/1000;
+	x_audio.currentTime=pos;
 }
 
 var x_getDuration=function(){
-	return x_audio.duration*1000;
+	return x_audio.duration;
 }
 var x_togglePlay=function(){
 	if(x_audio.paused)
@@ -32,7 +32,7 @@ var x_rect;
 
 var x_onFull;
 
-var x_setupFullScreen=function(w, h){
+var x_setupFullScreen=function(){
 	x_rect=x_canvas.getBoundingClientRect();
 	x_onFull=Module.cwrap('getOnFullScreenButton', 'bool');
 	x_canvas.addEventListener('click', function(e) {
@@ -57,3 +57,12 @@ var x_audioLoaded=function(){
 
 }
 
+
+
+var x_getPath=function(end){
+	return "TTT/"+x_filename+"_a/"+x_filename+"."+end;
+};
+var x_setAudioSource=function(){
+	x_audio.innerHTML='<source src="'+x_getPath("ogg")+'" type="audio/ogg"><source src="'+x_getPath("mp3")+'" type="audio/mp3"><source src="'+x_getPath("wav")+'" type="audio/wav">Your browser does not support the audio element.';
+}
+x_setAudioSource();

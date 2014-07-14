@@ -21,3 +21,7 @@ void WhiteboardMessage::paint(SDL_Surface *screen, ProtocolPreferences* prefs)
     SDL_Rect rect = {0,0,screen->w,screen->h};
     SDL_FillRect(screen, &rect, 0xffffff);
 }
+
+bool WhiteboardMessage::completeScreen(int w, int h){
+    return true;
+}

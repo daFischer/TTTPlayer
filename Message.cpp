@@ -11,6 +11,7 @@
 #include "HextileMessage.h"
 #include "WhiteboardMessage.h"
 #include "DeleteAllAnnotation.h"
+#include "RawMessage.h"
 
 int number;
 int total;
@@ -26,6 +27,9 @@ bool Message::isEmpty(){
     return false;
 }
 
+bool Message::completeScreen(int w, int h){
+    return false;
+}
 
 
 
@@ -156,6 +160,7 @@ Message* readMessage(Inflater* in, ProtocolPreferences* prefs){
             break;*/
 
         case ANNOTATIONDELETEALL:
+            //TODO:test
             message = new DeleteAllAnnotation(timestamp);
             break;
 
@@ -164,6 +169,8 @@ Message* readMessage(Inflater* in, ProtocolPreferences* prefs){
             break;*/
 
         case ENCODINGWHITEBOARD:
+            //TODO:test
+            printf("ENCODINGWHITEBOARD\n");
             in->readByte(&byte);
             message = new WhiteboardMessage(timestamp, byte, prefs);
             break;
@@ -172,11 +179,13 @@ Message* readMessage(Inflater* in, ProtocolPreferences* prefs){
             message = new HextileMessage(timestamp, in, size);
             break;
 
-        /*case ENCODINGRAW:
+        case ENCODINGRAW:
+            //TODO:test
+            printf("Created RawMessage with timestamp %d, needs testing!\n", timestamp);
             message = new RawMessage(timestamp, in, size);
             break;
 
-        case ENCODINGINTERLACEDRAW:
+        /*case ENCODINGINTERLACEDRAW:
             //TODO: InterlacedRawMessage
             // message = new InterlacedRawMessage(timestamp,x,y,w,h,msg);
             message = new EmptyMessage(timestamp);
@@ -193,9 +202,6 @@ Message* readMessage(Inflater* in, ProtocolPreferences* prefs){
             {
                 char skip[size+1];
                 in->readCharArray(skip, size);
-                /*for(int i=0;i<sizeof(skip);i++)
-                    printf("%d,",skip[i]);
-                printf("\n");*/
             }
 
             size = 0;
@@ -204,7 +210,9 @@ Message* readMessage(Inflater* in, ProtocolPreferences* prefs){
         }
     
     message->updateFlag = updateFlag;
+    message->encoding=encoding;
     
     return message;
 }
+
 

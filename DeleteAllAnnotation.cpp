@@ -22,3 +22,7 @@ void DeleteAllAnnotation::paint(SDL_Surface *screen, ProtocolPreferences* prefs)
 {
     
 }
+
+bool DeleteAllAnnotation::completeScreen(int w, int h){
+    return false;
+}

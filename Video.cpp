@@ -55,9 +55,9 @@ void Video::update(int zeit)
     //printf("%d>=%d || %d>%d\n",currentMessage,numMessages,messages[currentMessage]->timestamp,timestamp);
     while(currentMessage<numMessages)
     {
-        if(messages[currentMessage]->timestamp>zeit)
+        if(messages[currentMessage]->timestamp > zeit*1000)
             break;
-        printf("Stamp: %d, #Messages: %d, current Message: %d\n",messages[currentMessage]->timestamp,numMessages,currentMessage);
+        //printf("Stamp: %d, #Messages: %d, current Message: %d\n",messages[currentMessage]->timestamp,numMessages,currentMessage);
         messages[currentMessage]->paint(screen, &prefs);
         currentMessage++;
     }
@@ -73,6 +73,30 @@ void Video::toggleFullscreen(){
         printf("toggle fullscreen %d,%d\n",screen->flags,screen->flags & SDL_FULLSCREEN);
         screen=SDL_SetVideoMode(screen->w, screen->h, screen->format->BitsPerPixel, screen->flags ^ SDL_FULLSCREEN);
     }
+}
+
+void Video::seekPosition(int position){
+    
+    //binary search for message closest to position
+    int min, max;
+    min=0;
+    max= numMessages;
+    while(min!=max)
+        if(messages[(min+max)/2]->timestamp > position*1000)
+            max=(min+max)/2;
+        else
+            min=(min+max)/2+1;
+    currentMessage=min;
+    
+    //search backwards for message that changes the whole screen
+    printf("From %d ",currentMessage);
+    for(;currentMessage>0;currentMessage--)
+        if(messages[currentMessage]->completeScreen((int)prefs.framebufferWidth, (int)prefs.framebufferHeight))
+            break;
+    printf("back to %d\n",currentMessage);
+    
+    //only needed in case the video is paused
+    update(position);
 }
 
 bool readServerInit(Inflater* in)
