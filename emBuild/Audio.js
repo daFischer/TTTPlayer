@@ -26,7 +26,6 @@ var x_togglePlay=function(){
 		x_audio.pause();
 }
 
-var x_fullscreen=false;
 var x_canvas=document.getElementById('canvas');
 var x_rect;
 
@@ -39,12 +38,28 @@ var x_setupFullScreen=function(){
 		if(x_onFull())
 		{
 			var x_canvas_div=document.getElementById('canvas_div');
-			if(x_fullscreen)
-				document.mozCancelFullScreen();
-				//x_canvas_div.exitFullscreen();
+			var x_fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
+			if(x_fullscreenElement)
+			{
+				if(document.exitFullscreen)
+					document.exitFullscreen();
+				else if(document.mozCancelFullScreen)
+					document.mozCancelFullScreen();
+				else if(document.webkitExitFullscreen)
+					document.webkitExitFullscreen();
+			}
 			else
-				x_canvas_div.mozRequestFullScreen();
-			x_fullscreen=!x_fullscreen;
+			{
+				Module.requestFullScreen(false, false)
+				/*if(x_canvas_div.requestFullscreen)
+					x_canvas_div.requestFullscreen();
+				else if(x_canvas_div.mozRequestFullScreen)
+					x_canvas_div.mozRequestFullScreen();
+				else if(x_canvas_div.webkitRequestFullscreen)
+					x_canvas_div.webkitRequestFullscreen();
+				else if(x_canvas_div.msRequestFullscreen)
+					x_canvas_div.msRequestFullscreen();*/
+			}
 		}
 	}, false);
 }

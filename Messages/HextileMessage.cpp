@@ -33,7 +33,7 @@ bool HextileMessage::completeScreen(int w, int h){
 
 void HextileMessage::paint(SDL_Surface *screen, ProtocolPreferences* prefs)
 {
-    //printf("paint Hextile\n");
+    printf("paint Hextile\n");
     offSet=0;
     
     //printf("%s%d\n",test.c_str(), data->length);
@@ -54,7 +54,7 @@ void HextileMessage::paint(SDL_Surface *screen, ProtocolPreferences* prefs)
     }
     //printf("(%d,%d)(%d,%d)\n",x,y,w,h);
     //printf("%d\n",data->length-offSet);
-    SDL_UpdateRect(screen, x,y,w,h); 
+    SDL_UpdateRect(screen, x,y,w,h);
 }
 
 void HextileMessage::handleHextileSubrect(SDL_Surface *screen, ProtocolPreferences* prefs, int tx, int ty, int tw, int th)

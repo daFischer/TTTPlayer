@@ -8,9 +8,9 @@
 #ifndef MESSAGE_H
 #define	MESSAGE_H
 
-#include "Inflater.h"
-#include "ProtocolPreferences.h"
-#include "Constants.h"
+#include "../Inflater.h"
+#include "../ProtocolPreferences.h"
+#include "../Constants.h"
 #include <stdio.h>
 #include <SDL/SDL.h>
 #include <list>
@@ -21,13 +21,13 @@ class Message {
 public:
     virtual ~Message();
     virtual void paint(SDL_Surface *screen, ProtocolPreferences* prefs);
-    virtual bool isEmpty();
+    //virtual bool isEmpty();
     virtual bool completeScreen(int w, int h);
     
     bool updateFlag;
     int timestamp;
     int encoding;
-    
+    char type;
     
 private:
     

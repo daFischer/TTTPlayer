@@ -6,6 +6,8 @@
  */
 
 #include "Video.h"
+#include "Controls.h"
+#include "Messages/Annotation.h"
 
 Video::Video(const char* path) {
     
@@ -38,8 +40,17 @@ Video::Video(const char* path) {
     printf("Read %d messages successfully\n", numMessages);
     
     printf("%d x %d, color depth: %d\n",prefs.framebufferWidth, prefs.framebufferHeight, prefs.bytesPerPixel);
-    screen = SDL_SetVideoMode(prefs.framebufferWidth, prefs.framebufferHeight, prefs.bitsPerPixel, SDL_ANYFORMAT);
+    screen = SDL_SetVideoMode(prefs.framebufferWidth, prefs.framebufferHeight, prefs.bitsPerPixel, SDL_ANYFORMAT|SDL_DOUBLEBUF);
     prefs.format=screen->format;
+    rawScreen=SDL_CreateRGBSurface(screen->flags,screen->w,screen->h,screen->format->BitsPerPixel,screen->format->Rmask,screen->format->Gmask,screen->format->Bmask,screen->format->Amask);
+    if(containsAnnotations)
+    {
+        printf("Create AnnScreen\n");
+        annScreen=SDL_CreateRGBSurface(screen->flags,screen->w,screen->h,screen->format->BitsPerPixel,screen->format->Rmask,screen->format->Gmask,screen->format->Bmask,0xffffffff-screen->format->Rmask-screen->format->Gmask-screen->format->Bmask);
+        printf("screen=(%d,%d,%d,%d)\n",screen->format->Amask,screen->format->Rmask,screen->format->Gmask,screen->format->Bmask);
+        //SDL_Rect rect={0,0,annScreen->w,annScreen->h};
+        //SDL_SetAlpha(annScreen,SDL_SRCALPHA,0x00);
+    }
     
     if (screen == NULL)
     {
@@ -49,22 +60,61 @@ Video::Video(const char* path) {
     }
 }
 
-void Video::update(int zeit)
+void Video::update(int zeit, Controls* controls)
 {
-    //printf("%d\n",zeit);
-    //printf("%d>=%d || %d>%d\n",currentMessage,numMessages,messages[currentMessage]->timestamp,timestamp);
+    bool blitRaw=false;
+    bool blitAnn=false;
+    Annotation* annotation;
     while(currentMessage<numMessages)
     {
         if(messages[currentMessage]->timestamp > zeit*1000)
             break;
-        //printf("Stamp: %d, #Messages: %d, current Message: %d\n",messages[currentMessage]->timestamp,numMessages,currentMessage);
-        messages[currentMessage]->paint(screen, &prefs);
+        switch(messages[currentMessage]->type){
+            case ANNOTATION:
+                blitAnn=true;
+                annotation=reinterpret_cast<Annotation*>(messages[currentMessage]);
+                annotation->paint(annScreen, &prefs);
+                break;
+            case RAW:
+                blitRaw=true;
+                messages[currentMessage]->paint(rawScreen, &prefs);
+                break;
+            case CURSOR:
+                
+                break;
+            case WHITEBOARD:
+                messages[currentMessage]->paint(rawScreen, &prefs);
+                break;
+        }
         currentMessage++;
     }
+    if(blitAnn)
+    {
+        //redraw annScreen if needed, doesn't matter which annotation does it
+        if(annotation->mustRedraw)
+            annotation->redraw(annScreen,&prefs);
+    }
+    redrawScreen(controls, blitAnn||blitRaw);
 }
 
-SDL_Surface* Video::getScreen(){
-    return screen;
+void Video::redrawScreen(Controls* controls, bool fully) {
+    if(fully)
+    {
+        //redraw screen completely
+        SDL_Rect rect = {0,0,screen->w,controls->videoUpdate.y+controls->videoUpdate.h};
+        SDL_BlitSurface(rawScreen,&rect,screen,&rect);
+        SDL_BlitSurface(annScreen,&rect,screen,&rect);
+        SDL_Flip(screen);
+    }
+    else if(controls->videoUpdate.h!=0)
+    {
+        //only redraw the part that controls releases when moving downwards
+        SDL_BlitSurface(rawScreen,&controls->videoUpdate,screen,&controls->videoUpdate);
+        SDL_BlitSurface(annScreen,&controls->videoUpdate,screen,&controls->videoUpdate);
+        SDL_Flip(screen);
+    }
+    //always redraw controls
+    controls->draw(screen, fully);
 }
 
 void Video::toggleFullscreen(){
@@ -75,28 +125,82 @@ void Video::toggleFullscreen(){
     }
 }
 
-void Video::seekPosition(int position){
+void Video::seekPosition(int position, Controls* controls){
     
+    printf("seeking...\n");
     //binary search for message closest to position
     int min, max;
-    min=0;
+    min=1;
     max= numMessages;
     while(min!=max)
         if(messages[(min+max)/2]->timestamp > position*1000)
             max=(min+max)/2;
         else
             min=(min+max)/2+1;
-    currentMessage=min;
+    currentMessage=min-1;
     
-    //search backwards for message that changes the whole screen
+    int firstAnnotation=0;
+    int firstRaw=0;
+    bool foundCursor=false;
+    bool foundWhiteBoard=false;
+    for(int i= currentMessage;i>=0;i--)
+    {
+        //printf("%s\n",messages[i]->type);
+        if(     (firstRaw!=0 || foundWhiteBoard) &&
+                (firstAnnotation!=0 || !containsAnnotations) &&
+                (foundCursor || !containsCursorMessages))
+            break;
+        
+        switch(messages[i]->type){
+            case ANNOTATION:
+                if(firstAnnotation==0 && messages[i]->completeScreen(prefs.framebufferWidth, prefs.framebufferHeight))
+                    firstAnnotation=i;
+                break;
+            case RAW:
+                if(firstRaw==0 && messages[i]->completeScreen(prefs.framebufferWidth, prefs.framebufferHeight))
+                    firstRaw=i;
+                break;
+            case CURSOR:
+                if(!foundCursor)
+                    messages[i]->paint(screen,&prefs);
+                foundCursor=true;
+                break;
+            case WHITEBOARD:
+                if(!foundWhiteBoard)
+                {
+                    messages[i]->paint(rawScreen,&prefs);
+                    firstAnnotation=i;
+                }
+                foundWhiteBoard=true;
+                break;
+        }
+    }
+    
+    //after the search, Annotations must be redrawn
+    Annotation::mustRedraw=true;
+    Annotation::annotations.clear();
+    
+    for(int i=firstRaw;i<currentMessage;i++)
+        if(messages[i]->type==RAW)
+            messages[i]->paint(rawScreen,&prefs);
+    
+    for(int i=firstAnnotation;i<currentMessage;i++)
+        if(messages[i]->type==ANNOTATION)
+            messages[i]->paint(annScreen,&prefs);
+    
+    Annotation::redraw(annScreen,&prefs);
+    
+    redrawScreen(controls,true);
+    printf("redrawn after seeking (%d, %d)\n", firstRaw, firstAnnotation);
+    
+    /*//search backwards for raw message that changes the whole screen
     printf("From %d ",currentMessage);
-    for(;currentMessage>0;currentMessage--)
+    for(currentMessage;currentMessage>0;currentMessage--)
+    {
         if(messages[currentMessage]->completeScreen((int)prefs.framebufferWidth, (int)prefs.framebufferHeight))
             break;
-    printf("back to %d\n",currentMessage);
-    
-    //only needed in case the video is paused
-    update(position);
+    }
+    printf("back to %d(%d)\n",currentMessage, messages[currentMessage]->encoding);*/
 }
 
 bool readServerInit(Inflater* in)

@@ -6,6 +6,7 @@
  */
 
 #include "DeleteAllAnnotation.h"
+#include "Annotation.h"
 
 DeleteAllAnnotation::DeleteAllAnnotation(int timestamp) {
     this->timestamp=timestamp;
@@ -14,15 +15,13 @@ DeleteAllAnnotation::DeleteAllAnnotation(int timestamp) {
 DeleteAllAnnotation::~DeleteAllAnnotation() {
 }
 
-bool DeleteAllAnnotation::isEmpty(){
-    return true;
-}
-
 void DeleteAllAnnotation::paint(SDL_Surface *screen, ProtocolPreferences* prefs)
 {
-    
+    printf("delete all annotations\n");
+    mustRedraw=true;
+    annotations.clear();
 }
 
 bool DeleteAllAnnotation::completeScreen(int w, int h){
-    return false;
+    return true;
 }

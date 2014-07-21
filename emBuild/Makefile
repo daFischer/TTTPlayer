@@ -1,15 +1,16 @@
 
-EM=em++ -02 -s ALLOW_MEMORY_GROWTH=1
-CC=emcc -02 -s ALLOW_MEMORY_GROWTH=1
+EM=em++ -O2 -s ALLOW_MEMORY_GROWTH=1
+CC=emcc -O2 -s ALLOW_MEMORY_GROWTH=1
 DIR=../
+MDIR=../Messages/
 
-MESSAGES= $(DIR)DeleteAllAnnotation.cpp $(DIR)EmptyMessage.cpp $(DIR)HextileMessage.cpp $(DIR)Message.cpp $(DIR)RawMessage.cpp $(DIR)WhiteboardMessage.cpp
+MESSAGES= $(MDIR)Annotation.cpp $(MDIR)DeleteAllAnnotation.cpp $(MDIR)DeleteAnnotation.cpp $(MDIR)EmptyMessage.cpp $(MDIR)HextileMessage.cpp $(MDIR)Message.cpp $(MDIR)RawMessage.cpp $(MDIR)RectangleAnnotation.cpp $(MDIR)WhiteboardMessage.cpp
 #ZSRC = libz/adler32.c libz/compress.c libz/crc32.c libz/deflate.c libz/gzclose.c libz/gzlib.c libz/gzread.c \
 #	libz/gzwrite.c libz/infback.c libz/inffast.c libz/inflate.c libz/inftrees.c libz/trees.c libz/uncompr.c libz/zutil.c
 SRC= $(DIR)AudioInterface.cpp $(DIR)AudioJS.cpp $(DIR)ColorConverter.cpp $(DIR)Constants.cpp $(DIR)Controls.cpp $(DIR)Inflater.cpp $(DIR)Player.cpp $(DIR)ProtocolPreferences.cpp $(DIR)SizedArray.cpp $(DIR)Video.cpp $(DIR)main.cpp $(MESSAGES)
 
 EXPORT=-s "EXPORTED_FUNCTIONS=['_main', '_on_play', '_on_pause', '_getOnFullScreenButton']"
-PRELOAD= --preload-file TTT/Diskrete_Strukturen_2013_11_26_a/Diskrete_Strukturen_2013_11_26.ttt
+PRELOAD= --preload-file Assets/PlayPause.bmp --preload-file Assets/volume.bmp --preload-file Assets/volume2.bmp
 
 #STATICLIB= libz.bc
 

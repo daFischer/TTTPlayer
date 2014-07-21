@@ -8,13 +8,13 @@
 #ifndef HEXTILEMESSAGE_H
 #define	HEXTILEMESSAGE_H
 
-#include "Inflater.h"
+#include "../Inflater.h"
 #include "Message.h"
 #include <SDL/SDL.h>
-#include "SizedArray.h"
+#include "../SizedArray.h"
 #include <string>
 #include <stdio.h>
-#include "ColorConverter.h"
+#include "../ColorConverter.h"
 
 using namespace std;
 

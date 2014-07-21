@@ -19,8 +19,10 @@
 
 #include "Inflater.h"
 #include "ProtocolPreferences.h"
-#include "Message.h"
+#include "Messages/Message.h"
 #include "SizedArray.h"
+//#include "Controls.h"
+class Controls;
 
 //#include "ProtocolPreferences.h"
 
@@ -31,15 +33,18 @@ public:
     Video(const char* path);
     //Video(const Video& orig);
     virtual ~Video();
-    void update(int zeit);
+    void update(int zeit, Controls* controls);
+    void redrawScreen(Controls* controls, bool fully);
     SDL_Surface* getScreen();
     void toggleFullscreen();
-    void seekPosition(int position);
+    void seekPosition(int position, Controls* controls);
     
     bool failed;
     
 private:    
-    SDL_Surface *screen;			//Pointer to the main screen surface
+    SDL_Surface* screen;			//Pointer to the main screen surface
+    SDL_Surface* rawScreen;                     //Pointer to screen for messages with type RAW
+    SDL_Surface* annScreen;                     //Screen that buffers Annotations
     Message** messages;
     int numMessages;
     int currentMessage;

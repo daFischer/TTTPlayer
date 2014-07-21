@@ -8,12 +8,16 @@
 #ifndef CONTROLS_H
 #define	CONTROLS_H
 
+#include <SDL/SDL.h>
+
 #include "AudioInterface.h"
-#include "Video.h"
+//#include "Video.h"
+class Video;
 #include "ProtocolPreferences.h"
 
-#include <stdio.h>
-#include <SDL/SDL.h>
+#ifndef _STDIO_H
+using namespace std;
+#endif
 
 #ifdef EMSCRIPTEN
 #include <emscripten/emscripten.h>
@@ -28,23 +32,33 @@ public:
     void registerClick(Uint16 mx, Uint16 my);
     void registerMouseUp();
     void registerMovement(Uint16 mx, Uint16 my);
+    void draw(SDL_Surface *screen, bool hasDrawn);
+    
+    SDL_Rect videoUpdate;
     
 private:
 
     Video* video;
     AudioInterface* audio;
-    int width, height;
+    bool visible;
+    int y;
+    int width, height, screenHeight;
     int timeLineHeight;
     bool timeLineClicked;
     int timeLineChange;         //For when the user seeks through the video
     bool volumeClicked;
     float volume;
-    int y;
     int duration;
+    
+    SDL_Surface* surfPlay;
+    SDL_Surface* surfVolume;
+    SDL_Surface* surfVolume2;
+    SDL_Surface* surfFullscreen;
+    
     void togglePlay();
     void toggleFullscreen();
     void skipTo(int position);
-    void draw();
+    Uint32 emColor(Uint32);
     void redefineRect(SDL_Rect* rect, int x, int y, int w, int h);
     void changeVolume(float volume);
 };

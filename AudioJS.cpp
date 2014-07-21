@@ -49,4 +49,10 @@ void AudioJS::changeVolume(float volume){
     },volume);
 }
 
+bool AudioJS::isPlaying(){
+    return EM_ASM_INT({
+        return x_audio.paused;
+    },0)==0;
+}
+
 #endif

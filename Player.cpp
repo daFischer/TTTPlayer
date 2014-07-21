@@ -62,8 +62,6 @@ Player::Player(const char* cpath, const char* cfilename) {
 
 void Player::loop()
 {
-    video->update(audio->getPosition());
-    
     SDL_Event event;
     while (SDL_PollEvent(&event)) 
     {
@@ -88,6 +86,8 @@ void Player::loop()
     }
     
     controls->update();
+    
+    video->update(audio->getPosition(), controls);
 }
 
 void emLoop()

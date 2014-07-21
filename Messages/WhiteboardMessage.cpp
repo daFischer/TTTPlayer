@@ -19,7 +19,8 @@ void WhiteboardMessage::paint(SDL_Surface *screen, ProtocolPreferences* prefs)
 {
     printf("paint Whiteboard\n");
     SDL_Rect rect = {0,0,screen->w,screen->h};
-    SDL_FillRect(screen, &rect, 0xffffff);
+    SDL_FillRect(screen, &rect, 0xffffffff);
+    SDL_UpdateRect(screen, 0,0,screen->w,screen->h);
 }
 
 bool WhiteboardMessage::completeScreen(int w, int h){

@@ -39,6 +39,7 @@ public:
     int getDuration();
     bool hasFailed();
     void changeVolume(float volume);
+    bool isPlaying();
 
 private:
     bool failed;

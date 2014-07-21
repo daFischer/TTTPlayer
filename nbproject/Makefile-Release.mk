@@ -41,17 +41,20 @@ OBJECTFILES= \
 	${OBJECTDIR}/ColorConverter.o \
 	${OBJECTDIR}/Constants.o \
 	${OBJECTDIR}/Controls.o \
-	${OBJECTDIR}/DeleteAllAnnotation.o \
-	${OBJECTDIR}/EmptyMessage.o \
-	${OBJECTDIR}/HextileMessage.o \
 	${OBJECTDIR}/Inflater.o \
-	${OBJECTDIR}/Message.o \
+	${OBJECTDIR}/Messages/Annotation.o \
+	${OBJECTDIR}/Messages/DeleteAllAnnotation.o \
+	${OBJECTDIR}/Messages/DeleteAnnotation.o \
+	${OBJECTDIR}/Messages/EmptyMessage.o \
+	${OBJECTDIR}/Messages/HextileMessage.o \
+	${OBJECTDIR}/Messages/Message.o \
+	${OBJECTDIR}/Messages/RawMessage.o \
+	${OBJECTDIR}/Messages/RectangleAnnotation.o \
+	${OBJECTDIR}/Messages/WhiteboardMessage.o \
 	${OBJECTDIR}/Player.o \
 	${OBJECTDIR}/ProtocolPreferences.o \
-	${OBJECTDIR}/RawMessage.o \
 	${OBJECTDIR}/SizedArray.o \
 	${OBJECTDIR}/Video.o \
-	${OBJECTDIR}/WhiteboardMessage.o \
 	${OBJECTDIR}/main.o
 
 
@@ -109,30 +112,55 @@ ${OBJECTDIR}/Controls.o: Controls.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Controls.o Controls.cpp
 
-${OBJECTDIR}/DeleteAllAnnotation.o: DeleteAllAnnotation.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/DeleteAllAnnotation.o DeleteAllAnnotation.cpp
-
-${OBJECTDIR}/EmptyMessage.o: EmptyMessage.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/EmptyMessage.o EmptyMessage.cpp
-
-${OBJECTDIR}/HextileMessage.o: HextileMessage.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/HextileMessage.o HextileMessage.cpp
-
 ${OBJECTDIR}/Inflater.o: Inflater.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Inflater.o Inflater.cpp
 
-${OBJECTDIR}/Message.o: Message.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/Messages/Annotation.o: Messages/Annotation.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Messages
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Message.o Message.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Messages/Annotation.o Messages/Annotation.cpp
+
+${OBJECTDIR}/Messages/DeleteAllAnnotation.o: Messages/DeleteAllAnnotation.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Messages
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Messages/DeleteAllAnnotation.o Messages/DeleteAllAnnotation.cpp
+
+${OBJECTDIR}/Messages/DeleteAnnotation.o: Messages/DeleteAnnotation.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Messages
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Messages/DeleteAnnotation.o Messages/DeleteAnnotation.cpp
+
+${OBJECTDIR}/Messages/EmptyMessage.o: Messages/EmptyMessage.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Messages
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Messages/EmptyMessage.o Messages/EmptyMessage.cpp
+
+${OBJECTDIR}/Messages/HextileMessage.o: Messages/HextileMessage.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Messages
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Messages/HextileMessage.o Messages/HextileMessage.cpp
+
+${OBJECTDIR}/Messages/Message.o: Messages/Message.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Messages
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Messages/Message.o Messages/Message.cpp
+
+${OBJECTDIR}/Messages/RawMessage.o: Messages/RawMessage.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Messages
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Messages/RawMessage.o Messages/RawMessage.cpp
+
+${OBJECTDIR}/Messages/RectangleAnnotation.o: Messages/RectangleAnnotation.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Messages
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Messages/RectangleAnnotation.o Messages/RectangleAnnotation.cpp
+
+${OBJECTDIR}/Messages/WhiteboardMessage.o: Messages/WhiteboardMessage.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Messages
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Messages/WhiteboardMessage.o Messages/WhiteboardMessage.cpp
 
 ${OBJECTDIR}/Player.o: Player.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -144,11 +172,6 @@ ${OBJECTDIR}/ProtocolPreferences.o: ProtocolPreferences.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ProtocolPreferences.o ProtocolPreferences.cpp
 
-${OBJECTDIR}/RawMessage.o: RawMessage.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/RawMessage.o RawMessage.cpp
-
 ${OBJECTDIR}/SizedArray.o: SizedArray.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
@@ -158,11 +181,6 @@ ${OBJECTDIR}/Video.o: Video.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Video.o Video.cpp
-
-${OBJECTDIR}/WhiteboardMessage.o: WhiteboardMessage.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/WhiteboardMessage.o WhiteboardMessage.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}

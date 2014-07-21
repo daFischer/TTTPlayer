@@ -8,15 +8,15 @@
 #ifndef DELETEALLANNOTATION_H
 #define	DELETEALLANNOTATION_H
 
-#include "Message.h"
+#include "Annotation.h"
 
-class DeleteAllAnnotation : public Message {
+class DeleteAllAnnotation : public Annotation {
 public:
     DeleteAllAnnotation(int timestamp);
     virtual ~DeleteAllAnnotation();
     void paint(SDL_Surface *screen, ProtocolPreferences* prefs);
-    bool isEmpty();
     bool completeScreen(int w, int h);
+
     
 private:
 

@@ -12,7 +12,9 @@
 #include <string.h>
 #include <SDL/SDL.h>
 
+#ifndef _STDIO_H
 using namespace std;
+#endif
 
 class ProtocolPreferences{
 public:

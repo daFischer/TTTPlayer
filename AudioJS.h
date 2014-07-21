@@ -17,7 +17,9 @@
 
 #include "AudioInterface.h"
 
+#ifndef _STDIO_H
 using namespace std;
+#endif
 
 class AudioJS: public AudioInterface{
 public:
@@ -28,6 +30,7 @@ public:
     int getDuration();
     bool hasFailed();
     void changeVolume(float volume);
+    bool isPlaying();
 private:
     int duration;
     

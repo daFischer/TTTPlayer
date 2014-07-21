@@ -16,6 +16,13 @@
 #define ENCODINGFLAGUPDATE 64
 #define ENCODINGMASK 63
 
+//message kinds
+#define ANNOTATION 'a'
+#define WHITEBOARD 'w'
+#define EMPTY '0'
+#define RAW 'r'
+#define CURSOR 'c'
+
 //message types
 #define ANNOTATIONRECTANGLE 20
 #define ANNOTATIONLINE 21

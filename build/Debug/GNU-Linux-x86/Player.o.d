@@ -1,6 +1,8 @@
 build/Debug/GNU-Linux-x86/Player.o: Player.cpp Player.h AudioInterface.h \
- Audio.h Video.h Inflater.h SizedArray.h ProtocolPreferences.h Message.h \
- Constants.h Controls.h AudioJS.h
+ Audio.h Video.h Inflater.h SizedArray.h ProtocolPreferences.h \
+ Messages/Message.h Messages/../Inflater.h \
+ Messages/../ProtocolPreferences.h Messages/../Constants.h Controls.h \
+ AudioJS.h
 
 Player.h:
 
@@ -16,9 +18,13 @@ SizedArray.h:
 
 ProtocolPreferences.h:
 
-Message.h:
+Messages/Message.h:
 
-Constants.h:
+Messages/../Inflater.h:
+
+Messages/../ProtocolPreferences.h:
+
+Messages/../Constants.h:
 
 Controls.h:
 

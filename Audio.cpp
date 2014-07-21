@@ -71,7 +71,6 @@ void Audio::togglePlay(){
     {
         //Play the audio file
         alSourcePlay(source);
-        printf("play2\n");
     }
     else
     {
@@ -132,4 +131,10 @@ int Audio::getDuration()
 bool Audio::hasFailed()
 {
     return failed;
+}
+
+bool Audio::isPlaying() {
+    ALint state;
+    alGetSourcei(source,AL_SOURCE_STATE,&state);
+    return state==AL_PLAYING;
 }

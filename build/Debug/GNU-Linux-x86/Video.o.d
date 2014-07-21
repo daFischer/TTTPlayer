@@ -1,5 +1,8 @@
 build/Debug/GNU-Linux-x86/Video.o: Video.cpp Video.h Inflater.h \
- SizedArray.h ProtocolPreferences.h Message.h Constants.h
+ SizedArray.h ProtocolPreferences.h Messages/Message.h \
+ Messages/../Inflater.h Messages/../ProtocolPreferences.h \
+ Messages/../Constants.h Controls.h AudioInterface.h \
+ Messages/Annotation.h Messages/Message.h Messages/../ColorConverter.h
 
 Video.h:
 
@@ -9,6 +12,20 @@ SizedArray.h:
 
 ProtocolPreferences.h:
 
-Message.h:
+Messages/Message.h:
 
-Constants.h:
+Messages/../Inflater.h:
+
+Messages/../ProtocolPreferences.h:
+
+Messages/../Constants.h:
+
+Controls.h:
+
+AudioInterface.h:
+
+Messages/Annotation.h:
+
+Messages/Message.h:
+
+Messages/../ColorConverter.h:

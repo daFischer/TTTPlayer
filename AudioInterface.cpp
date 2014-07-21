@@ -31,3 +31,7 @@ void AudioInterface::changeVolume(float volume){
 bool AudioInterface::hasFailed(){
     return true;
 }
+
+bool AudioInterface::isPlaying() {
+    return false;
+}

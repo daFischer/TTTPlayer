@@ -12,6 +12,8 @@
 #include "WhiteboardMessage.h"
 #include "DeleteAllAnnotation.h"
 #include "RawMessage.h"
+#include "DeleteAnnotation.h"
+#include "RectangleAnnotation.h"
 
 int number;
 int total;
@@ -22,10 +24,6 @@ bool containsWhiteboard;
 Message::~Message() {}
 
 void Message::paint(SDL_Surface *screen, ProtocolPreferences* prefs) {}
-
-bool Message::isEmpty(){
-    return false;
-}
 
 bool Message::completeScreen(int w, int h){
     return false;
@@ -49,7 +47,7 @@ list<Message*> readMessages(Inflater* in, ProtocolPreferences* prefs){
     while(!in->endOfFile()){
         // TODO: show progress
         message=readMessage(in, prefs);
-        if(message->isEmpty())
+        if(message->type=='0')//empty message
             continue;
         
         // TODO: maybe adding additional timestamp is better suited
@@ -81,20 +79,32 @@ list<Message*> readMessages(Inflater* in, ProtocolPreferences* prefs){
             case ANNOTATIONFREEHAND:
             case ANNOTATIONIMAGE:          // MODMSG
             case ANNOTATIONTEXT:           // MODMSG
+            case ANNOTATIONDELETE:
+            case ANNOTATIONDELETEALL:
                 containsAnnotations = true;
+                message->type=ANNOTATION;
                 break;
 
             case ENCODINGWHITEBOARD:
                 containsWhiteboard = true;
+                message->type=WHITEBOARD;
                 break;
 
             case ENCODINGTTTRICHCURSOR:
             case ENCODINGTTTXCURSOR:
                 containsCursorMessages = true;
+                message->type=CURSOR;
                 break;
 
             case ENCODINGHEXTILE:
                 total += ((HextileMessage*) message)->getCoveredArea();
+            case ENCODINGRAW:
+                message->type=RAW;
+                break;
+                
+            default:
+                message->type=EMPTY;
+                printf("Error: message with encoding %d gets no type?\n",message->encoding);
                 break;
         }
     }
@@ -131,11 +141,11 @@ Message* readMessage(Inflater* in, ProtocolPreferences* prefs){
     encoding &= ENCODINGMASK;
     
     switch (encoding) {
-        /*case ANNOTATIONRECTANGLE:
+        case ANNOTATIONRECTANGLE:
             message = new RectangleAnnotation(timestamp, in);
             break;
 
-        case ANNOTATIONHIGHLIGHT:
+        /*case ANNOTATIONHIGHLIGHT:
             message = new HighlightAnnotation(timestamp, in);
             break;
 
@@ -153,11 +163,11 @@ Message* readMessage(Inflater* in, ProtocolPreferences* prefs){
 
         case ANNOTATIONTEXT:
         	message = new TextAnnotation(timestamp, in);       // MODMSG
-        	break;
+        	break;*/
 
         case ANNOTATIONDELETE:
             message = new DeleteAnnotation(timestamp, in);
-            break;*/
+            break;
 
         case ANNOTATIONDELETEALL:
             //TODO:test
@@ -206,6 +216,7 @@ Message* readMessage(Inflater* in, ProtocolPreferences* prefs){
 
             size = 0;
             message = new EmptyMessage(timestamp);
+            message->type='0';
             break;
         }
     

@@ -8,7 +8,9 @@
 #ifndef AUDIOINTERFACE_H
 #define	AUDIOINTERFACE_H
 
-#include <stdio.h>
+#ifndef _STDIO_H
+using namespace std;
+#endif
 
 using namespace std;
 
@@ -22,6 +24,7 @@ public:
     virtual int getDuration();
     virtual bool hasFailed();
     virtual void changeVolume(float volume);
+    virtual bool isPlaying();
     
 };
 

@@ -4,23 +4,26 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>Messages/Annotation.h</itemPath>
       <itemPath>Audio.h</itemPath>
       <itemPath>AudioInterface.h</itemPath>
       <itemPath>AudioJS.h</itemPath>
       <itemPath>ColorConverter.h</itemPath>
       <itemPath>Constants.h</itemPath>
       <itemPath>Controls.h</itemPath>
-      <itemPath>DeleteAllAnnotation.h</itemPath>
-      <itemPath>EmptyMessage.h</itemPath>
-      <itemPath>HextileMessage.h</itemPath>
+      <itemPath>Messages/DeleteAllAnnotation.h</itemPath>
+      <itemPath>Messages/DeleteAnnotation.h</itemPath>
+      <itemPath>Messages/EmptyMessage.h</itemPath>
+      <itemPath>Messages/HextileMessage.h</itemPath>
       <itemPath>Inflater.h</itemPath>
-      <itemPath>Message.h</itemPath>
+      <itemPath>Messages/Message.h</itemPath>
       <itemPath>Player.h</itemPath>
       <itemPath>ProtocolPreferences.h</itemPath>
-      <itemPath>RawMessage.h</itemPath>
+      <itemPath>Messages/RawMessage.h</itemPath>
+      <itemPath>Messages/RectangleAnnotation.h</itemPath>
       <itemPath>SizedArray.h</itemPath>
       <itemPath>Video.h</itemPath>
-      <itemPath>WhiteboardMessage.h</itemPath>
+      <itemPath>Messages/WhiteboardMessage.h</itemPath>
       <itemPath>main.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -32,23 +35,26 @@
                    projectFiles="true">
       <logicalFolder name="TestFiles" displayName="Test Files" projectFiles="true">
       </logicalFolder>
+      <itemPath>Messages/Annotation.cpp</itemPath>
       <itemPath>Audio.cpp</itemPath>
       <itemPath>AudioInterface.cpp</itemPath>
       <itemPath>AudioJS.cpp</itemPath>
       <itemPath>ColorConverter.cpp</itemPath>
       <itemPath>Constants.cpp</itemPath>
       <itemPath>Controls.cpp</itemPath>
-      <itemPath>DeleteAllAnnotation.cpp</itemPath>
-      <itemPath>EmptyMessage.cpp</itemPath>
-      <itemPath>HextileMessage.cpp</itemPath>
+      <itemPath>Messages/DeleteAllAnnotation.cpp</itemPath>
+      <itemPath>Messages/DeleteAnnotation.cpp</itemPath>
+      <itemPath>Messages/EmptyMessage.cpp</itemPath>
+      <itemPath>Messages/HextileMessage.cpp</itemPath>
       <itemPath>Inflater.cpp</itemPath>
-      <itemPath>Message.cpp</itemPath>
+      <itemPath>Messages/Message.cpp</itemPath>
       <itemPath>Player.cpp</itemPath>
       <itemPath>ProtocolPreferences.cpp</itemPath>
-      <itemPath>RawMessage.cpp</itemPath>
+      <itemPath>Messages/RawMessage.cpp</itemPath>
+      <itemPath>Messages/RectangleAnnotation.cpp</itemPath>
       <itemPath>SizedArray.cpp</itemPath>
       <itemPath>Video.cpp</itemPath>
-      <itemPath>WhiteboardMessage.cpp</itemPath>
+      <itemPath>Messages/WhiteboardMessage.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -106,25 +112,45 @@
       </item>
       <item path="Controls.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="DeleteAllAnnotation.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="DeleteAllAnnotation.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="EmptyMessage.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="EmptyMessage.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="HextileMessage.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="HextileMessage.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="Inflater.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Inflater.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Message.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Messages/Annotation.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="Message.h" ex="false" tool="3" flavor2="0">
+      <item path="Messages/Annotation.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/DeleteAllAnnotation.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/DeleteAllAnnotation.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/DeleteAnnotation.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/DeleteAnnotation.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/EmptyMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/EmptyMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/HextileMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/HextileMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/Message.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/Message.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/RawMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/RawMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/RectangleAnnotation.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/RectangleAnnotation.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/WhiteboardMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/WhiteboardMessage.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Player.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -134,10 +160,6 @@
       </item>
       <item path="ProtocolPreferences.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="RawMessage.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="RawMessage.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="SizedArray.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="SizedArray.h" ex="false" tool="3" flavor2="0">
@@ -145,10 +167,6 @@
       <item path="Video.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Video.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="WhiteboardMessage.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="WhiteboardMessage.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -199,25 +217,45 @@
       </item>
       <item path="Controls.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="DeleteAllAnnotation.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="DeleteAllAnnotation.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="EmptyMessage.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="EmptyMessage.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="HextileMessage.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="HextileMessage.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="Inflater.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Inflater.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Message.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Messages/Annotation.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="Message.h" ex="false" tool="3" flavor2="0">
+      <item path="Messages/Annotation.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/DeleteAllAnnotation.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/DeleteAllAnnotation.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/DeleteAnnotation.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/DeleteAnnotation.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/EmptyMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/EmptyMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/HextileMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/HextileMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/Message.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/Message.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/RawMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/RawMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/RectangleAnnotation.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/RectangleAnnotation.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/WhiteboardMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/WhiteboardMessage.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Player.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -227,10 +265,6 @@
       </item>
       <item path="ProtocolPreferences.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="RawMessage.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="RawMessage.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="SizedArray.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="SizedArray.h" ex="false" tool="3" flavor2="0">
@@ -238,10 +272,6 @@
       <item path="Video.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Video.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="WhiteboardMessage.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="WhiteboardMessage.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
