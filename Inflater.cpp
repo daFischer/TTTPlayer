@@ -117,6 +117,8 @@ bool Inflater::readByte(char* Byte)
     return ret;
 }
 
+/* The SizedArray has to be initialized beforehand
+ */
 bool Inflater::readSizedArray(SizedArray* sArray)
 {
     bool r;
@@ -129,17 +131,22 @@ bool Inflater::readSizedArray(SizedArray* sArray)
     return Z_OK;
 }
 
-bool Inflater::readCharArray(char* ByteArray, int length)
+/* mallocs and fills the [length] bytes in memory, starting from [byteArray]
+ * if [end], the char array ends with \0 (malloced bytes are [length]+1 in that case)
+ */
+char* Inflater::readCharArray(int length, bool end)
 {
     bool r;
+    char* byteArray=(char*)malloc(length+ (end ? 1 : 0));
     for(int i=0;i<length;i++)
     {
-        r=readByte(&(ByteArray[i]));
+        r=readByte(&(byteArray[i]));
         if(r!=Z_OK)
-            return r;
+            return NULL;
     }
-    ByteArray[length]=0;
-    return Z_OK;
+    if(end)
+        byteArray[length]=0;
+    return byteArray;
 }
 
 bool Inflater::readShort(short* s)
@@ -167,6 +174,19 @@ bool Inflater::readInt(int* s)
     }
     return Z_OK;
 }
+
+bool Inflater::skipBytes(int number) {
+    bool r;
+    char waste;
+    for(int i=0;i<number;i++)
+    {
+        r=readByte(&waste);
+        if(r!=Z_OK)
+            return r;
+    }
+    return Z_OK;
+}
+
 
 bool Inflater::endOfFile(){
     return ret!=Z_OK;

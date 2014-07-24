@@ -41,6 +41,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/ColorConverter.o \
 	${OBJECTDIR}/Constants.o \
 	${OBJECTDIR}/Controls.o \
+	${OBJECTDIR}/Index.o \
+	${OBJECTDIR}/IndexEntry.o \
 	${OBJECTDIR}/Inflater.o \
 	${OBJECTDIR}/Messages/Annotation.o \
 	${OBJECTDIR}/Messages/DeleteAllAnnotation.o \
@@ -72,7 +74,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-lSDL -lSDL_mixer -lalut -lopenal
+LDLIBSOPTIONS=-lSDL -lSDL_mixer -lalut -lopenal -lSDL_ttf -lSDL_image
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -111,6 +113,16 @@ ${OBJECTDIR}/Controls.o: Controls.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Controls.o Controls.cpp
+
+${OBJECTDIR}/Index.o: Index.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Index.o Index.cpp
+
+${OBJECTDIR}/IndexEntry.o: IndexEntry.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/IndexEntry.o IndexEntry.cpp
 
 ${OBJECTDIR}/Inflater.o: Inflater.cpp 
 	${MKDIR} -p ${OBJECTDIR}

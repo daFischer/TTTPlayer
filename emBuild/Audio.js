@@ -51,14 +51,6 @@ var x_setupFullScreen=function(){
 			else
 			{
 				Module.requestFullScreen(false, false)
-				/*if(x_canvas_div.requestFullscreen)
-					x_canvas_div.requestFullscreen();
-				else if(x_canvas_div.mozRequestFullScreen)
-					x_canvas_div.mozRequestFullScreen();
-				else if(x_canvas_div.webkitRequestFullscreen)
-					x_canvas_div.webkitRequestFullscreen();
-				else if(x_canvas_div.msRequestFullscreen)
-					x_canvas_div.msRequestFullscreen();*/
 			}
 		}
 	}, false);
@@ -75,7 +67,7 @@ var x_audioLoaded=function(){
 
 
 var x_getPath=function(end){
-	return "TTT/"+x_filename+"_a/"+x_filename+"."+end;
+	return x_path+"/"+x_filename+"_a/"+x_filename+"."+end;
 };
 var x_setAudioSource=function(){
 	x_audio.innerHTML='<source src="'+x_getPath("ogg")+'" type="audio/ogg"><source src="'+x_getPath("mp3")+'" type="audio/mp3"><source src="'+x_getPath("wav")+'" type="audio/wav">Your browser does not support the audio element.';

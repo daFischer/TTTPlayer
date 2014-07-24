@@ -15,6 +15,8 @@
       <itemPath>Messages/DeleteAnnotation.h</itemPath>
       <itemPath>Messages/EmptyMessage.h</itemPath>
       <itemPath>Messages/HextileMessage.h</itemPath>
+      <itemPath>Index.h</itemPath>
+      <itemPath>IndexEntry.h</itemPath>
       <itemPath>Inflater.h</itemPath>
       <itemPath>Messages/Message.h</itemPath>
       <itemPath>Player.h</itemPath>
@@ -46,6 +48,8 @@
       <itemPath>Messages/DeleteAnnotation.cpp</itemPath>
       <itemPath>Messages/EmptyMessage.cpp</itemPath>
       <itemPath>Messages/HextileMessage.cpp</itemPath>
+      <itemPath>Index.cpp</itemPath>
+      <itemPath>IndexEntry.cpp</itemPath>
       <itemPath>Inflater.cpp</itemPath>
       <itemPath>Messages/Message.cpp</itemPath>
       <itemPath>Player.cpp</itemPath>
@@ -84,6 +88,8 @@
             <linkerLibLibItem>SDL_mixer</linkerLibLibItem>
             <linkerLibLibItem>alut</linkerLibLibItem>
             <linkerLibLibItem>openal</linkerLibLibItem>
+            <linkerLibLibItem>SDL_ttf</linkerLibLibItem>
+            <linkerLibLibItem>SDL_image</linkerLibLibItem>
           </linkerLibItems>
           <commandLine>-lz</commandLine>
         </linkerTool>
@@ -111,6 +117,14 @@
       <item path="Controls.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Controls.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Index.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Index.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="IndexEntry.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="IndexEntry.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Inflater.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -216,6 +230,14 @@
       <item path="Controls.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Controls.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Index.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Index.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="IndexEntry.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="IndexEntry.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Inflater.cpp" ex="false" tool="1" flavor2="0">
       </item>

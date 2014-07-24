@@ -10,6 +10,7 @@
 #include "Controls.h"
 
 Player *player;
+//TTF_Font* font;
 
 Player::Player(const char* cpath, const char* cfilename) {
     
@@ -17,15 +18,26 @@ Player::Player(const char* cpath, const char* cfilename) {
     
     player=this;
     
+    std::string filename=cfilename;
+    std::string path=cpath;
+    
     //Initialize BOTH SDL video and SDL audio
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
     {
         printf("Unable to initialize SDL: %s\n", SDL_GetError());
         return;
     }
+    else
+        atexit(SDL_Quit);
     
-    std::string filename=cfilename;
-    std::string path=cpath;
+    if(TTF_Init()<0){
+        printf("Unable to initialize TTF: %s\n", TTF_GetError());
+        return;
+    }
+    else
+    {
+        
+    }
     
     video=new Video((path+"/"+filename+"_a/"+filename+".ttt").c_str());
 #ifdef EMSCRIPTEN

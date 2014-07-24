@@ -170,13 +170,8 @@ Message* readMessage(Inflater* in, ProtocolPreferences* prefs){
             break;
 
         case ANNOTATIONDELETEALL:
-            //TODO:test
             message = new DeleteAllAnnotation(timestamp);
             break;
-
-        /*case ENCODINGTTTCURSORPOSITION:
-            message = new CursorPositionMessage(timestamp, in);
-            break;*/
 
         case ENCODINGWHITEBOARD:
             //TODO:test
@@ -201,6 +196,10 @@ Message* readMessage(Inflater* in, ProtocolPreferences* prefs){
             message = new EmptyMessage(timestamp);
             break;
 
+        case ENCODINGTTTCURSORPOSITION:
+            message = new CursorPositionMessage(timestamp, in);
+            break;
+
         case ENCODINGTTTRICHCURSOR:
         case ENCODINGTTTXCURSOR:
             message = new CursorMessage(timestamp, encoding, in, size);
@@ -210,8 +209,7 @@ Message* readMessage(Inflater* in, ProtocolPreferences* prefs){
             printf("skipping unsupported message: Encoding = %d\t%d bytes\n", encoding, size);
             if(size>0)
             {
-                char skip[size+1];
-                in->readCharArray(skip, size);
+                in->skipBytes(size);
             }
 
             size = 0;

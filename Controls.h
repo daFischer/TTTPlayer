@@ -9,6 +9,8 @@
 #define	CONTROLS_H
 
 #include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
+#include <sstream>
 
 #include "AudioInterface.h"
 //#include "Video.h"
@@ -45,7 +47,7 @@ private:
     int width, height, screenHeight;
     int timeLineHeight;
     bool timeLineClicked;
-    int timeLineChange;         //For when the user seeks through the video
+    int mouseX, mouseY;
     bool volumeClicked;
     float volume;
     int duration;
@@ -54,6 +56,7 @@ private:
     SDL_Surface* surfVolume;
     SDL_Surface* surfVolume2;
     SDL_Surface* surfFullscreen;
+    TTF_Font* font;
     
     void togglePlay();
     void toggleFullscreen();

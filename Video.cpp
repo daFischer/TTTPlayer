@@ -22,6 +22,8 @@ Video::Video(const char* path) {
     if(readServerInit(inflater))
     printf("Video Initialization success: \n%s\n", prefs.name);
     
+    index=NULL;
+    
     readExtensions(inflater);
     inflater->readInt(&prefs.starttime);
     inflater->readInt(&prefs.starttime);
@@ -38,18 +40,16 @@ Video::Video(const char* path) {
         m.pop_front();
     }
     printf("Read %d messages successfully\n", numMessages);
+    //if(index==NULL)
+    //    index=new Index(messages,numMessages);
     
     printf("%d x %d, color depth: %d\n",prefs.framebufferWidth, prefs.framebufferHeight, prefs.bytesPerPixel);
     screen = SDL_SetVideoMode(prefs.framebufferWidth, prefs.framebufferHeight, prefs.bitsPerPixel, SDL_ANYFORMAT|SDL_DOUBLEBUF);
     prefs.format=screen->format;
-    rawScreen=SDL_CreateRGBSurface(screen->flags,screen->w,screen->h,screen->format->BitsPerPixel,screen->format->Rmask,screen->format->Gmask,screen->format->Bmask,screen->format->Amask);
+    rawScreen=SDL_CreateRGBSurface(SDL_SRCALPHA,screen->w,screen->h,screen->format->BitsPerPixel,screen->format->Rmask,screen->format->Gmask,screen->format->Bmask,screen->format->Amask);
     if(containsAnnotations)
     {
-        printf("Create AnnScreen\n");
         annScreen=SDL_CreateRGBSurface(screen->flags,screen->w,screen->h,screen->format->BitsPerPixel,screen->format->Rmask,screen->format->Gmask,screen->format->Bmask,0xffffffff-screen->format->Rmask-screen->format->Gmask-screen->format->Bmask);
-        printf("screen=(%d,%d,%d,%d)\n",screen->format->Amask,screen->format->Rmask,screen->format->Gmask,screen->format->Bmask);
-        //SDL_Rect rect={0,0,annScreen->w,annScreen->h};
-        //SDL_SetAlpha(annScreen,SDL_SRCALPHA,0x00);
     }
     
     if (screen == NULL)
@@ -65,6 +65,10 @@ void Video::update(int zeit, Controls* controls)
     bool blitRaw=false;
     bool blitAnn=false;
     Annotation* annotation;
+    //check whether audio has restarted
+    if(zeit<=2 && (currentMessage>=numMessages || (currentMessage>0 && messages[currentMessage-1]->timestamp>zeit-2)))
+        currentMessage=0;
+    
     while(currentMessage<numMessages)
     {
         if(messages[currentMessage]->timestamp > zeit*1000)
@@ -104,18 +108,36 @@ void Video::redrawScreen(Controls* controls, bool fully) {
         SDL_Rect rect = {0,0,screen->w,controls->videoUpdate.y+controls->videoUpdate.h};
         SDL_BlitSurface(rawScreen,&rect,screen,&rect);
         SDL_BlitSurface(annScreen,&rect,screen,&rect);
-        SDL_Flip(screen);
     }
-    else if(controls->videoUpdate.h!=0)
+    else
     {
-        //only redraw the part that controls releases when moving downwards
-        SDL_BlitSurface(rawScreen,&controls->videoUpdate,screen,&controls->videoUpdate);
-        SDL_BlitSurface(annScreen,&controls->videoUpdate,screen,&controls->videoUpdate);
-        SDL_Flip(screen);
+        if(lastThumbnail.w!=0)
+        {
+            //redraw screen where thumbnail was before
+            SDL_BlitSurface(rawScreen,&lastThumbnail,screen,&lastThumbnail);
+            SDL_BlitSurface(annScreen,&lastThumbnail,screen,&lastThumbnail);
+            lastThumbnail.w=0;
+        }
+        if(controls->videoUpdate.h!=0)
+        {
+            //only redraw the part that controls releases when moving downwards
+            SDL_BlitSurface(rawScreen,&controls->videoUpdate,screen,&controls->videoUpdate);
+            SDL_BlitSurface(annScreen,&controls->videoUpdate,screen,&controls->videoUpdate);
+        }
     }
     //always redraw controls
     controls->draw(screen, fully);
+    SDL_Flip(screen);
 }
+
+void Video::drawThumbnail(int zeit, int x, int y) {
+    if(index!=NULL)
+    {
+        index->lastBefore(zeit)->paintAt(screen,x,y);
+        lastThumbnail=index->lastBefore(zeit)->getRect(screen,x,y);
+    }
+}
+
 
 void Video::toggleFullscreen(){
     return; //doesn't work yet, but not really important
@@ -127,7 +149,6 @@ void Video::toggleFullscreen(){
 
 void Video::seekPosition(int position, Controls* controls){
     
-    printf("seeking...\n");
     //binary search for message closest to position
     int min, max;
     min=1;
@@ -191,7 +212,6 @@ void Video::seekPosition(int position, Controls* controls){
     Annotation::redraw(annScreen,&prefs);
     
     redrawScreen(controls,true);
-    printf("redrawn after seeking (%d, %d)\n", firstRaw, firstAnnotation);
     
     /*//search backwards for raw message that changes the whole screen
     printf("From %d ",currentMessage);
@@ -239,10 +259,7 @@ bool readServerInit(Inflater* in)
     int nameLength;
     if(in->readInt(&nameLength)==Z_OK)
     {
-        char name[nameLength+1];
-        in->readCharArray(name,nameLength);
-        prefs.name=(char*)malloc(nameLength+1);
-        prefs.name=name;
+        prefs.name=in->readCharArray(nameLength,true);
         //printf("%s, %d\n", name, nameLength);
         return true;
     }
@@ -250,31 +267,78 @@ bool readServerInit(Inflater* in)
 }
 
 void Video::readExtensions(Inflater* in){
-    // new format without total length of all extensions
+    int len;
+    in->readInt(&len);
+    char tag;
+    while (len > 0) {
+        in->readByte(&tag);
+        switch(tag){
+            case EXTENSION_INDEX_TABLE:
+                // no original, but modified recording
+                original = false;
+                index=new Index(in, len-1);
+                break;
+                
+            /*case EXTENSION_SEARCHBASE_TABLE_WITH_COORDINATES:
+                // no original, but modified recording
+                original = false;
+                
+                break;*/
+                
+            default:
+                //'tag' is the first byte, so skip one less than len
+                printf("Unknown extension: %d. Skipping %d bytes.\n",tag,len-1);
+                in->skipBytes(len-1);
+                break;
+        }
+        in->readInt(&len);
+    }
+    /*// new format without total length of all extensions
     int len;
     in->readInt(&len);
     while (len > 0) {
         SizedArray* extension=new SizedArray(len);
         printf("About to read #bytes: %d\n", len);
         in->readSizedArray(extension);
-        //if (TTT.verbose)
+#if VERBOSE
         printf("Extension: Tag[%d] %d bytes\n", extension->array[0], len);
-        //TODO:
-        //extensions.push_back(extension);
-        delete extension;
+#endif
+        extensions.push_back(extension);
+        //delete extension;
         
         in->readInt(&len);
     }
-    /*TODO:
-    //if (TTT.verbose)
+    //TODO:
+#if VERBOSE
         printf("%d extensions found.\n", extensions.size());
-    parseExtensions();
-
+#endif
     // no original, but modified recording
-    if (extensions.size() > 0)
-        original = false;
-    */
+    original =  extensions.size() == 0;
+    
+    parseExtensions();*/
 }
+
+/*void Video::parseExtensions() {
+    SizedArray* ext;
+    while(extensions.size()>0)
+    {
+        ext=extensions.front();
+        switch(ext->array[0]){
+            case EXTENSION_INDEX_TABLE:
+                
+                break;
+            case EXTENSION_SEARCHBASE_TABLE_WITH_COORDINATES:
+                
+                break;
+            default:
+                
+                break;
+        }
+        delete ext;
+        extensions.pop_front();
+    }  
+}*/
+
 
 Video::~Video() {
 }

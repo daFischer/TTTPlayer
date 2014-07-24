@@ -9,4 +9,6 @@ Module['preRun'] = function() {
 	FS.createPreloadedFile("Assets","volume.bmp","Assets/volume.bmp", true, false)
 	FS.createPreloadedFile("Assets","volume2.bmp","Assets/volume2.bmp", true, false)
 	FS.createPreloadedFile("Assets","fullscreen.bmp","Assets/fullscreen.bmp", true, false)
+
+	FS.createPreloadedFile("Assets","thumbnail.png","Assets/thumbnail.png", true, true)
 };

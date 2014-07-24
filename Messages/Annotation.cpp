@@ -31,11 +31,12 @@ void Annotation::draw(SDL_Surface* screen, ProtocolPreferences* prefs) {
 
 
 void Annotation::redraw(SDL_Surface *screen ,ProtocolPreferences *prefs) {
-    //refresh screen
     printf("redraw Annotations\n");
-    SDL_Rect rect={0,0,screen->w,screen->h};
-    SDL_FillRect(screen,&rect,0x00000000);
-    SDL_UpdateRect(screen,0,0,rect.w,rect.h);
+    SDL_LockSurface(screen);
+    memset(screen->pixels,0,screen->w*screen->h*screen->format->BytesPerPixel);
+    SDL_UnlockSurface(screen);
+    
+    mustRedraw=false;
     
     //redraw all active Annotations
     for(list<Annotation*>::iterator it = annotations.begin(); it!= annotations.end(); it++)

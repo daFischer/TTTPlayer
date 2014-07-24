@@ -41,6 +41,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/ColorConverter.o \
 	${OBJECTDIR}/Constants.o \
 	${OBJECTDIR}/Controls.o \
+	${OBJECTDIR}/Index.o \
+	${OBJECTDIR}/IndexEntry.o \
 	${OBJECTDIR}/Inflater.o \
 	${OBJECTDIR}/Messages/Annotation.o \
 	${OBJECTDIR}/Messages/DeleteAllAnnotation.o \
@@ -111,6 +113,16 @@ ${OBJECTDIR}/Controls.o: Controls.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Controls.o Controls.cpp
+
+${OBJECTDIR}/Index.o: Index.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Index.o Index.cpp
+
+${OBJECTDIR}/IndexEntry.o: IndexEntry.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/IndexEntry.o IndexEntry.cpp
 
 ${OBJECTDIR}/Inflater.o: Inflater.cpp 
 	${MKDIR} -p ${OBJECTDIR}

@@ -21,6 +21,7 @@
 #include "ProtocolPreferences.h"
 #include "Messages/Message.h"
 #include "SizedArray.h"
+#include "Index.h"
 //#include "Controls.h"
 class Controls;
 
@@ -35,11 +36,12 @@ public:
     virtual ~Video();
     void update(int zeit, Controls* controls);
     void redrawScreen(Controls* controls, bool fully);
-    SDL_Surface* getScreen();
     void toggleFullscreen();
     void seekPosition(int position, Controls* controls);
+    void drawThumbnail(int zeit,int x,int y);
     
     bool failed;
+    bool hasThumbnails;
     
 private:    
     SDL_Surface* screen;			//Pointer to the main screen surface
@@ -49,7 +51,8 @@ private:
     int numMessages;
     int currentMessage;
     void readExtensions(Inflater* in);
-    //list<char[]> extensions;
+    Index* index;
+    SDL_Rect lastThumbnail;
     bool original;
     ProtocolPreferences prefs;
 };

@@ -7,6 +7,7 @@
 
 #include "Controls.h"
 #include "Video.h"
+#include "Player.h"
 
 bool mouseOnFullScreenButton;
 
@@ -28,8 +29,6 @@ Controls::Controls(Video* video, AudioInterface* audio) {
     redefineRect(&videoUpdate,0,0,width,screenHeight);
     
     timeLineClicked=false;
-    timeLineChange=-1;
-    
     volumeClicked=false;
     volume=1;
 
@@ -42,14 +41,20 @@ Controls::Controls(Video* video, AudioInterface* audio) {
     surfVolume=SDL_LoadBMP("Assets/volume.bmp");
     surfVolume2=SDL_LoadBMP("Assets/volume2.bmp");
     surfFullscreen=SDL_LoadBMP("Assets/fullscreen.bmp");
+    font = TTF_OpenFont("/Assets/arial.ttf",20);
 #else
     surfPlay=SDL_LoadBMP("/home/user/NetBeansProjects/TTTPlayer/emBuild/Assets/PlayPause.bmp");
     surfVolume=SDL_LoadBMP("/home/user/NetBeansProjects/TTTPlayer/emBuild/Assets/volume.bmp");
     surfVolume2=SDL_LoadBMP("/home/user/NetBeansProjects/TTTPlayer/emBuild/Assets/volume2.bmp");
     surfFullscreen=SDL_LoadBMP("/home/user/NetBeansProjects/TTTPlayer/emBuild/Assets/fullscreen.bmp");
+    font = TTF_OpenFont("/home/user/NetBeansProjects/TTTPlayer/emBuild//Assets/arial.ttf",20);
 #endif
     if(surfPlay==NULL||surfVolume==NULL||surfVolume2==NULL||surfFullscreen==NULL)
         printf("BMPs ARE NULL\n");
+    if(font==NULL)
+        printf("FONT IS NULL\n");
+    else
+        printf("font is ok\n");
 }
 
 void Controls::registerClick(Uint16 mx, Uint16 my){
@@ -72,14 +77,19 @@ void Controls::registerClick(Uint16 mx, Uint16 my){
 }
 
 void Controls::registerMouseUp(){
+    if(timeLineClicked)
+    {
+        redefineRect(&videoUpdate,0,0,width,screenHeight-height);
+        skipTo(duration*mouseX/width);
+    }
     timeLineClicked=false;
     volumeClicked=false;
 }
 
 void Controls::registerMovement(Uint16 mx, Uint16 my) {
     visible=(my>=screenHeight-height)||timeLineClicked||volumeClicked;
-    if(timeLineClicked)
-        timeLineChange=mx;
+    mouseX=mx;
+    mouseY=my;
     if(volumeClicked)
         changeVolume(max(min((float)(mx-64),(float)64),(float)0)/64);
 //#ifdef EMSCRIPTEN
@@ -111,12 +121,6 @@ void Controls::update(){
             redefineRect(&videoUpdate,0,y,width,4);
             y+=4;
         }
-    }
-    if(!timeLineClicked && timeLineChange>=0)
-    {
-        redefineRect(&videoUpdate,0,0,width,screenHeight-height);
-        skipTo(duration*timeLineChange/width);
-        timeLineChange=-1;
     }
 }
 
@@ -186,18 +190,32 @@ void Controls::draw(SDL_Surface *screen, bool hasDrawn){
     redefineRect(&rect, 0, y, width, timeLineHeight);
     SDL_FillRect(screen, &rect, emColor(0x333333));
     
+    int currentPosition=audio->getPosition();
     //timeLine foreground
-    if(timeLineChange==-1)
-        redefineRect(&rect, 0, y, audio->getPosition()*width/duration, timeLineHeight);
+    if(!timeLineClicked)
+        redefineRect(&rect, 0, y, currentPosition*width/duration, timeLineHeight);
     else
-        redefineRect(&rect, 0, y, timeLineChange, timeLineHeight);
+        redefineRect(&rect, 0, y, mouseX, timeLineHeight);
     SDL_FillRect(screen, &rect, emColor(0xaa0000));
     
+    //draw "time / duration"
+    SDL_Color color = {0xff,0xff,0xff,0xff};
+    ostringstream oss;
+    oss << currentPosition/60 << ":" << ((currentPosition%60<10) ? "0" : "") << currentPosition%60 << "/" << duration/60 << ":" << ((duration%60<10) ? "0" : "") << duration%60;
+    
+    SDL_Surface* times=TTF_RenderText_Solid(font,oss.str().c_str(),color);
+    redefineRect(&rect,192,y+timeLineHeight+4,times->w+4,times->h+4);
+    SDL_BlitSurface(times,NULL,screen,&rect);
+    
+    if(mouseY>=y&&mouseY<y+timeLineHeight)
+        video->drawThumbnail(duration*mouseX/width,mouseX,y);
+    
     SDL_UpdateRect(screen, 0,y,width,screenHeight-y);
-    SDL_Flip(screen);
+    //SDL_Flip(screen);
 }
 
 Uint32 Controls::emColor(unsigned int color){
+    return SDL_MapRGBA(ProtocolPreferences::format,(color & 0xff0000)>>16,(color & 0x00ff00)>>8,color & 0x0000ff,0xff);
 #if EMSCRIPTEN
     unsigned int r = (color & 0xff0000)>>16;
     unsigned int g = color & 0x00ff00;

@@ -25,10 +25,11 @@ public:
     ~Inflater();
     bool readByte(char* Byte);
     bool readSizedArray(SizedArray* sArray);
-    bool readCharArray(char* ByteArray, int length);
+    char* readCharArray(int length, bool end);
     bool readShort(short* s);
     bool readInt(int* s);
     bool readLong(long* s);
+    bool skipBytes(int number);
     bool endOfFile();
     
 private:

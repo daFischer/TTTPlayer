@@ -13,6 +13,10 @@
 #else
 #endif
 
+
+#define VERBOSE true
+
+
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
 

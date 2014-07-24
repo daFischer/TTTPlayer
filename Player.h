@@ -37,6 +37,8 @@ public:
     void loop();
     virtual ~Player();
     
+    //static TTF_Font* font;
+    
 private:
     AudioInterface *audio;
     Video *video;

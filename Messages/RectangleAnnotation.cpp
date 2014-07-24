@@ -30,9 +30,18 @@ RectangleAnnotation::~RectangleAnnotation() {
 void RectangleAnnotation::draw(SDL_Surface *screen, ProtocolPreferences* prefs){
     
     printf("draw RectangleAnnotation(%d,%d,%d,%d),%d\n",x,y,w,h,this->con.getAnnotationColor(color,screen->format));
-    SDL_Rect rect = {x, y, w, h};
+    //SDL_Rect rect = {x, y, w, h};
+    //SDL_FillRect(screen, &rect, this->con.getAnnotationColor(color,screen->format));
+    //SDL_UpdateRect(screen,x,y,w,h);
+    SDL_Rect rect = {x-linewidth, y-linewidth, linewidth, h+2*linewidth};               //left
     SDL_FillRect(screen, &rect, this->con.getAnnotationColor(color,screen->format));
-    SDL_UpdateRect(screen,x,y,w,h);
+    SDL_Rect rect2 = {x, y-linewidth, w+linewidth, linewidth};                           //upper
+    SDL_FillRect(screen, &rect2, this->con.getAnnotationColor(color,screen->format));
+    SDL_Rect rect3 = {x+w, y, linewidth, h+linewidth};                                   //right
+    SDL_FillRect(screen, &rect3, this->con.getAnnotationColor(color,screen->format));
+    SDL_Rect rect4 = {x, y+h, w, linewidth};                                             //bottom
+    SDL_FillRect(screen, &rect4, this->con.getAnnotationColor(color,screen->format));
+    SDL_UpdateRect(screen,x-linewidth,y-linewidth,w+2*linewidth,h+2*linewidth);
 }
 
 bool RectangleAnnotation::completeScreen(int w, int h) {
