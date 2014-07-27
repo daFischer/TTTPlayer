@@ -96,6 +96,8 @@ void Video::update(int zeit, Controls* controls)
                 break;
             case CURSOR:
                 SDL_Rect cm=CursorMessage::getMask();
+                cm.x=max(min((int)cm.x,(int)screen->w-cm.w),0);
+                cm.y=max(min((int)cm.y,(int)screen->h-cm.h),0);
                 if(CursorMessage::showCursor){
                     // repair place on screen, where the cursor was
                     SDL_BlitSurface(rawScreen,&cm,screen,&cm);
@@ -226,6 +228,7 @@ void Video::seekPosition(int position, Controls* controls){
     Annotation::mustRedraw=true;
     Annotation::annotations.clear();
     
+    //printf("IndexEntry at %d has%s Images\n",lastEntry, indexEntry->hasImages ? "" : " no");
     if(lastEntry>=messages[firstRaw]->timestamp && indexEntry->hasImages)
     {
         indexEntry->paintWaypoint(rawScreen);
