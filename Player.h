@@ -44,7 +44,6 @@ private:
     Video *video;
     Controls* controls;
     bool paused;
-    const char* filename;
 #ifndef EMSCRIPTEN
     bool quit;
 #endif
@@ -52,6 +51,7 @@ private:
 
 extern Player *player;
 void emLoop();
+void cleanUp();
 
 #endif	/* PLAYER_H */
 

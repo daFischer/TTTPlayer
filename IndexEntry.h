@@ -21,14 +21,20 @@ public:
     IndexEntry(char* title, int timestamp, SizedArray* searchable, SDL_Surface* image);
     virtual ~IndexEntry();
     SDL_Rect getRect(SDL_Surface* screen, int x, int y);
-    void paintAt(SDL_Surface* screen, int x, int y);
+    void paintThumbnail(SDL_Surface* screen, int x, int y);
+    void paintWaypoint(SDL_Surface* screen);
+    void setWaypoint(SDL_Surface* waypoint);
     
     int timestamp;
+    bool hasImages;
     
 private:
+    SDL_Surface* scaleDownSurface(SDL_Surface* source, char factor);
+    
     char* title;
     SizedArray* searchable;
     SDL_Surface* image;
+    SDL_Surface* waypoint;
 };
 
 #endif	/* INDEXENTRY_H */

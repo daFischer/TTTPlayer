@@ -45,10 +45,14 @@ OBJECTFILES= \
 	${OBJECTDIR}/IndexEntry.o \
 	${OBJECTDIR}/Inflater.o \
 	${OBJECTDIR}/Messages/Annotation.o \
+	${OBJECTDIR}/Messages/CursorMessage.o \
+	${OBJECTDIR}/Messages/CursorPositionMessage.o \
 	${OBJECTDIR}/Messages/DeleteAllAnnotation.o \
 	${OBJECTDIR}/Messages/DeleteAnnotation.o \
 	${OBJECTDIR}/Messages/EmptyMessage.o \
+	${OBJECTDIR}/Messages/FreehandAnnotation.o \
 	${OBJECTDIR}/Messages/HextileMessage.o \
+	${OBJECTDIR}/Messages/LineAnnotation.o \
 	${OBJECTDIR}/Messages/Message.o \
 	${OBJECTDIR}/Messages/RawMessage.o \
 	${OBJECTDIR}/Messages/RectangleAnnotation.o \
@@ -134,6 +138,16 @@ ${OBJECTDIR}/Messages/Annotation.o: Messages/Annotation.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Messages/Annotation.o Messages/Annotation.cpp
 
+${OBJECTDIR}/Messages/CursorMessage.o: Messages/CursorMessage.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Messages
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Messages/CursorMessage.o Messages/CursorMessage.cpp
+
+${OBJECTDIR}/Messages/CursorPositionMessage.o: Messages/CursorPositionMessage.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Messages
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Messages/CursorPositionMessage.o Messages/CursorPositionMessage.cpp
+
 ${OBJECTDIR}/Messages/DeleteAllAnnotation.o: Messages/DeleteAllAnnotation.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Messages
 	${RM} "$@.d"
@@ -149,10 +163,20 @@ ${OBJECTDIR}/Messages/EmptyMessage.o: Messages/EmptyMessage.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Messages/EmptyMessage.o Messages/EmptyMessage.cpp
 
+${OBJECTDIR}/Messages/FreehandAnnotation.o: Messages/FreehandAnnotation.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Messages
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Messages/FreehandAnnotation.o Messages/FreehandAnnotation.cpp
+
 ${OBJECTDIR}/Messages/HextileMessage.o: Messages/HextileMessage.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Messages
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Messages/HextileMessage.o Messages/HextileMessage.cpp
+
+${OBJECTDIR}/Messages/LineAnnotation.o: Messages/LineAnnotation.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Messages
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Messages/LineAnnotation.o Messages/LineAnnotation.cpp
 
 ${OBJECTDIR}/Messages/Message.o: Messages/Message.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Messages

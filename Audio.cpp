@@ -36,32 +36,39 @@ Audio::Audio(const char* path) {
         return;
     }
     //Load our audio file from disk
-    string extension[4] = {".mp3", ".mp2", ".ogg", ".wav"};
+    string extension[EXTSIZE] = {".mp3", ".mp2", ".ogg", ".wav"};
     
     ALboolean loop=false;
     string filename;
-    for(int i=0;i<sizeof(extension);i++)                //try loading audio of all possible extensions
+    for(int i=0;i<EXTSIZE;i++)                //try loading audio of all possible extensions
     {
         filename=path+extension[i];
         buffer=alutCreateBufferFromFile(filename.c_str());
         if((error=alutGetError())==ALUT_ERROR_NO_ERROR)
             break;
-        printf("Couldn't load %s: %d\n",filename.c_str(),error);
-        if(i == sizeof(extension) -1)
+        //printf("Couldn't load %s: %d\n",filename.c_str(),error);
+        if(i == EXTSIZE -1)
         {
             alDeleteBuffers(1, &buffer);
+            return;
         }
     }
     
     alSourcei (source, AL_BUFFER, buffer);
     
-    if (alGetError() != AL_NO_ERROR)
+    if ((error=alGetError()) != AL_NO_ERROR)
     {
-        printf("Audio last error\n");
+        printf("Audio error: %d\n",error);
         return;
     }
     
     failed=false;
+}
+
+Audio::~Audio() {
+    alDeleteBuffers(1,&buffer);
+    alDeleteSources(1,&source);
+    alutExit();
 }
 
 void Audio::togglePlay(){

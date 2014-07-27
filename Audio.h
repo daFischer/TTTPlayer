@@ -8,6 +8,8 @@
 #ifndef AUDIO_H
 #define	AUDIO_H
 
+#define EXTSIZE 4
+
 #include <stdio.h>
 #include <time.h>
 #include <string>
@@ -33,6 +35,7 @@ using namespace std;
 class Audio: public AudioInterface{
 public:
     Audio(const char*);
+    ~Audio();
     void togglePlay();
     int getPosition();
     void setPosition(int pos);

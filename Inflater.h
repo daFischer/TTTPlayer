@@ -17,7 +17,7 @@
 
 using namespace std;
 
-#define CHUNK 16384
+#define CHUNK 32768 //16384
 
 class Inflater {
 public:
@@ -28,7 +28,7 @@ public:
     char* readCharArray(int length, bool end);
     bool readShort(short* s);
     bool readInt(int* s);
-    bool readLong(long* s);
+    //bool readLong(long* s);
     bool skipBytes(int number);
     bool endOfFile();
     

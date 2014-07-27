@@ -4,7 +4,7 @@ CC=emcc -O2 -s ALLOW_MEMORY_GROWTH=1
 DIR=../
 MDIR=../Messages/
 
-MESSAGES= $(MDIR)Annotation.cpp $(MDIR)DeleteAllAnnotation.cpp $(MDIR)DeleteAnnotation.cpp $(MDIR)EmptyMessage.cpp $(MDIR)HextileMessage.cpp $(MDIR)Message.cpp $(MDIR)RawMessage.cpp $(MDIR)RectangleAnnotation.cpp $(MDIR)WhiteboardMessage.cpp
+MESSAGES= $(MDIR)Annotation.cpp $(MDIR)CursorMessage.cpp $(MDIR)DeleteAllAnnotation.cpp $(MDIR)DeleteAnnotation.cpp $(MDIR)EmptyMessage.cpp $(MDIR)HextileMessage.cpp $(MDIR)Message.cpp $(MDIR)RawMessage.cpp $(MDIR)RectangleAnnotation.cpp $(MDIR)WhiteboardMessage.cpp
 #ZSRC = libz/adler32.c libz/compress.c libz/crc32.c libz/deflate.c libz/gzclose.c libz/gzlib.c libz/gzread.c \
 #	libz/gzwrite.c libz/infback.c libz/inffast.c libz/inflate.c libz/inftrees.c libz/trees.c libz/uncompr.c libz/zutil.c
 SRC= $(DIR)AudioInterface.cpp $(DIR)AudioJS.cpp $(DIR)ColorConverter.cpp $(DIR)Constants.cpp $(DIR)Controls.cpp $(DIR)Index.cpp $(DIR)IndexEntry.cpp $(DIR)Inflater.cpp $(DIR)Player.cpp $(DIR)ProtocolPreferences.cpp $(DIR)SizedArray.cpp $(DIR)Video.cpp $(DIR)main.cpp $(MESSAGES)

@@ -33,7 +33,6 @@ bool HextileMessage::completeScreen(int w, int h){
 
 void HextileMessage::paint(SDL_Surface *screen, ProtocolPreferences* prefs)
 {
-    printf("paint Hextile\n");
     offSet=0;
     
     //printf("%s%d\n",test.c_str(), data->length);
@@ -76,17 +75,17 @@ void HextileMessage::handleHextileSubrect(SDL_Surface *screen, ProtocolPreferenc
     // Read and draw the background if specified.
     //ColorConverter con;
     
-    unsigned char cbuf[prefs->bytesPerPixel];
+    unsigned char cbuf[ProtocolPreferences::bytesPerPixel];
 
     if ((subencoding & HextileBackgroundSpecified) != 0) {
-        read((char*)cbuf,prefs->bytesPerPixel);
+        read((char*)cbuf,ProtocolPreferences::bytesPerPixel);
 
         /*// buffering
         if (os != null)
             os.write(cbuf);*/
 
         // store encoded background color
-        hextile_bg=con.decodeColor(cbuf, prefs->bytesPerPixel, prefs->format);
+        hextile_bg=con.decodeColor(cbuf, ProtocolPreferences::bytesPerPixel, ProtocolPreferences::format);
     }
     //printf("test4\n");
     
@@ -95,14 +94,14 @@ void HextileMessage::handleHextileSubrect(SDL_Surface *screen, ProtocolPreferenc
 
     // Read the foreground color if specified.
     if ((subencoding & HextileForegroundSpecified) != 0) {
-        read((char*)cbuf,prefs->bytesPerPixel);
+        read((char*)cbuf,ProtocolPreferences::bytesPerPixel);
 
         /*// buffering          TODO:
         if (os != null)
             os.write(cbuf);*/
 
         // store encoded foreground color
-        hextile_fg=con.decodeColor(cbuf, prefs->bytesPerPixel, prefs->format);
+        hextile_fg=con.decodeColor(cbuf, ProtocolPreferences::bytesPerPixel, ProtocolPreferences::format);
     }
 
     // Done with this tile if there is no sub-rectangles.
@@ -115,7 +114,7 @@ void HextileMessage::handleHextileSubrect(SDL_Surface *screen, ProtocolPreferenc
     //printf("%d,",nSubrects);
 
     if ((subencoding & HextileSubrectsColoured) != 0) {
-        bufsize += nSubrects * prefs->bytesPerPixel;
+        bufsize += nSubrects * ProtocolPreferences::bytesPerPixel;
     }
     //printf("test6 %d<%d\n", nSubrects, bufsize);
     unsigned char buf[bufsize];
@@ -133,9 +132,9 @@ void HextileMessage::handleHextileSubrect(SDL_Surface *screen, ProtocolPreferenc
     for (int j = 0; j < nSubrects; j++) {
         if ((subencoding & HextileSubrectsColoured) != 0) {
             // store encoded foreground color
-            hextile_fg=con.decodeColor(&buf[i], prefs->bytesPerPixel, prefs->format);
+            hextile_fg=con.decodeColor(&buf[i], ProtocolPreferences::bytesPerPixel, ProtocolPreferences::format);
 
-            i += prefs->bytesPerPixel;
+            i += ProtocolPreferences::bytesPerPixel;
         }
         // decode subrect
         b1 = buf[i++] & 0xFF;
@@ -154,30 +153,31 @@ void HextileMessage::handleRawRect(SDL_Surface *screen, ProtocolPreferences* pre
 {
     SDL_Rect rect = {0, 0, 1, 1};
     
-    switch (prefs->bytesPerPixel) {
+    switch (ProtocolPreferences::bytesPerPixel) {
         case 1:
         {
+            printf("TODO: test bytesPerPixel = 1\n");
             for (int dy = ty; dy < ty + th; dy++) {
-                //is.readFully(graphicsContext.pixels8, dy * graphicsContext.prefs->framebufferWidth + x, w);
-                read((char*)(screen->pixels)+dy * prefs->framebufferWidth + tx,tw);
+                //is.readFully(graphicsContext.pixels8, dy * graphicsContext.ProtocolPreferences::framebufferWidth + x, w);
+                read((char*)(screen->pixels)+dy * ProtocolPreferences::framebufferWidth + tx,tw);
 
                 /*// buffering          TODO:?
                 if (os != null)
-                    os.write(graphicsContext.pixels8, dy * graphicsContext.prefs->framebufferWidth + x, w);*/
+                    os.write(graphicsContext.pixels8, dy * graphicsContext.ProtocolPreferences::framebufferWidth + x, w);*/
             }
             break;
         }
         case 2:
         {
-            unsigned char rawColor[prefs->bytesPerPixel];
+            unsigned char rawColor[ProtocolPreferences::bytesPerPixel];
             uint color;
-            if (prefs->bigEndian)
+            if (ProtocolPreferences::bigEndian)
                 for (int dy = ty; dy < ty + th; dy++)
                 {
                     for(int dx = 0; dx < tw; dx++)
                     {
-                        read((char*)rawColor, prefs->bytesPerPixel);
-                        color = con.decodeColor(rawColor,prefs->bytesPerPixel,prefs->format);
+                        read((char*)rawColor, ProtocolPreferences::bytesPerPixel);
+                        color = con.decodeColor(rawColor,ProtocolPreferences::bytesPerPixel,ProtocolPreferences::format);
                         rect.x = dx + tx;
                         rect.y = dy;
                         SDL_FillRect(screen, &rect, color);
@@ -188,8 +188,8 @@ void HextileMessage::handleRawRect(SDL_Surface *screen, ProtocolPreferences* pre
                 {
                     for(int dx = 0; dx < tw; dx++)
                     {
-                        read((char*)rawColor, prefs->bytesPerPixel);
-                        color = con.decodeColor(rawColor,prefs->bytesPerPixel,prefs->format);
+                        read((char*)rawColor, ProtocolPreferences::bytesPerPixel);
+                        color = con.decodeColor(rawColor,ProtocolPreferences::bytesPerPixel,ProtocolPreferences::format);
                         rect.x = dx + tx;
                         rect.y = dy;
                         SDL_FillRect(screen, &rect, color);
@@ -207,8 +207,8 @@ void HextileMessage::handleRawRect(SDL_Surface *screen, ProtocolPreferences* pre
                 if (os != null)
                     os.write(buf);*//*
 
-                int offset = dy * prefs->framebufferWidth + x;
-                if (prefs->bigEndian)
+                int offset = dy * ProtocolPreferences::framebufferWidth + x;
+                if (ProtocolPreferences::bigEndian)
                     for (int i = 0; i < w; i++)
                         (int*)(screen->pixels)[offset + i] = (buf[i * 4 + 1] & 0xFF) << 16 | (buf[i * 4 + 2] & 0xFF) << 8 | (buf[i * 4 + 3] & 0xFF);
                 else
@@ -220,8 +220,7 @@ void HextileMessage::handleRawRect(SDL_Surface *screen, ProtocolPreferences* pre
     }
 }
 
-int HextileMessage::getCoveredArea()
-{
+int HextileMessage::getArea() {
     return w*h;
 }
 

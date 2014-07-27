@@ -21,7 +21,6 @@ RectangleAnnotation::RectangleAnnotation(int timestamp, Inflater* in) {
     w=abs(x1-x2);
     y=min(y1,y2);
     h=abs(y1-y2);
-    printf("RectangleAnnotation\n");
 }
 
 RectangleAnnotation::~RectangleAnnotation() {
@@ -29,10 +28,7 @@ RectangleAnnotation::~RectangleAnnotation() {
 
 void RectangleAnnotation::draw(SDL_Surface *screen, ProtocolPreferences* prefs){
     
-    printf("draw RectangleAnnotation(%d,%d,%d,%d),%d\n",x,y,w,h,this->con.getAnnotationColor(color,screen->format));
-    //SDL_Rect rect = {x, y, w, h};
-    //SDL_FillRect(screen, &rect, this->con.getAnnotationColor(color,screen->format));
-    //SDL_UpdateRect(screen,x,y,w,h);
+    //printf("draw RectangleAnnotation(%d,%d,%d,%d),%d\n",x,y,w,h,this->con.getAnnotationColor(color,screen->format));
     SDL_Rect rect = {x-linewidth, y-linewidth, linewidth, h+2*linewidth};               //left
     SDL_FillRect(screen, &rect, this->con.getAnnotationColor(color,screen->format));
     SDL_Rect rect2 = {x, y-linewidth, w+linewidth, linewidth};                           //upper

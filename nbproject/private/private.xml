@@ -7,25 +7,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/user/NetBeansProjects/TTTPlayer/IndexEntry.h</file>
+            <file>file:/home/user/NetBeansProjects/TTTPlayer/Messages/Message.cpp</file>
             <file>file:/home/user/NetBeansProjects/TTTPlayer/Messages/Message.h</file>
-            <file>file:/home/user/NetBeansProjects/TTTPlayer/Controls.cpp</file>
-            <file>file:/home/user/NetBeansProjects/TTTPlayer/Inflater.cpp</file>
-            <file>file:/home/user/NetBeansProjects/TTTPlayer/Inflater.h</file>
+            <file>file:/home/user/NetBeansProjects/TTTPlayer/Messages/CursorPositionMessage.cpp</file>
+            <file>file:/home/user/NetBeansProjects/TTTPlayer/Messages/CursorPositionMessage.h</file>
             <file>file:/home/user/NetBeansProjects/TTTPlayer/Constants.h</file>
+            <file>file:/home/user/NetBeansProjects/TTTPlayer/Messages/CursorMessage.h</file>
             <file>file:/home/user/NetBeansProjects/TTTPlayer/main.h</file>
             <file>file:/home/user/NetBeansProjects/TTTPlayer/Video.cpp</file>
-            <file>file:/home/user/NetBeansProjects/TTTPlayer/Messages/Annotation.cpp</file>
-            <file>file:/home/user/NetBeansProjects/TTTPlayer/IndexEntry.cpp</file>
+            <file>file:/home/user/NetBeansProjects/TTTPlayer/Messages/HextileMessage.cpp</file>
+            <file>file:/home/user/NetBeansProjects/TTTPlayer/Messages/CursorMessage.cpp</file>
             <file>file:/home/user/NetBeansProjects/TTTPlayer/Index.cpp</file>
             <file>file:/home/user/NetBeansProjects/TTTPlayer/Video.h</file>
-            <file>file:/home/user/NetBeansProjects/TTTPlayer/Messages/Message.cpp</file>
-            <file>file:/home/user/NetBeansProjects/TTTPlayer/Index.h</file>
-            <file>file:/home/user/NetBeansProjects/TTTPlayer/Player.h</file>
-            <file>file:/home/user/NetBeansProjects/TTTPlayer/Player.cpp</file>
-            <file>file:/home/user/NetBeansProjects/TTTPlayer/Controls.h</file>
-            <file>file:/home/user/NetBeansProjects/TTTPlayer/Messages/Annotation.h</file>
-            <file>file:/home/user/NetBeansProjects/TTTPlayer/main.cpp</file>
         </group>
     </open-files>
 </project-private>

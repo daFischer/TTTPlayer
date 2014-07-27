@@ -366,10 +366,10 @@ int ColorConverter::decodeColor(unsigned char* bytes, int byteNum, SDL_PixelForm
     return color;
 }
 
-int ColorConverter::decodeColor8(int num){
+/*int ColorConverter::decodeColor8(int num){
     int color= (int)(colors[num][0]);
     return color;
-}
+}*/
 
 unsigned int ColorConverter::getAnnotationColor(int colorValue, SDL_PixelFormat* format){
     

@@ -23,13 +23,17 @@ using namespace std;
 class Index {
 public:
     Index(Inflater* in, int numBytes);
-    Index(Message**, int numMessages);
+    Index(Message** messages, int numMessages);
     virtual ~Index();
     IndexEntry* lastBefore(int timestamp);
+    void fillSurface(SDL_Surface* screen, Message** messages, int numMessages, ProtocolPreferences* prefs);
     
 private:
+    //void fillSurfaces(SDL_Surface* screen, Message** messages, int numMessages, ProtocolPreferences* prefs);
     SDL_Surface* readThumbnail(Inflater* in, int* numBytes);
     list<IndexEntry*> index;
+    std::list<IndexEntry*>::iterator it;
+    int currentMessage;
 };
 
 #endif	/* INDEXEXTENSION_H */

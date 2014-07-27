@@ -57,6 +57,16 @@ Controls::Controls(Video* video, AudioInterface* audio) {
         printf("font is ok\n");
 }
 
+Controls::~Controls() {
+    SDL_FreeSurface(surfPlay);
+    SDL_FreeSurface(surfVolume);
+    SDL_FreeSurface(surfVolume2);
+    SDL_FreeSurface(surfFullscreen);
+    TTF_CloseFont(font);
+    audio=NULL;
+    video=NULL;
+}
+
 void Controls::registerClick(Uint16 mx, Uint16 my){
     if(my<y)
         return;
@@ -206,9 +216,10 @@ void Controls::draw(SDL_Surface *screen, bool hasDrawn){
     SDL_Surface* times=TTF_RenderText_Solid(font,oss.str().c_str(),color);
     redefineRect(&rect,192,y+timeLineHeight+4,times->w+4,times->h+4);
     SDL_BlitSurface(times,NULL,screen,&rect);
+    SDL_FreeSurface(times);
     
     if(mouseY>=y&&mouseY<y+timeLineHeight)
-        video->drawThumbnail(duration*mouseX/width,mouseX,y);
+        video->drawThumbnail(duration*mouseX/width*1000,mouseX,y);
     
     SDL_UpdateRect(screen, 0,y,width,screenHeight-y);
     //SDL_Flip(screen);

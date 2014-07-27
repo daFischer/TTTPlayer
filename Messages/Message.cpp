@@ -7,13 +7,16 @@
 
 #include "Message.h"
 
-#include "EmptyMessage.h"
 #include "HextileMessage.h"
 #include "WhiteboardMessage.h"
 #include "DeleteAllAnnotation.h"
 #include "RawMessage.h"
 #include "DeleteAnnotation.h"
 #include "RectangleAnnotation.h"
+#include "CursorMessage.h"
+#include "CursorPositionMessage.h"
+#include "LineAnnotation.h"
+#include "FreehandAnnotation.h"
 
 int number;
 int total;
@@ -21,6 +24,9 @@ bool containsCursorMessages;
 bool containsAnnotations;
 bool containsWhiteboard;
 
+Message::Message() {
+    type='0';
+}
 Message::~Message() {}
 
 void Message::paint(SDL_Surface *screen, ProtocolPreferences* prefs) {}
@@ -29,7 +35,9 @@ bool Message::completeScreen(int w, int h){
     return false;
 }
 
-
+int Message::getArea() {
+    return 0;
+}
 
 void setUp(){
     number = 0;
@@ -47,9 +55,10 @@ list<Message*> readMessages(Inflater* in, ProtocolPreferences* prefs){
     while(!in->endOfFile()){
         // TODO: show progress
         message=readMessage(in, prefs);
-        if(message->type=='0')//empty message
+        if(message==NULL)//empty message
+        {
             continue;
-        
+        }
         // TODO: maybe adding additional timestamp is better suited
         if (messages.size() == 0)
             message->timestamp = 0;
@@ -87,17 +96,18 @@ list<Message*> readMessages(Inflater* in, ProtocolPreferences* prefs){
 
             case ENCODINGWHITEBOARD:
                 containsWhiteboard = true;
-                message->type=WHITEBOARD;
+                message->type=RAW;
                 break;
 
             case ENCODINGTTTRICHCURSOR:
             case ENCODINGTTTXCURSOR:
+            case ENCODINGTTTCURSORPOSITION:
                 containsCursorMessages = true;
                 message->type=CURSOR;
                 break;
 
             case ENCODINGHEXTILE:
-                total += ((HextileMessage*) message)->getCoveredArea();
+                total += ((HextileMessage*) message)->getArea();
             case ENCODINGRAW:
                 message->type=RAW;
                 break;
@@ -147,7 +157,7 @@ Message* readMessage(Inflater* in, ProtocolPreferences* prefs){
 
         /*case ANNOTATIONHIGHLIGHT:
             message = new HighlightAnnotation(timestamp, in);
-            break;
+            break;*/
 
         case ANNOTATIONLINE:
             message = new LineAnnotation(timestamp, in);
@@ -157,7 +167,7 @@ Message* readMessage(Inflater* in, ProtocolPreferences* prefs){
             message = new FreehandAnnotation(timestamp, in);
             break;
 
-        case ANNOTATIONIMAGE:                        // MODMSG
+        /*case ANNOTATIONIMAGE:                        // MODMSG
         	message = new ImageAnnotation(timestamp, in);
         	break;
 
@@ -194,7 +204,7 @@ Message* readMessage(Inflater* in, ProtocolPreferences* prefs){
             //TODO: InterlacedRawMessage
             // message = new InterlacedRawMessage(timestamp,x,y,w,h,msg);
             message = new EmptyMessage(timestamp);
-            break;
+            break;*/
 
         case ENCODINGTTTCURSORPOSITION:
             message = new CursorPositionMessage(timestamp, in);
@@ -203,23 +213,25 @@ Message* readMessage(Inflater* in, ProtocolPreferences* prefs){
         case ENCODINGTTTRICHCURSOR:
         case ENCODINGTTTXCURSOR:
             message = new CursorMessage(timestamp, encoding, in, size);
-            break;*/
+            break;
 
         default:
-            printf("skipping unsupported message: Encoding = %d\t%d bytes\n", encoding, size);
+            if(VERBOSE)
+                printf("skipping unsupported message: Encoding = %d\t%d bytes\n", encoding, size);
             if(size>0)
             {
                 in->skipBytes(size);
             }
 
             size = 0;
-            message = new EmptyMessage(timestamp);
-            message->type='0';
+            message = NULL;
             break;
         }
-    
-    message->updateFlag = updateFlag;
-    message->encoding=encoding;
+    if(message!=NULL)
+    {
+        message->updateFlag = updateFlag;
+        message->encoding=encoding;
+    }
     
     return message;
 }

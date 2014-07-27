@@ -17,7 +17,7 @@ DeleteAllAnnotation::~DeleteAllAnnotation() {
 
 void DeleteAllAnnotation::paint(SDL_Surface *screen, ProtocolPreferences* prefs)
 {
-    printf("delete all annotations\n");
+    //printf("delete all annotations\n");
     mustRedraw=true;
     annotations.clear();
 }

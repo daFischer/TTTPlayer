@@ -19,6 +19,7 @@ public:
     ~WhiteboardMessage();
     void paint(SDL_Surface *screen, ProtocolPreferences* prefs);
     bool completeScreen(int w, int h);
+    int getArea();
     
 private:
 

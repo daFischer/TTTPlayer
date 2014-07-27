@@ -14,6 +14,10 @@ Inflater::Inflater(FILE* f)
     source=f;
     outOffset=0;
     
+    /*fseek(source,0,SEEK_END);
+    printf("Inflater file size: %ld\n",ftell(source));
+    fseek(source,0,SEEK_SET);*/
+    
     // allocate inflate state
     strm.zalloc = Z_NULL;
     strm.zfree = Z_NULL;
@@ -66,13 +70,15 @@ Inflater::~Inflater()
     (void)inflateEnd(&strm);
     ret = Z_STREAM_END ? Z_OK : Z_DATA_ERROR;
     printf("Inflater Endresult: %d\n",ret);
+    fclose(source);
 }
 
 bool Inflater::readByte(char* Byte)
 {
     if (ret != Z_OK)
     {
-        printf("Video Inflation failed: %d\n",ret);
+        //printf("Video Inflation failed: %d\n",ret);
+        *Byte=0;
         return Z_ERRNO;
     }
     if(outOffset >= CHUNK - strm.avail_out)      //Array out has to be refilled
@@ -142,7 +148,11 @@ char* Inflater::readCharArray(int length, bool end)
     {
         r=readByte(&(byteArray[i]));
         if(r!=Z_OK)
+        {
+            printf("Inflater error: %x\n",r);
+            free(byteArray);
             return NULL;
+        }
     }
     if(end)
         byteArray[length]=0;
@@ -175,6 +185,18 @@ bool Inflater::readInt(int* s)
     return Z_OK;
 }
 
+/*bool Inflater::readLong(long* s) {
+    bool r;
+    char* pointer=(char*)s;
+    for(int i=sizeof(long)-1; i>=0; i--)
+    {
+        r=readByte(&(pointer[i]));
+        if(r!=Z_OK)
+            return r;
+    }
+    return Z_OK;
+}*/
+
 bool Inflater::skipBytes(int number) {
     bool r;
     char waste;
@@ -182,9 +204,12 @@ bool Inflater::skipBytes(int number) {
     {
         r=readByte(&waste);
         if(r!=Z_OK)
+        {
+            //printf("current position in file: %ld\n",ftell(source));
             return r;
+        }
     }
-    return Z_OK;
+    return r;
 }
 
 

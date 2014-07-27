@@ -14,4 +14,5 @@ SizedArray::SizedArray(int length) {
 
 SizedArray::~SizedArray(){
     free(array);
+    array=NULL;
 }

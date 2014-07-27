@@ -14,6 +14,7 @@ Player *player;
 
 Player::Player(const char* cpath, const char* cfilename) {
     
+    atexit(cleanUp);
     paused=false;
     
     player=this;
@@ -27,16 +28,10 @@ Player::Player(const char* cpath, const char* cfilename) {
         printf("Unable to initialize SDL: %s\n", SDL_GetError());
         return;
     }
-    else
-        atexit(SDL_Quit);
     
     if(TTF_Init()<0){
         printf("Unable to initialize TTF: %s\n", TTF_GetError());
         return;
-    }
-    else
-    {
-        
     }
     
     video=new Video((path+"/"+filename+"_a/"+filename+".ttt").c_str());
@@ -68,6 +63,8 @@ Player::Player(const char* cpath, const char* cfilename) {
             break;
         SDL_Delay(30);
     }
+    if(player!=NULL)
+        delete(player);
 #endif
 }
 
@@ -81,9 +78,8 @@ void Player::loop()
             switch(event.key.keysym.sym) {
 #ifndef EMSCRIPTEN
                 case SDLK_ESCAPE:
-                    SDL_Quit();
                     quit=true;
-                    break;
+                    return;
 #endif
                 default:
                     break;
@@ -96,7 +92,6 @@ void Player::loop()
         else if(event.type == SDL_MOUSEMOTION)
             controls->registerMovement(event.motion.x,event.motion.y);
     }
-    
     controls->update();
     
     video->update(audio->getPosition(), controls);
@@ -104,9 +99,29 @@ void Player::loop()
 
 void emLoop()
 {
-    player->loop();
+    if(player!=NULL)
+        player->loop();
+}
+
+void cleanUp(){
+    if(player!=NULL)
+        delete(player);
 }
 
 Player::~Player() {
+    delete(video);
+    video=NULL;
+    delete(audio);
+    audio=NULL;
+    delete(controls);
+    controls=NULL;
+#ifdef EMSCRIPTEN
+    emscripten_cancel_main_loop();
+#else
+    TTF_Quit();
+#endif
+    SDL_Quit();
+    player=NULL;
+    printf("Deleted everything\n");
 }
 

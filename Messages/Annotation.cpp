@@ -31,7 +31,7 @@ void Annotation::draw(SDL_Surface* screen, ProtocolPreferences* prefs) {
 
 
 void Annotation::redraw(SDL_Surface *screen ,ProtocolPreferences *prefs) {
-    printf("redraw Annotations\n");
+    //printf("redraw Annotations\n");
     SDL_LockSurface(screen);
     memset(screen->pixels,0,screen->w*screen->h*screen->format->BytesPerPixel);
     SDL_UnlockSurface(screen);
@@ -43,13 +43,41 @@ void Annotation::redraw(SDL_Surface *screen ,ProtocolPreferences *prefs) {
         (*it)->draw(screen,prefs);
 }
 
-/*void Annotation::addAnnotation(Annotation* annotation) {
-    annotations.push_back(&annotation);
-}*/
+void Annotation::drawLine(SDL_Surface* screen, Uint32 color, short startX, short startY, short endX, short endY) {
+    SDL_Rect pixel={startX-1,startY-1,3,3};
+    if(startX == endX && startY == endY)
+    {
+        //just a point
+        SDL_FillRect(screen,&pixel,color);
+        return;
+    }
+    if(abs(startX-endX)>abs(startY-endY))
+        for(int i=min(startX,endX);i<max(startX,endX);i++)
+        {
+            if((startX<endX)==(startY<endY))    //down right or left up
+                pixel.x=i-1;
+            else                                //down left or up right
+                pixel.x=startX+endX-i-1;
+            pixel.y=min(startY,endY)+abs(startY-endY)*(i-min(startX,endX))/abs(startX-endX)-1;
+            SDL_FillRect(screen,&pixel,color);
+        }
+    else
+        for(int i=min(startY,endY);i<max(startY,endY);i++)
+        {
+            pixel.x=min(startX,endX)+abs(startX-endX)*(i-min(startY,endY))/abs(startY-endY)-1;
+            if((startX<endX)==(startY<endY))    //down right or left up
+                pixel.y=i-1;
+            else                                //down left or up right
+                pixel.y=startY+endY-i-1;
+            SDL_FillRect(screen,&pixel,color);
+        }
+}
 
 struct condRemove{
     int x,y;
     bool operator() (Annotation* annotation){
+        if(annotation->x==x && annotation->y==y)
+            printf("Deleted Annotation at position %d, %d\n",x,y);
         return (annotation->x==x && annotation->y==y);
     }
 };

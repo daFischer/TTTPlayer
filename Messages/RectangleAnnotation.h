@@ -9,7 +9,7 @@
 #define	RECTANGLEANNOTATION_H
 
 #include "../Inflater.h"
-#include "Message.h"
+//#include "Message.h"
 #include "Annotation.h"
 #include <stdio.h>
 

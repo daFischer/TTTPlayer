@@ -22,6 +22,8 @@ public:
     ~RawMessage();
     void paint(SDL_Surface *screen, ProtocolPreferences* prefs);
     bool completeScreen(int w, int h);
+    int getArea();
+
     
 private:
     void handleRawRect(SDL_Surface *screen, ProtocolPreferences* prefs);

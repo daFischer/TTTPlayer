@@ -19,9 +19,10 @@ using namespace std;
 
 class Message {
 public:
+    Message();
     virtual ~Message();
     virtual void paint(SDL_Surface *screen, ProtocolPreferences* prefs);
-    //virtual bool isEmpty();
+    virtual int getArea();
     virtual bool completeScreen(int w, int h);
     
     bool updateFlag;

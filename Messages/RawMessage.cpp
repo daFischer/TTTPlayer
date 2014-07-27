@@ -29,7 +29,7 @@ bool RawMessage::completeScreen(int w, int h){
 
 void RawMessage::paint(SDL_Surface* screen, ProtocolPreferences* prefs){
     handleRawRect(screen,prefs);
-    printf("Drawn RawMessage at {%d, %d, %d, %d}\n",x,y,w,h);
+    //printf("Drawn RawMessage at {%d, %d, %d, %d}\n",x,y,w,h);
 }
 
 void RawMessage::handleRawRect(SDL_Surface *screen, ProtocolPreferences* prefs)
@@ -114,4 +114,8 @@ bool RawMessage::read(char* dest, int n){
         offSet++;
     }
     return true;
+}
+
+int RawMessage::getArea() {
+    return w*h;
 }

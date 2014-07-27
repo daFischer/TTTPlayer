@@ -13,10 +13,6 @@
 #else
 #endif
 
-
-#define VERBOSE true
-
-
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
 
@@ -38,7 +34,7 @@ const string path = "TTT";
 string filename = "";
 #else
 const string path = "/home/user/NetBeansProjects/TTTPlayer/emBuild/TTT";
-string filename = "Programmiersprachen_2013_10_21";
+string filename = "Programmiersprachen_2013_10_21";// Diskrete_Strukturen_2013_11_26 , Programmiersprachen_2013_10_21 , Programmoptimierung_2013_10_16 , ZUE_Diskrete_Strukturen_2013_10_30
 #endif
 
 int main();

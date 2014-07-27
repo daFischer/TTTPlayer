@@ -26,3 +26,7 @@ void WhiteboardMessage::paint(SDL_Surface *screen, ProtocolPreferences* prefs)
 bool WhiteboardMessage::completeScreen(int w, int h){
     return true;
 }
+
+int WhiteboardMessage::getArea(){
+    return ProtocolPreferences::framebufferWidth*ProtocolPreferences::framebufferHeight;
+}

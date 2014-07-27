@@ -10,6 +10,8 @@
 #ifndef CONSTANTS_H
 #define	CONSTANTS_H
 
+#define VERBOSE true
+
 #define EXTENSION_INDEX_TABLE 1
 #define EXTENSION_SEARCHBASE_TABLE_WITH_COORDINATES 2
 
@@ -19,7 +21,6 @@
 
 //message kinds
 #define ANNOTATION 'a'
-#define WHITEBOARD 'w'
 #define EMPTY '0'
 #define RAW 'r'
 #define CURSOR 'c'

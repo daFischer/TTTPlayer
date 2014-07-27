@@ -23,7 +23,8 @@ public:
     short x,y,w,h;
     
     static bool mustRedraw;
-    static void redraw(SDL_Surface *screen ,ProtocolPreferences* prefs);
+    static void redraw(SDL_Surface *screen, ProtocolPreferences* prefs);
+    static void drawLine(SDL_Surface *screen, Uint32 color, short startX, short startY, short endX, short endY);
     static ColorConverter con;
     static list<Annotation*> annotations;
     

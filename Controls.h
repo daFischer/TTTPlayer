@@ -30,6 +30,7 @@ using namespace std;
 class Controls {
 public:
     Controls(Video* video, AudioInterface* audio);
+    ~Controls();
     void update();
     void registerClick(Uint16 mx, Uint16 my);
     void registerMouseUp();
@@ -39,6 +40,13 @@ public:
     SDL_Rect videoUpdate;
     
 private:
+    
+    void togglePlay();
+    void toggleFullscreen();
+    void skipTo(int position);
+    Uint32 emColor(Uint32);
+    void redefineRect(SDL_Rect* rect, int x, int y, int w, int h);
+    void changeVolume(float volume);
 
     Video* video;
     AudioInterface* audio;
@@ -57,13 +65,6 @@ private:
     SDL_Surface* surfVolume2;
     SDL_Surface* surfFullscreen;
     TTF_Font* font;
-    
-    void togglePlay();
-    void toggleFullscreen();
-    void skipTo(int position);
-    Uint32 emColor(Uint32);
-    void redefineRect(SDL_Rect* rect, int x, int y, int w, int h);
-    void changeVolume(float volume);
 };
 
 //#ifdef EMSCRIPTEN

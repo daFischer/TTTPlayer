@@ -16,8 +16,8 @@ class ColorConverter {
 public:
     ColorConverter();
     static unsigned int getAnnotationColor(int colorValue, SDL_PixelFormat* format);
-    int decodeColor(unsigned char* bytes, int byteNum, SDL_PixelFormat* format);
-    int decodeColor8(int num);
+    static int decodeColor(unsigned char* bytes, int byteNum, SDL_PixelFormat* format);
+    //int decodeColor8(int num);
     
 private:
     

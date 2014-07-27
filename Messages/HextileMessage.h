@@ -23,8 +23,8 @@ public:
     HextileMessage(int timestamp, Inflater* in, int size);
     ~HextileMessage();
     void paint(SDL_Surface *screen, ProtocolPreferences* prefs);
-    int getCoveredArea();
     bool completeScreen(int w, int h);
+    int getArea();
     
 private:
     void handleHextileSubrect(SDL_Surface *screen, ProtocolPreferences* prefs, int tx, int ty, int tw, int th);

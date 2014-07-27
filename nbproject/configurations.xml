@@ -11,13 +11,17 @@
       <itemPath>ColorConverter.h</itemPath>
       <itemPath>Constants.h</itemPath>
       <itemPath>Controls.h</itemPath>
+      <itemPath>Messages/CursorMessage.h</itemPath>
+      <itemPath>Messages/CursorPositionMessage.h</itemPath>
       <itemPath>Messages/DeleteAllAnnotation.h</itemPath>
       <itemPath>Messages/DeleteAnnotation.h</itemPath>
       <itemPath>Messages/EmptyMessage.h</itemPath>
+      <itemPath>Messages/FreehandAnnotation.h</itemPath>
       <itemPath>Messages/HextileMessage.h</itemPath>
       <itemPath>Index.h</itemPath>
       <itemPath>IndexEntry.h</itemPath>
       <itemPath>Inflater.h</itemPath>
+      <itemPath>Messages/LineAnnotation.h</itemPath>
       <itemPath>Messages/Message.h</itemPath>
       <itemPath>Player.h</itemPath>
       <itemPath>ProtocolPreferences.h</itemPath>
@@ -44,13 +48,17 @@
       <itemPath>ColorConverter.cpp</itemPath>
       <itemPath>Constants.cpp</itemPath>
       <itemPath>Controls.cpp</itemPath>
+      <itemPath>Messages/CursorMessage.cpp</itemPath>
+      <itemPath>Messages/CursorPositionMessage.cpp</itemPath>
       <itemPath>Messages/DeleteAllAnnotation.cpp</itemPath>
       <itemPath>Messages/DeleteAnnotation.cpp</itemPath>
       <itemPath>Messages/EmptyMessage.cpp</itemPath>
+      <itemPath>Messages/FreehandAnnotation.cpp</itemPath>
       <itemPath>Messages/HextileMessage.cpp</itemPath>
       <itemPath>Index.cpp</itemPath>
       <itemPath>IndexEntry.cpp</itemPath>
       <itemPath>Inflater.cpp</itemPath>
+      <itemPath>Messages/LineAnnotation.cpp</itemPath>
       <itemPath>Messages/Message.cpp</itemPath>
       <itemPath>Player.cpp</itemPath>
       <itemPath>ProtocolPreferences.cpp</itemPath>
@@ -134,6 +142,14 @@
       </item>
       <item path="Messages/Annotation.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Messages/CursorMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/CursorMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/CursorPositionMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/CursorPositionMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Messages/DeleteAllAnnotation.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Messages/DeleteAllAnnotation.h" ex="false" tool="3" flavor2="0">
@@ -146,9 +162,17 @@
       </item>
       <item path="Messages/EmptyMessage.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Messages/FreehandAnnotation.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/FreehandAnnotation.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Messages/HextileMessage.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Messages/HextileMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/LineAnnotation.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/LineAnnotation.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Messages/Message.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -247,6 +271,14 @@
       </item>
       <item path="Messages/Annotation.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Messages/CursorMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/CursorMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/CursorPositionMessage.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/CursorPositionMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Messages/DeleteAllAnnotation.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Messages/DeleteAllAnnotation.h" ex="false" tool="3" flavor2="0">
@@ -259,9 +291,17 @@
       </item>
       <item path="Messages/EmptyMessage.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Messages/FreehandAnnotation.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/FreehandAnnotation.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Messages/HextileMessage.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Messages/HextileMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/LineAnnotation.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/LineAnnotation.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Messages/Message.cpp" ex="false" tool="1" flavor2="0">
       </item>
