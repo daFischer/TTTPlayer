@@ -6,10 +6,12 @@
  */
 
 #include "Annotation.h"
+#include "WhiteboardMessage.h"
 
 ColorConverter Annotation::con;
 bool Annotation::mustRedraw=false;
 list<Annotation*> Annotation::annotations;
+WhiteboardMessage* Annotation::lastWhiteboard =NULL;
 
 Annotation::Annotation() {
 }
@@ -18,6 +20,7 @@ Annotation::~Annotation() {
 }
 
 void Annotation::paint(SDL_Surface* screen, ProtocolPreferences* prefs) {
+    //printf("Pushed Annotation at (%d, %d)\n",x,y);
     annotations.push_back(this);
     
     //try to avoid useless drawing
@@ -38,13 +41,15 @@ void Annotation::redraw(SDL_Surface *screen ,ProtocolPreferences *prefs) {
     
     mustRedraw=false;
     
+    if(WhiteboardMessage::number>0)
+        lastWhiteboard->draw(screen,prefs);
     //redraw all active Annotations
     for(list<Annotation*>::iterator it = annotations.begin(); it!= annotations.end(); it++)
         (*it)->draw(screen,prefs);
 }
 
 void Annotation::drawLine(SDL_Surface* screen, Uint32 color, short startX, short startY, short endX, short endY) {
-    SDL_Rect pixel={startX-1,startY-1,3,3};
+    SDL_Rect pixel={startX-linewidth/2,startY-linewidth/2,linewidth,linewidth};
     if(startX == endX && startY == endY)
     {
         //just a point
@@ -52,7 +57,7 @@ void Annotation::drawLine(SDL_Surface* screen, Uint32 color, short startX, short
         return;
     }
     if(abs(startX-endX)>abs(startY-endY))
-        for(int i=min(startX,endX);i<max(startX,endX);i++)
+        for(int i=min(startX,endX);i<=max(startX,endX);i++)
         {
             if((startX<endX)==(startY<endY))    //down right or left up
                 pixel.x=i-1;
@@ -62,7 +67,7 @@ void Annotation::drawLine(SDL_Surface* screen, Uint32 color, short startX, short
             SDL_FillRect(screen,&pixel,color);
         }
     else
-        for(int i=min(startY,endY);i<max(startY,endY);i++)
+        for(int i=min(startY,endY);i<=max(startY,endY);i++)
         {
             pixel.x=min(startX,endX)+abs(startX-endX)*(i-min(startY,endY))/abs(startY-endY)-1;
             if((startX<endX)==(startY<endY))    //down right or left up

@@ -52,6 +52,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Messages/EmptyMessage.o \
 	${OBJECTDIR}/Messages/FreehandAnnotation.o \
 	${OBJECTDIR}/Messages/HextileMessage.o \
+	${OBJECTDIR}/Messages/HighlightAnnotation.o \
 	${OBJECTDIR}/Messages/LineAnnotation.o \
 	${OBJECTDIR}/Messages/Message.o \
 	${OBJECTDIR}/Messages/RawMessage.o \
@@ -172,6 +173,11 @@ ${OBJECTDIR}/Messages/HextileMessage.o: Messages/HextileMessage.cpp
 	${MKDIR} -p ${OBJECTDIR}/Messages
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Messages/HextileMessage.o Messages/HextileMessage.cpp
+
+${OBJECTDIR}/Messages/HighlightAnnotation.o: Messages/HighlightAnnotation.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Messages
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Messages/HighlightAnnotation.o Messages/HighlightAnnotation.cpp
 
 ${OBJECTDIR}/Messages/LineAnnotation.o: Messages/LineAnnotation.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Messages

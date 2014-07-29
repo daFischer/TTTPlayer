@@ -10,7 +10,7 @@
 #include "Controls.h"
 
 Player *player;
-//TTF_Font* font;
+TTF_Font* Player::font;
 
 Player::Player(const char* cpath, const char* cfilename) {
     
@@ -31,6 +31,17 @@ Player::Player(const char* cpath, const char* cfilename) {
     
     if(TTF_Init()<0){
         printf("Unable to initialize TTF: %s\n", TTF_GetError());
+        return;
+    }
+    
+#ifdef EMSCRIPTEN
+    font = TTF_OpenFont("/Assets/arial.ttf",20);
+#else
+    font = TTF_OpenFont("/home/user/NetBeansProjects/TTTPlayer/emBuild//Assets/arial.ttf",20);
+#endif
+    if(font==NULL)
+    {
+        printf("No font\n");
         return;
     }
     
@@ -115,9 +126,11 @@ Player::~Player() {
     audio=NULL;
     delete(controls);
     controls=NULL;
+    TTF_CloseFont(font);
 #ifdef EMSCRIPTEN
     emscripten_cancel_main_loop();
 #else
+    //function doesn't exist in emscripten for some reason
     TTF_Quit();
 #endif
     SDL_Quit();

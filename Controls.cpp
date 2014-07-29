@@ -41,20 +41,14 @@ Controls::Controls(Video* video, AudioInterface* audio) {
     surfVolume=SDL_LoadBMP("Assets/volume.bmp");
     surfVolume2=SDL_LoadBMP("Assets/volume2.bmp");
     surfFullscreen=SDL_LoadBMP("Assets/fullscreen.bmp");
-    font = TTF_OpenFont("/Assets/arial.ttf",20);
 #else
     surfPlay=SDL_LoadBMP("/home/user/NetBeansProjects/TTTPlayer/emBuild/Assets/PlayPause.bmp");
     surfVolume=SDL_LoadBMP("/home/user/NetBeansProjects/TTTPlayer/emBuild/Assets/volume.bmp");
     surfVolume2=SDL_LoadBMP("/home/user/NetBeansProjects/TTTPlayer/emBuild/Assets/volume2.bmp");
     surfFullscreen=SDL_LoadBMP("/home/user/NetBeansProjects/TTTPlayer/emBuild/Assets/fullscreen.bmp");
-    font = TTF_OpenFont("/home/user/NetBeansProjects/TTTPlayer/emBuild//Assets/arial.ttf",20);
 #endif
     if(surfPlay==NULL||surfVolume==NULL||surfVolume2==NULL||surfFullscreen==NULL)
         printf("BMPs ARE NULL\n");
-    if(font==NULL)
-        printf("FONT IS NULL\n");
-    else
-        printf("font is ok\n");
 }
 
 Controls::~Controls() {
@@ -62,7 +56,6 @@ Controls::~Controls() {
     SDL_FreeSurface(surfVolume);
     SDL_FreeSurface(surfVolume2);
     SDL_FreeSurface(surfFullscreen);
-    TTF_CloseFont(font);
     audio=NULL;
     video=NULL;
 }
@@ -209,17 +202,41 @@ void Controls::draw(SDL_Surface *screen, bool hasDrawn){
     SDL_FillRect(screen, &rect, emColor(0xaa0000));
     
     //draw "time / duration"
-    SDL_Color color = {0xff,0xff,0xff,0xff};
+    SDL_Color white = {0xff,0xff,0xff,0xff};
     ostringstream oss;
     oss << currentPosition/60 << ":" << ((currentPosition%60<10) ? "0" : "") << currentPosition%60 << "/" << duration/60 << ":" << ((duration%60<10) ? "0" : "") << duration%60;
     
-    SDL_Surface* times=TTF_RenderText_Solid(font,oss.str().c_str(),color);
-    redefineRect(&rect,192,y+timeLineHeight+4,times->w+4,times->h+4);
+    SDL_Surface* times=TTF_RenderText_Solid(Player::font,oss.str().c_str(),white);
+#ifdef EMSCRIPTEN
+    drawScaledText(screen,times,width-64-times->w*2,y+timeLineHeight+8,2);
+#else
+    redefineRect(&rect,width-64-times->w,y+timeLineHeight+4,times->w+4,times->h+4);
     SDL_BlitSurface(times,NULL,screen,&rect);
+#endif
     SDL_FreeSurface(times);
     
     if(mouseY>=y&&mouseY<y+timeLineHeight)
+    {
         video->drawThumbnail(duration*mouseX/width*1000,mouseX,y);
+        //draw time at cursor position
+        ostringstream oss2;
+        oss2 << duration*mouseX/width/60 << ":" << (((duration*mouseX/width)%60<10) ? "0" : "") << (duration*mouseX/width)%60;
+        SDL_Color black={0,0,0,0xff};
+        /*TTF_SetFontOutline(Player::font,2);
+        times=TTF_RenderText_Solid(Player::font,oss2.str().c_str(),black);
+        redefineRect(&rect,max(0,min(width-times->w,mouseX-times->w/2 - 2)),y-24,times->w+4,times->h+4);
+        SDL_BlitSurface(times,NULL,screen,&rect);
+        SDL_FreeSurface(times);
+        TTF_SetFontOutline(Player::font,0);*/
+        times=TTF_RenderText_Solid(Player::font,oss2.str().c_str(),black);
+#ifdef EMSCRIPTEN
+        drawScaledText(screen,times,max(0,min(width-times->w*2,mouseX-times->w - 2)),y-22,2);
+#else
+        redefineRect(&rect,max(0,min(width-times->w,mouseX-times->w/2 - 2)),y-24,times->w+4,times->h+4);
+        SDL_BlitSurface(times,NULL,screen,&rect);
+#endif
+        SDL_FreeSurface(times);
+    }
     
     SDL_UpdateRect(screen, 0,y,width,screenHeight-y);
     //SDL_Flip(screen);
@@ -235,6 +252,31 @@ Uint32 Controls::emColor(unsigned int color){
 #else
     return 0xff000000|color;
 #endif
+}
+
+Uint32 Controls::readPixel(SDL_Surface* source, int x, int y){
+    switch(source->format->BytesPerPixel)
+    {
+        case 1:
+            return ((unsigned char*)source->pixels)[x+source->w*y];
+        case 2:
+            return ((unsigned short*)source->pixels)[x+source->w*y];
+        default:
+            return ((unsigned int*)source->pixels)[x+source->w*y];
+    }
+}
+
+void Controls::drawScaledText(SDL_Surface* screen, SDL_Surface* text, short x, short y, char factor) {
+    SDL_Rect rect={0,0,factor,factor};
+    SDL_LockSurface(text);
+    for(int i=0;i<text->w;i++)
+        for(int j=0;j<text->h;j++)
+        {
+            rect.x=x+i*factor;
+            rect.y=y+j*factor;
+            SDL_FillRect(screen,&rect,readPixel(text,i,j));
+        }
+    SDL_UnlockSurface(text);
 }
 
 void Controls::redefineRect(SDL_Rect* rect, int x, int y, int w, int h){

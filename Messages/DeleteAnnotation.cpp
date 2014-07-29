@@ -19,7 +19,7 @@ DeleteAnnotation::~DeleteAnnotation() {
 
 void DeleteAnnotation::paint(SDL_Surface *screen, ProtocolPreferences* prefs)
 {
-    //printf("Delete Annotation\n");
+    //printf("Deleted Annotation at (%d, %d)\n",x,y);
     deleteAnnotation(x,y);
     mustRedraw=true;
 }

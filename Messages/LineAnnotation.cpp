@@ -14,11 +14,10 @@ LineAnnotation::LineAnnotation(int timestamp, Inflater* in) {
     in->readShort(&startY);
     in->readShort(&endX);
     in->readShort(&endY);
-    printf("LineAnnotation at %d\n",timestamp);
 }
 
 void LineAnnotation::draw(SDL_Surface* screen, ProtocolPreferences* prefs) {
-    printf("Painted line from (%d,%d) to (%d,%d)\n",startX,startY,endX,endY);
+    //printf("Painted line from (%d,%d) to (%d,%d)\n",startX,startY,endX,endY);
     drawLine(screen,ColorConverter::getAnnotationColor(color,ProtocolPreferences::format),startX,startY,endX,endY);
 }
 

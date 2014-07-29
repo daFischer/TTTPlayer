@@ -14,6 +14,8 @@
 
 using namespace std;
 
+class WhiteboardMessage;
+
 class Annotation : public Message{
 public:
     Annotation();
@@ -27,13 +29,13 @@ public:
     static void drawLine(SDL_Surface *screen, Uint32 color, short startX, short startY, short endX, short endY);
     static ColorConverter con;
     static list<Annotation*> annotations;
+    static WhiteboardMessage* lastWhiteboard;
     
 protected:
     //static void addAnnotation(Annotation* annotation);
+    const static char linewidth=2;
     static void deleteAnnotation(int x, int y);
     
-private:
-
 };
 
 #endif	/* ANNOTATION_H */

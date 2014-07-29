@@ -9,7 +9,6 @@
 #define	CONTROLS_H
 
 #include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
 #include <sstream>
 
 #include "AudioInterface.h"
@@ -47,6 +46,8 @@ private:
     Uint32 emColor(Uint32);
     void redefineRect(SDL_Rect* rect, int x, int y, int w, int h);
     void changeVolume(float volume);
+    void drawScaledText(SDL_Surface* screen, SDL_Surface* text, short x, short y, char factor);
+    Uint32 readPixel(SDL_Surface* source, int x, int y);
 
     Video* video;
     AudioInterface* audio;
@@ -64,7 +65,6 @@ private:
     SDL_Surface* surfVolume;
     SDL_Surface* surfVolume2;
     SDL_Surface* surfFullscreen;
-    TTF_Font* font;
 };
 
 //#ifdef EMSCRIPTEN

@@ -9,6 +9,7 @@
 #include "Controls.h"
 #include "Messages/Annotation.h"
 #include "Messages/CursorMessage.h"
+#include "Messages/WhiteboardMessage.h"
 
 Video::Video(const char* path) {
     
@@ -21,7 +22,8 @@ Video::Video(const char* path) {
     Inflater* inflater=new Inflater(f);
     
     if(readServerInit(inflater))
-    printf("Video Initialization success: \n%s\n", prefs.name);
+        if(VERBOSE)
+            printf("Video Initialization success: \n%s\n", prefs.name);
     
     index=NULL;
     
@@ -43,10 +45,12 @@ Video::Video(const char* path) {
         m.pop_front();
     }
     
-    printf("Read %d messages successfully\n", numMessages);
+    if(VERBOSE)
+        printf("Read %d messages successfully\n", numMessages);
     delete(inflater);
     
-    printf("%d x %d, color depth: %d\n",prefs.framebufferWidth, prefs.framebufferHeight, prefs.bytesPerPixel);
+    if(VERBOSE)
+        printf("%d x %d, color depth: %d\n",prefs.framebufferWidth, prefs.framebufferHeight, prefs.bytesPerPixel);
     screen = SDL_SetVideoMode(prefs.framebufferWidth, prefs.framebufferHeight, prefs.bitsPerPixel, SDL_ANYFORMAT|SDL_DOUBLEBUF);
     //prefs.format->Amask=0xffffffff-screen->format->Rmask-screen->format->Gmask-screen->format->Bmask;
     rawScreen=SDL_CreateRGBSurface(screen->flags,screen->w,screen->h,screen->format->BitsPerPixel,screen->format->Rmask,screen->format->Gmask,screen->format->Bmask,0xffffffff-screen->format->Rmask-screen->format->Gmask-screen->format->Bmask);
@@ -71,7 +75,6 @@ void Video::update(int zeit, Controls* controls)
 {
     bool blitRaw=false;
     bool blitAnn=false;
-    Annotation* annotation;
     //check whether audio has restarted
     if(zeit<=2 && (currentMessage>0 && messages[currentMessage-1]->timestamp>zeit*1000+5000))
         currentMessage=0;
@@ -87,8 +90,7 @@ void Video::update(int zeit, Controls* controls)
         switch(messages[currentMessage]->type){
             case ANNOTATION:
                 blitAnn=true;
-                annotation=reinterpret_cast<Annotation*>(messages[currentMessage]);
-                annotation->paint(annScreen, &prefs);
+                messages[currentMessage]->paint(annScreen, &prefs);
                 break;
             case RAW:
                 blitRaw=true;
@@ -113,8 +115,8 @@ void Video::update(int zeit, Controls* controls)
     if(blitAnn)
     {
         //redraw annScreen if needed, doesn't matter which annotation does it
-        if(annotation->mustRedraw)
-            annotation->redraw(annScreen,&prefs);
+        if(Annotation::mustRedraw)
+            Annotation::redraw(annScreen,&prefs);
     }
     redrawScreen(controls, blitAnn||blitRaw);
 }
@@ -124,7 +126,10 @@ void Video::redrawScreen(Controls* controls, bool fully) {
     {
         //redraw screen completely
         SDL_Rect rect = {0,0,screen->w,controls->videoUpdate.y+controls->videoUpdate.h};
-        SDL_BlitSurface(rawScreen,&rect,screen,&rect);
+        if(WhiteboardMessage::number>0)
+            SDL_FillRect(screen,&rect,SDL_MapRGBA(ProtocolPreferences::format,0xff,0xff,0xff,0xff));
+        else
+            SDL_BlitSurface(rawScreen,&rect,screen,&rect);
         SDL_BlitSurface(annScreen,&rect,screen,&rect);
         if(CursorMessage::showCursor)
         {
@@ -137,7 +142,10 @@ void Video::redrawScreen(Controls* controls, bool fully) {
         if(lastThumbnail.w!=0)
         {
             //redraw screen where thumbnail was before
-            SDL_BlitSurface(rawScreen,&lastThumbnail,screen,&lastThumbnail);
+            if(WhiteboardMessage::number>0)
+                SDL_FillRect(screen,&lastThumbnail,SDL_MapRGBA(ProtocolPreferences::format,0xff,0xff,0xff,0xff));
+            else
+                SDL_BlitSurface(rawScreen,&lastThumbnail,screen,&lastThumbnail);
             SDL_BlitSurface(annScreen,&lastThumbnail,screen,&lastThumbnail);
             if(CursorMessage::showCursor)
             {
@@ -149,7 +157,10 @@ void Video::redrawScreen(Controls* controls, bool fully) {
         if(controls->videoUpdate.h!=0)
         {
             //only redraw the part that controls releases when moving downwards
-            SDL_BlitSurface(rawScreen,&controls->videoUpdate,screen,&controls->videoUpdate);
+            if(WhiteboardMessage::number>0)
+                SDL_FillRect(screen,&controls->videoUpdate,SDL_MapRGBA(ProtocolPreferences::format,0xff,0xff,0xff,0xff));
+            else
+                SDL_BlitSurface(rawScreen,&controls->videoUpdate,screen,&controls->videoUpdate);
             SDL_BlitSurface(annScreen,&controls->videoUpdate,screen,&controls->videoUpdate);
             if(CursorMessage::showCursor)
             {
@@ -191,20 +202,27 @@ void Video::seekPosition(int position, Controls* controls){
             max=(min+max)/2;
         else
             min=(min+max)/2+1;
-    currentMessage=min-1;
-    IndexEntry* indexEntry=index->lastBefore(messages[currentMessage]->timestamp);
+    min--;
+    IndexEntry* indexEntry=index->lastBefore(messages[min]->timestamp);
     int lastEntry=indexEntry->timestamp;
     
+    WhiteboardMessage::number=std::min(WhiteboardMessage::number,0);
     int firstAnnotation=0;
     int firstRaw=0;
     bool foundCursor=false;
-    for(int i= currentMessage;i>=0;i--)
+    for(int i= min;i>=0;i--)
     {
         //printf("%s\n",messages[i]->type);
         if(     (firstRaw!=0 || (lastEntry >= messages[i]->timestamp && indexEntry->hasImages)) &&
                 (firstAnnotation!=0 || !containsAnnotations) &&
                 (foundCursor || !containsCursorMessages))
             break;
+        if(i==currentMessage && currentMessage<=min)
+        {
+            firstRaw=std::max(i,firstRaw);
+            firstAnnotation=std::max(i,firstAnnotation);
+            break;
+        }
         
         switch(messages[i]->type){
             case ANNOTATION:
@@ -212,9 +230,8 @@ void Video::seekPosition(int position, Controls* controls){
                     firstAnnotation=i;
                 break;
             case RAW:
-                if(firstRaw==0 && (lastEntry < messages[i]->timestamp || !indexEntry->hasImages))
-                    if(messages[i]->completeScreen(prefs.framebufferWidth, prefs.framebufferHeight))
-                        firstRaw=i;
+                if((lastEntry >= messages[i]->timestamp && indexEntry->hasImages) || (firstRaw==0 && messages[i]->completeScreen(prefs.framebufferWidth, prefs.framebufferHeight)))
+                    firstRaw=i;
                 break;
             case CURSOR:
                 if(!foundCursor)
@@ -224,25 +241,30 @@ void Video::seekPosition(int position, Controls* controls){
         }
     }
     
-    //after the search, Annotations must be redrawn
-    Annotation::mustRedraw=true;
-    Annotation::annotations.clear();
-    
     //printf("IndexEntry at %d has%s Images\n",lastEntry, indexEntry->hasImages ? "" : " no");
     if(lastEntry>=messages[firstRaw]->timestamp && indexEntry->hasImages)
     {
         indexEntry->paintWaypoint(rawScreen);
         //firstRaw=lastEntry;
     }
-    for(int i=firstRaw;i<currentMessage;i++)
+    for(int i=firstRaw;i<min;i++)
         if(messages[i]->type==RAW)
             messages[i]->paint(rawScreen,&prefs);
     
-    for(int i=firstAnnotation;i<currentMessage;i++)
+    if(firstAnnotation!=currentMessage)
+    {
+        //after the search, Annotations must be redrawn
+        Annotation::mustRedraw=true;
+        Annotation::annotations.clear();
+    }
+    for(int i=firstAnnotation;i<min;i++)
         if(messages[i]->type==ANNOTATION)
             messages[i]->paint(annScreen,&prefs);
     
-    Annotation::redraw(annScreen,&prefs);
+    if(firstAnnotation!=currentMessage||Annotation::mustRedraw)
+        Annotation::redraw(annScreen,&prefs);
+    
+    currentMessage=min;
     
     redrawScreen(controls,true);
     
@@ -303,11 +325,10 @@ void Video::readExtensions(Inflater* in){
     in->readInt(&len);
     char tag;
     while (len > 0) {
-        printf("len=%d\n",len);
         in->readByte(&tag);
         switch(tag){
             case EXTENSION_INDEX_TABLE:
-                printf("read EXTENSION_INDEX_TABLE\n");
+                //printf("read EXTENSION_INDEX_TABLE\n");
                 int error;
                 // no original, but modified recording
                 original = false;

@@ -32,7 +32,7 @@ FreehandAnnotation::FreehandAnnotation(int timestamp, Inflater* in) {
 }
 
 void FreehandAnnotation::draw(SDL_Surface* screen, ProtocolPreferences* prefs) {
-    printf("Draw FreehandAnnotation\n");
+    //printf("Draw FreehandAnnotation\n");
     
     std::list<Point*>::iterator it=points.begin();
     short startX,startY,endX,endY;

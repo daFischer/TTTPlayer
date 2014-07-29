@@ -15,6 +15,7 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
+#include <SDL/SDL_ttf.h>
 
 #include <stdio.h>
 #include <fstream>
@@ -37,7 +38,7 @@ public:
     void loop();
     virtual ~Player();
     
-    //static TTF_Font* font;
+    static TTF_Font* font;
     
 private:
     AudioInterface *audio;

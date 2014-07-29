@@ -17,6 +17,7 @@
 #include "CursorPositionMessage.h"
 #include "LineAnnotation.h"
 #include "FreehandAnnotation.h"
+#include "HighlightAnnotation.h"
 
 int number;
 int total;
@@ -96,7 +97,7 @@ list<Message*> readMessages(Inflater* in, ProtocolPreferences* prefs){
 
             case ENCODINGWHITEBOARD:
                 containsWhiteboard = true;
-                message->type=RAW;
+                message->type=ANNOTATION;
                 break;
 
             case ENCODINGTTTRICHCURSOR:
@@ -155,9 +156,9 @@ Message* readMessage(Inflater* in, ProtocolPreferences* prefs){
             message = new RectangleAnnotation(timestamp, in);
             break;
 
-        /*case ANNOTATIONHIGHLIGHT:
+        case ANNOTATIONHIGHLIGHT:
             message = new HighlightAnnotation(timestamp, in);
-            break;*/
+            break;
 
         case ANNOTATIONLINE:
             message = new LineAnnotation(timestamp, in);
@@ -184,9 +185,7 @@ Message* readMessage(Inflater* in, ProtocolPreferences* prefs){
             break;
 
         case ENCODINGWHITEBOARD:
-            //TODO:test
-            printf("ENCODINGWHITEBOARD\n");
-            in->readByte(&byte);
+            in->readByte(&byte);//pageNumber
             message = new WhiteboardMessage(timestamp, byte, prefs);
             break;
 

@@ -24,7 +24,6 @@ public:
     
 private:
 
-    const static char linewidth=2;
     char color;
 };
 

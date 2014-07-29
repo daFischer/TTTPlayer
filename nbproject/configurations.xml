@@ -18,6 +18,7 @@
       <itemPath>Messages/EmptyMessage.h</itemPath>
       <itemPath>Messages/FreehandAnnotation.h</itemPath>
       <itemPath>Messages/HextileMessage.h</itemPath>
+      <itemPath>Messages/HighlightAnnotation.h</itemPath>
       <itemPath>Index.h</itemPath>
       <itemPath>IndexEntry.h</itemPath>
       <itemPath>Inflater.h</itemPath>
@@ -55,6 +56,7 @@
       <itemPath>Messages/EmptyMessage.cpp</itemPath>
       <itemPath>Messages/FreehandAnnotation.cpp</itemPath>
       <itemPath>Messages/HextileMessage.cpp</itemPath>
+      <itemPath>Messages/HighlightAnnotation.cpp</itemPath>
       <itemPath>Index.cpp</itemPath>
       <itemPath>IndexEntry.cpp</itemPath>
       <itemPath>Inflater.cpp</itemPath>
@@ -169,6 +171,10 @@
       <item path="Messages/HextileMessage.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Messages/HextileMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/HighlightAnnotation.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/HighlightAnnotation.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Messages/LineAnnotation.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -298,6 +304,10 @@
       <item path="Messages/HextileMessage.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Messages/HextileMessage.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Messages/HighlightAnnotation.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Messages/HighlightAnnotation.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Messages/LineAnnotation.cpp" ex="false" tool="1" flavor2="0">
       </item>
