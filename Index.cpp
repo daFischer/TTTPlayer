@@ -9,17 +9,22 @@
 #include "Inflater.h"
 
 Index::Index(Inflater* in, int numBytes) {
+    
+    this->numBytes=numBytes;
+    in->readShort(&entryNumber);
+    this->numBytes -= 2;
+}
+
+bool Index::readIndexEntry(Inflater* in) {
     int timestamp;
     unsigned char titleLength;
     char* title;
     int searchableLength;
     SizedArray* searchableArray;
     SDL_Surface* image;
-
-    short entryNumber;
-    in->readShort(&entryNumber);
-    numBytes -= 2;
-    for (int i = 0; i < entryNumber; i++) {
+    
+    if(entryNumber>0) {
+        entryNumber--;
         in->readInt(&timestamp);
         in->readByte((char*) &titleLength);
         title = in->readCharArray(titleLength, true);
@@ -31,14 +36,17 @@ Index::Index(Inflater* in, int numBytes) {
         numBytes -= 9 + titleLength + searchableLength;
         image = readThumbnail(in, &numBytes);
         index.push_back(new IndexEntry(title, timestamp, searchableArray, image));
+        return true;
     }
-
+    
     if (numBytes > 0) {
         printf("Index skipping %d bytes\n", numBytes);
         in->skipBytes(numBytes);
     }
     it = index.begin();
     //TODO: what if too many bytes have been read?
+    
+    return false;
 }
 
 Index::Index(Message** messages, int numMessages) {
@@ -161,9 +169,9 @@ SDL_Surface* Index::readThumbnail(Inflater* in, int* numBytes) {
     }
 }
 
-void Index::fillSurface(SDL_Surface* screen, Message** messages, int numMessages, ProtocolPreferences* prefs) {
+bool Index::fillSurface(SDL_Surface* screen, Message** messages, int numMessages, ProtocolPreferences* prefs) {
     if (it == index.end())
-        return;
+        return false;
 
     SDL_Surface* waypoint = SDL_CreateRGBSurface(SDL_ANYFORMAT, screen->w, screen->h, screen->format->BitsPerPixel, screen->format->Rmask, screen->format->Gmask, screen->format->Bmask, screen->format->Amask);
     if (it == index.begin()) {
@@ -184,6 +192,7 @@ void Index::fillSurface(SDL_Surface* screen, Message** messages, int numMessages
     (*it)->setWaypoint(waypoint);
 
     it++;
+    return true;
 }
 
 IndexEntry* Index::lastBefore(int timestamp) {

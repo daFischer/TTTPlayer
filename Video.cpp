@@ -16,10 +16,17 @@ Video::Video(const char* path) {
     original=true;
     failed=true;
     FILE* f = fopen (path , "r");
+    progress=0;
+    fseek(f,0,SEEK_END);
+    fileSize=ftell(f);
+    fseek(f,0,SEEK_SET);
+    
     fread(prefs.versionMsg, 1, 12, f);
     // TODO: test version
+    if(VERBOSE)
+        printf("File Version: %s",prefs.versionMsg);
     
-    Inflater* inflater=new Inflater(f);
+    inflater=new Inflater(f);
     
     if(readServerInit(inflater))
         if(VERBOSE)
@@ -27,48 +34,110 @@ Video::Video(const char* path) {
     
     index=NULL;
     
-    readExtensions(inflater);
-    if(inflater->readInt(&prefs.starttime)!=Z_OK)
-        return;
-    inflater->readInt(&prefs.starttime);
-    //printf("Sizeof long = %d\n",sizeof(long));
-    
-    //Start reading Messages
-    setUp();
-    list<Message*> m = readMessages(inflater, &prefs);
-    numMessages=m.size();
-    messages=(Message**) malloc(numMessages*sizeof(Message*));
-    currentMessage=0;
-    for(int i=0; i<numMessages; i++)
+    loadPhase=0;
+}
+
+void Video::showProgress() {
+    if(loadPhase<=7)
     {
-        messages[i] = m.front();
-        m.pop_front();
+        long int old=progress;
+        progress=inflater->getProgress();
+        if(progress/(fileSize/100)>old/(fileSize/100))
+#ifdef EMSCRIPTEN
+            EM_ASM_INT({
+                x_setProgress($0);
+                return 0;
+            },progress/(fileSize/100));
+#else
+            printf("%ld percent\n",progress/(fileSize/100));
+#endif
     }
-    
-    if(VERBOSE)
-        printf("Read %d messages successfully\n", numMessages);
-    delete(inflater);
-    
-    if(VERBOSE)
-        printf("%d x %d, color depth: %d\n",prefs.framebufferWidth, prefs.framebufferHeight, prefs.bytesPerPixel);
-    screen = SDL_SetVideoMode(prefs.framebufferWidth, prefs.framebufferHeight, prefs.bitsPerPixel, SDL_ANYFORMAT|SDL_DOUBLEBUF);
-    //prefs.format->Amask=0xffffffff-screen->format->Rmask-screen->format->Gmask-screen->format->Bmask;
-    rawScreen=SDL_CreateRGBSurface(screen->flags,screen->w,screen->h,screen->format->BitsPerPixel,screen->format->Rmask,screen->format->Gmask,screen->format->Bmask,0xffffffff-screen->format->Rmask-screen->format->Gmask-screen->format->Bmask);
-    prefs.format=rawScreen->format;
-    if(containsAnnotations)
-    {
-        annScreen=SDL_CreateRGBSurface(screen->flags,screen->w,screen->h,screen->format->BitsPerPixel,screen->format->Rmask,screen->format->Gmask,screen->format->Bmask,0xffffffff-screen->format->Rmask-screen->format->Gmask-screen->format->Bmask);
+}
+
+bool Video::loadAsync() {
+    showProgress();
+    long int old;
+    switch(loadPhase){
+        case 0:
+            readExtension(inflater);
+            break;
+        case 1: //IndexExtension has been found
+            for(int i=0;i<10;i++)
+            if(!index->readIndexEntry(inflater))
+                {
+                    loadPhase=0;    // read the next extension
+                    break;
+                }
+            break;
+            
+             //keeping space for extensions that might be added in the future
+        case 5:
+            if(inflater->readInt(&prefs.starttime)!=Z_OK)
+                return false;
+            inflater->readInt(&prefs.starttime);
+            //printf("Sizeof long = %d\n",sizeof(long));
+
+            //Start reading Messages
+            loadPhase++;
+        case 6:
+            old=progress;
+            do{
+                for(int i=0;i<30;i++)
+                    if(!readMessages(&m, inflater, &prefs))
+                    {
+                        loadPhase++;
+                        return failed;
+                    }
+            }while(inflater->getProgress()/(fileSize/100)<=old/(fileSize/100));
+            break;
+        case 7:
+            delete(inflater);
+            inflater=NULL;
+            numMessages=m.size();
+            messages=(Message**) malloc(numMessages*sizeof(Message*));
+            currentMessage=0;
+            for(int i=0; i<numMessages; i++)
+            {
+                messages[i] = m.front();
+                m.pop_front();
+            }
+
+            if(VERBOSE)
+                printf("Read %d messages successfully\n", numMessages);
+
+            if(VERBOSE)
+                printf("%d x %d, color depth: %d\n",prefs.framebufferWidth, prefs.framebufferHeight, prefs.bytesPerPixel);
+            screen = SDL_SetVideoMode(prefs.framebufferWidth, prefs.framebufferHeight, prefs.bitsPerPixel, SDL_ANYFORMAT|SDL_DOUBLEBUF);
+            //prefs.format->Amask=0xffffffff-screen->format->Rmask-screen->format->Gmask-screen->format->Bmask;
+            rawScreen=SDL_CreateRGBSurface(screen->flags,screen->w,screen->h,screen->format->BitsPerPixel,screen->format->Rmask,screen->format->Gmask,screen->format->Bmask,0xffffffff-screen->format->Rmask-screen->format->Gmask-screen->format->Bmask);
+            prefs.format=rawScreen->format;
+            if(containsAnnotations)
+            {
+                annScreen=SDL_CreateRGBSurface(screen->flags,screen->w,screen->h,screen->format->BitsPerPixel,screen->format->Rmask,screen->format->Gmask,screen->format->Bmask,0xffffffff-screen->format->Rmask-screen->format->Gmask-screen->format->Bmask);
+            }
+
+            if (screen == NULL)
+            {
+                printf("Unable to set video mode: %s\n", SDL_GetError());
+                return false;
+            }
+            if(index==NULL)
+                index=new Index(messages,numMessages);
+            lastThumbnail.w=0;
+            loadPhase=8;
+        case 8:
+            for(int i=0;i<3;i++)
+                if(!index->fillSurface(screen,messages,numMessages,&prefs))
+                {
+                    loadPhase=9;
+                    break;
+                }
+            break;
+        case 9:
+            failed=false;
+            break;
     }
-    
-    if (screen == NULL)
-    {
-        printf("Unable to set video mode: %s\n", SDL_GetError());
-        return;
-    }
-    if(index==NULL)
-        index=new Index(messages,numMessages);
-    lastThumbnail.w=0;
-    failed=false;
+    return failed;
 }
 
 void Video::update(int zeit, Controls* controls)
@@ -79,14 +148,12 @@ void Video::update(int zeit, Controls* controls)
     if(zeit<=2 && (currentMessage>0 && messages[currentMessage-1]->timestamp>zeit*1000+5000))
         currentMessage=0;
     
-    if(zeit>=2)
-        index->fillSurface(screen,messages,numMessages,&prefs);
-    
     while(currentMessage<numMessages)
     {
         if(messages[currentMessage]->timestamp > zeit*1000)
             break;
-        //printf("%d\n",messages[currentMessage]->encoding);
+        if(zeit>445 && zeit<460)
+            printf("message: %d\n",messages[currentMessage]->encoding);
         switch(messages[currentMessage]->type){
             case ANNOTATION:
                 blitAnn=true;
@@ -216,7 +283,11 @@ void Video::seekPosition(int position, Controls* controls){
         if(     (firstRaw!=0 || (lastEntry >= messages[i]->timestamp && indexEntry->hasImages)) &&
                 (firstAnnotation!=0 || !containsAnnotations) &&
                 (foundCursor || !containsCursorMessages))
+        {
+            firstRaw=std::max(i,firstRaw);
+            firstAnnotation=std::max(i,firstAnnotation);
             break;
+        }
         if(i==currentMessage && currentMessage<=min)
         {
             firstRaw=std::max(i,firstRaw);
@@ -230,7 +301,7 @@ void Video::seekPosition(int position, Controls* controls){
                     firstAnnotation=i;
                 break;
             case RAW:
-                if((lastEntry >= messages[i]->timestamp && indexEntry->hasImages) || (firstRaw==0 && messages[i]->completeScreen(prefs.framebufferWidth, prefs.framebufferHeight)))
+                if((lastEntry < messages[i]->timestamp || !indexEntry->hasImages) && (firstRaw==0 && messages[i]->completeScreen(prefs.framebufferWidth, prefs.framebufferHeight)))
                     firstRaw=i;
                 break;
             case CURSOR:
@@ -245,24 +316,25 @@ void Video::seekPosition(int position, Controls* controls){
     if(lastEntry>=messages[firstRaw]->timestamp && indexEntry->hasImages)
     {
         indexEntry->paintWaypoint(rawScreen);
-        //firstRaw=lastEntry;
     }
     for(int i=firstRaw;i<min;i++)
         if(messages[i]->type==RAW)
             messages[i]->paint(rawScreen,&prefs);
     
-    if(firstAnnotation!=currentMessage)
-    {
-        //after the search, Annotations must be redrawn
-        Annotation::mustRedraw=true;
-        Annotation::annotations.clear();
+    if(containsAnnotations){
+        if(firstAnnotation!=currentMessage)
+        {
+            //after the search, Annotations must be redrawn
+            Annotation::mustRedraw=true;
+            Annotation::annotations.clear();
+        }
+        for(int i=firstAnnotation;i<min;i++)
+            if(messages[i]->type==ANNOTATION)
+                messages[i]->paint(annScreen,&prefs);
+
+        if(firstAnnotation!=currentMessage||Annotation::mustRedraw)
+            Annotation::redraw(annScreen,&prefs);
     }
-    for(int i=firstAnnotation;i<min;i++)
-        if(messages[i]->type==ANNOTATION)
-            messages[i]->paint(annScreen,&prefs);
-    
-    if(firstAnnotation!=currentMessage||Annotation::mustRedraw)
-        Annotation::redraw(annScreen,&prefs);
     
     currentMessage=min;
     
@@ -308,23 +380,27 @@ bool readServerInit(Inflater* in)
     in->readByte(&prefs.greenShift);
     in->readByte(&prefs.blueShift);
     
-    for(int i=0;i<3;i++)        //padding
-        in->readByte(&toRead);
+    in->skipBytes(3);        //padding
     
     int nameLength;
     if(in->readInt(&nameLength)==Z_OK)
     {
         prefs.name=in->readCharArray(nameLength,true);
+        
+        // For some reason sometimes nameLength is 1 larger than it should be
+        // In that case we have to give a byte back, or the Inflater becomes corrupt.
+        if(nameLength>strlen(prefs.name))
+            in->addChar(0);
         return true;
     }
     return false;
 }
 
-void Video::readExtensions(Inflater* in){
+void Video::readExtension(Inflater* in){
     int len;
     in->readInt(&len);
     char tag;
-    while (len > 0) {
+    if (len > 0) {
         in->readByte(&tag);
         switch(tag){
             case EXTENSION_INDEX_TABLE:
@@ -333,6 +409,7 @@ void Video::readExtensions(Inflater* in){
                 // no original, but modified recording
                 original = false;
                 index=new Index(in, len-1);
+                loadPhase=1;
                 break;
                 
                 //TODO: EXTENSION_SEARCHBASE_TABLE_WITH_COORDINATES
@@ -352,8 +429,9 @@ void Video::readExtensions(Inflater* in){
                 }
                 break;
         }
-        in->readInt(&len);
     }
+    else
+        loadPhase=5;
 }
 
 Video::~Video() {

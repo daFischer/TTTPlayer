@@ -48,20 +48,27 @@ void setUp(){
     containsWhiteboard = false;
 }
 
-list<Message*> readMessages(Inflater* in, ProtocolPreferences* prefs){
-    list<Message*> messages;
-    Message* message;
-    int timestamp = 0;
+bool readMessages(list<Message*>* messages, Inflater* in, ProtocolPreferences* prefs){
+    int timestamp;
+    if(messages->size()==0)
+    {
+        setUp();
+        timestamp = 0;
+    }
+    else
+        timestamp=messages->back()->timestamp;
     
-    while(!in->endOfFile()){
+    Message* message;
+    
+    if(!in->endOfFile()){
         // TODO: show progress
         message=readMessage(in, prefs);
         if(message==NULL)//empty message
         {
-            continue;
+            return true;
         }
         // TODO: maybe adding additional timestamp is better suited
-        if (messages.size() == 0)
+        if (messages->size() == 0)
             message->timestamp = 0;
         
         // use previous timestamp if unset
@@ -74,12 +81,9 @@ list<Message*> readMessages(Inflater* in, ProtocolPreferences* prefs){
             //Maybe output the change for debugging?
             message->timestamp = timestamp;
         }
-        
-        // keep timestamp
-        timestamp = message->timestamp;
 
         // add message to message array
-        messages.push_back(message);
+        messages->push_back(message);
         
         // set flags
         switch (message->encoding) {
@@ -118,9 +122,10 @@ list<Message*> readMessages(Inflater* in, ProtocolPreferences* prefs){
                 printf("Error: message with encoding %d gets no type?\n",message->encoding);
                 break;
         }
+        return true;
     }
-    //printf("#Messages: %d\n",messages.size());
-    return messages;
+    //printf("#Messages: %d\n",messages->size());
+    return false;
 }
 
 Message* readMessage(Inflater* in, ProtocolPreferences* prefs){

@@ -26,7 +26,8 @@ public:
     Index(Message** messages, int numMessages);
     virtual ~Index();
     IndexEntry* lastBefore(int timestamp);
-    void fillSurface(SDL_Surface* screen, Message** messages, int numMessages, ProtocolPreferences* prefs);
+    bool fillSurface(SDL_Surface* screen, Message** messages, int numMessages, ProtocolPreferences* prefs);
+    bool readIndexEntry(Inflater* in);
     
 private:
     //void fillSurfaces(SDL_Surface* screen, Message** messages, int numMessages, ProtocolPreferences* prefs);
@@ -34,6 +35,9 @@ private:
     list<IndexEntry*> index;
     std::list<IndexEntry*>::iterator it;
     int currentMessage;
+    
+    short entryNumber;
+    int numBytes;
 };
 
 #endif	/* INDEXEXTENSION_H */

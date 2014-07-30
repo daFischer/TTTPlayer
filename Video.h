@@ -32,8 +32,8 @@ using namespace std;
 class Video {
 public:
     Video(const char* path);
-    //Video(const Video& orig);
     virtual ~Video();
+    bool loadAsync();
     void update(int zeit, Controls* controls);
     void redrawScreen(Controls* controls, bool fully);
     void toggleFullscreen();
@@ -44,17 +44,25 @@ public:
     bool hasThumbnails;
     
 private:    
+    void readExtension(Inflater* in);
+    void showProgress();
+    long int fileSize;
+    long int progress;
+    
     SDL_Surface* screen;			//Pointer to the main screen surface
     SDL_Surface* rawScreen;                     //Pointer to screen for messages with type RAW
     SDL_Surface* annScreen;                     //Screen that buffers Annotations
+    list<Message*> m;
     Message** messages;
     int numMessages;
     int currentMessage;
-    void readExtensions(Inflater* in);
     Index* index;
     SDL_Rect lastThumbnail;
     bool original;
     ProtocolPreferences prefs;
+    
+    Inflater* inflater;
+    char loadPhase;
 };
 bool readServerInit(Inflater* in);
 

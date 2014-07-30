@@ -6,7 +6,7 @@ int main()
 #ifdef EMSCRIPTEN
     char* memory = (char*) EM_ASM_INT({
         var x_memory = _malloc(x_filename.length+1); //TODO: Ensure x_filename is ASCII
-        writeStringToMemory(x_filename, x_memory);
+        writeAsciiToMemory(x_filename, x_memory);
         return x_memory;
     },0);
     filename=memory;

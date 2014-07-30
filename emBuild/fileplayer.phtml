@@ -3,20 +3,36 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Emscripten-Generated Code</title>
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <title>Html5 TTT-Player</title>
     <style>
       body {
         font-family: arial;
+      }
+      html, body {
+        /* get rid of default spacing on the edges */
         margin: 0;
-        padding: none;
+        padding: 0;
+        border: 0;
+        height: 100%;
+        /* Don't show a scrool-bar */
+        overflow: hidden;
       }
 
       .emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
       div.emscripten { text-align: center; }      
-      div.emscripten_border { border: 1px solid black; display: inline-block;}
+      div.emscripten_border {
+        border: 0px none;
+        height: 100%;
+      }
       /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
       canvas.emscripten {
         border: 0px none;
+        height: 100%;
       }
       #audioplayer {
         border:0px none;
@@ -108,8 +124,8 @@
   </head>
   <body>
 
-    <div class="spinner" id='spinner'></div>
-    <div class="emscripten" id="status">Downloading...</div>
+    <div class="spinner" id='spinner' style="display:none"></div>
+    <div class="emscripten" id="status" style="display:none">Downloading...</div>
 
 <!-- <span id='controls'>
   <span><input type="checkbox" id="resize">Resize canvas</span>
@@ -118,13 +134,13 @@
   </span>
 </span> -->
 
-    <div class="emscripten">
+    <div class="emscripten" style="display:none">
       <progress value="0" max="100" id="progress" hidden=1></progress>
     </div>
 
     <script type='text/javascript'>
       var x_filename="<?php $name=$_GET['name']; echo $name; ?>";
-      var x_path="TTT";
+      var x_path='<?php if(!isset($_GET["path"])) echo "TTT"; else echo $_GET["path"]; ?>'
     </script>
 
     <div class="emscripten_border" id="canvas_div">
@@ -137,7 +153,7 @@
 
 
 
-    <textarea id="output" rows="8"></textarea>
+    <textarea id="output" rows="8" style="display:none"></textarea>
 
     <script type='text/javascript'>
       var statusElement = document.getElementById('status');

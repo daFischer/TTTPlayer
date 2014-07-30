@@ -8,10 +8,6 @@
 #ifndef AUDIOINTERFACE_H
 #define	AUDIOINTERFACE_H
 
-#ifndef _STDIO_H
-using namespace std;
-#endif
-
 using namespace std;
 
 class AudioInterface {

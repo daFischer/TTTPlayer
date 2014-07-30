@@ -37,6 +37,12 @@ public:
     Player(const char*, const char*);
     void loop();
     virtual ~Player();
+#ifdef EMSCRIPTEN
+    static void loadAsync();
+#else
+    static bool loadAsync();
+#endif
+    void videoCallback();
     
     static TTF_Font* font;
     

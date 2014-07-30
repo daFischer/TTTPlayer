@@ -40,7 +40,7 @@ extern bool containsCursorMessages;
 extern bool containsAnnotations;
 extern bool containsWhiteboard;
 
-extern list<Message*> readMessages(Inflater* in, ProtocolPreferences* prefs);
+extern bool readMessages(list<Message*>* messages, Inflater* in, ProtocolPreferences* prefs);
 extern Message* readMessage(Inflater* in, ProtocolPreferences* prefs);
 extern void setUp();
 

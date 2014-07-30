@@ -31,6 +31,9 @@ public:
     //bool readLong(long* s);
     bool skipBytes(int number);
     bool endOfFile();
+    long int getProgress();
+    
+    void addChar(char c);
     
 private:
     FILE* source;
@@ -39,6 +42,8 @@ private:
     int outOffset;
     int ret;
     z_stream strm;
+    
+    string addedChars;
     
 };
 

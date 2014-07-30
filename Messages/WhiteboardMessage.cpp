@@ -26,7 +26,7 @@ WhiteboardMessage::~WhiteboardMessage() {
 
 void WhiteboardMessage::paint(SDL_Surface *screen, ProtocolPreferences* prefs)
 {
-    printf("paint Whiteboard at %d\n",timestamp);
+    //printf("paint Whiteboard at %d\n",timestamp);
     mustRedraw=true;
     annotations.clear();
     if(pageNumber>0)

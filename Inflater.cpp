@@ -75,13 +75,19 @@ Inflater::~Inflater()
 
 bool Inflater::readByte(char* Byte)
 {
+    if(addedChars.size()>0)
+    {
+        *Byte=addedChars[0];
+        addedChars=addedChars.substr(1);
+        return ret;
+    }
     if (ret != Z_OK)
     {
         //printf("Video Inflation failed: %d\n",ret);
         *Byte=0;
         return Z_ERRNO;
     }
-    if(outOffset >= CHUNK - strm.avail_out)      //Array out has to be refilled
+    while(outOffset >= CHUNK - strm.avail_out)      //Array out has to be refilled
     {
         //printf("Refill Array out, %d\n", ret);
         if (ret == Z_STREAM_END)
@@ -212,6 +218,13 @@ bool Inflater::skipBytes(int number) {
     return r;
 }
 
+void Inflater::addChar(char c) {
+    addedChars+=c;
+}
+
+long int Inflater::getProgress() {
+    return ftell(source);
+}
 
 bool Inflater::endOfFile(){
     return ret!=Z_OK;

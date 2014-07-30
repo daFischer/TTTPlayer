@@ -64,7 +64,27 @@ var x_audioLoaded=function(){
 
 }
 
-
+var x_setProgress=function(percentage)
+{
+	if(percentage<100)
+	{
+		x_progress=document.getElementById('x_progress');
+		x_progress.value=percentage;
+	}
+	else
+	{
+		x_remove=document.getElementById('x_progress_div');
+		x_remove.style.display="none";
+		x_remove=document.getElementById('progress_div');
+		x_remove.style.display="none";
+		x_remove=document.getElementById('spinner');
+		x_remove.style.display="none";
+		x_remove=document.getElementById('status');
+		x_remove.style.display="none";
+		x_remove=document.getElementById('output');
+		x_remove.style.display="none";
+	}
+}
 
 var x_getPath=function(end){
 	return x_path+"/"+x_filename+"_a/"+x_filename+"."+end;
@@ -73,3 +93,9 @@ var x_setAudioSource=function(){
 	x_audio.innerHTML='<source src="'+x_getPath("ogg")+'" type="audio/ogg"><source src="'+x_getPath("mp3")+'" type="audio/mp3"><source src="'+x_getPath("wav")+'" type="audio/wav">Your browser does not support the audio element.';
 }
 x_setAudioSource();
+
+
+var x_resizeCanvas = function(){
+	var x_canvas_div=document.getElementById('canvas_div');
+}
+window.onresize=x_resizeCanvas;

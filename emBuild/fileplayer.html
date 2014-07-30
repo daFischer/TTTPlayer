@@ -7,16 +7,27 @@
     <style>
       body {
         font-family: arial;
+      }
+      html, body {
+        /* get rid of default spacing on the edges */
         margin: 0;
-        padding: none;
+        padding: 0;
+        border: 0;
+        height: 100%;
+        /* Don't show a scrool-bar */
+        overflow: hidden;
       }
 
       .emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
       div.emscripten { text-align: center; }      
-      div.emscripten_border { border: 1px solid black;}
+      div.emscripten_border {
+        border: 0px none;
+        height: 100%;
+      }
       /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
       canvas.emscripten {
         border: 0px none;
+        height: 100%;
       }
       #audioplayer {
         border:0px none;
@@ -118,13 +129,16 @@
   </span>
 </span> -->
 
-    <div class="emscripten">
-      <progress value="0" max="100" id="progress" hidden=1></progress>
+    <div class="emscripten" id="progress_div">
+      <progress value="0" max="100" id="progress"></progress>
+    </div>
+    <div id="x_progress_div">
+      <progress value="0" max="100" id="x_progress" style="width:100%"></progress>
     </div>
 
     <script type='text/javascript'>
       var x_path="TTT";
-      var x_filename="Programmiersprachen_2013_10_21"; //"<?php $path=$_GET['path']; echo $path; ?>"
+      var x_filename="Diskrete_Strukturen_2013_11_21"; //"<?php $path=$_GET['path']; echo $path; ?>"
     </script>
 
     <div class="emscripten_border" id="canvas_div">

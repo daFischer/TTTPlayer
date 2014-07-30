@@ -45,16 +45,52 @@ Player::Player(const char* cpath, const char* cfilename) {
         return;
     }
     
-    video=new Video((path+"/"+filename+"_a/"+filename+".ttt").c_str());
 #ifdef EMSCRIPTEN
     audio=new AudioJS();
 #else
     audio=new Audio((path+"/"+filename+"_a/"+filename).c_str());
 #endif
     
-    if(video->failed||audio->hasFailed())
+    if(audio->hasFailed())
     {
-        printf("Audio failed: %s\nVideo failed: %s\n",audio->hasFailed() ? "true" : "false",video->failed ? "true" : "false");
+        printf("Audio failed.\n");
+        return;
+    }
+    
+    video=new Video((path+"/"+filename+"_a/"+filename+".ttt").c_str());
+#ifdef EMSCRIPTEN
+    emscripten_set_main_loop(loadAsync,0,0);
+#else
+    while(loadAsync()){}
+#endif
+}
+
+#ifdef EMSCRIPTEN
+void Player::loadAsync() {
+    if(player->video->loadAsync())
+        return;    //continue loading
+    else        //finished loading
+    {
+        emscripten_cancel_main_loop();
+        player->videoCallback();
+    }
+}
+#else
+bool Player::loadAsync() {
+    if(player->video->loadAsync())
+        return true;    //continue loading
+    else        //finished loading
+    {
+        player->videoCallback();
+        return false;
+    }
+}
+#endif
+
+void Player::videoCallback() {
+    if(video->failed)
+    {
+        printf("Video failed.\n");
         return;
     }
     
