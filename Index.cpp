@@ -15,40 +15,6 @@ Index::Index(Inflater* in, int numBytes) {
     this->numBytes -= 2;
 }
 
-bool Index::readIndexEntry(Inflater* in) {
-    int timestamp;
-    unsigned char titleLength;
-    char* title;
-    int searchableLength;
-    SizedArray* searchableArray;
-    SDL_Surface* image;
-    
-    if(entryNumber>0) {
-        entryNumber--;
-        in->readInt(&timestamp);
-        in->readByte((char*) &titleLength);
-        title = in->readCharArray(titleLength, true);
-        title[titleLength] = 0;
-        in->readInt(&searchableLength);
-        searchableArray = new SizedArray(searchableLength);
-        in->readSizedArray(searchableArray);
-
-        numBytes -= 9 + titleLength + searchableLength;
-        image = readThumbnail(in, &numBytes);
-        index.push_back(new IndexEntry(title, timestamp, searchableArray, image));
-        return true;
-    }
-    
-    if (numBytes > 0) {
-        printf("Index skipping %d bytes\n", numBytes);
-        in->skipBytes(numBytes);
-    }
-    it = index.begin();
-    //TODO: what if too many bytes have been read?
-    
-    return false;
-}
-
 Index::Index(Message** messages, int numMessages) {
     if (VERBOSE)
         printf("\ncompute index table:\n");
@@ -169,12 +135,57 @@ SDL_Surface* Index::readThumbnail(Inflater* in, int* numBytes) {
     }
 }
 
+bool Index::readIndexEntry(Inflater* in) {
+    int timestamp;
+    unsigned char titleLength;
+    char* title;
+    int searchableLength;
+    SizedArray* searchableArray;
+    SDL_Surface* image;
+    
+    if(entryNumber>0) {
+        entryNumber--;
+        in->readInt(&timestamp);
+        in->readByte((char*) &titleLength);
+        title = in->readCharArray(titleLength, true);
+        title[titleLength] = 0;
+        in->readInt(&searchableLength);
+        searchableArray = new SizedArray(searchableLength);
+        in->readSizedArray(searchableArray);
+
+        numBytes -= 9 + titleLength + searchableLength;
+        image = readThumbnail(in, &numBytes);
+        index.push_back(new IndexEntry(title, timestamp, searchableArray, image));
+        return true;
+    }
+    
+    if (numBytes > 0) {
+        printf("Index skipping %d bytes\n", numBytes);
+        in->skipBytes(numBytes);
+    }
+    it = index.begin();
+    //TODO: what if too many bytes have been read?
+    
+    return false;
+}
+
+/* Video calls this when a not yet filled IndexEntry needs to be filled immediately
+ */
+void Index::loadUntil(IndexEntry* entry, SDL_Surface* screen, Message** messages, int numMessages, ProtocolPreferences* prefs) {
+    if(VERBOSE)
+        printf("Loading IndexEntries from %d s until %d s\n",(*it)->timestamp/1000,entry->timestamp/1000);
+    for(; it!=index.end() && (*it)->timestamp<=entry->timestamp;)//it is incremented in fill'Surface
+        fillSurface(screen,messages,numMessages,prefs);
+}
+
+
 bool Index::fillSurface(SDL_Surface* screen, Message** messages, int numMessages, ProtocolPreferences* prefs) {
     if (it == index.end())
         return false;
 
     SDL_Surface* waypoint = SDL_CreateRGBSurface(SDL_ANYFORMAT, screen->w, screen->h, screen->format->BitsPerPixel, screen->format->Rmask, screen->format->Gmask, screen->format->Bmask, screen->format->Amask);
     if (it == index.begin()) {
+        printf("First Message for IndexEntry\n");
         currentMessage = 0;
     } else {
         it--;
@@ -192,12 +203,16 @@ bool Index::fillSurface(SDL_Surface* screen, Message** messages, int numMessages
     (*it)->setWaypoint(waypoint);
 
     it++;
+    if (it == index.end())
+        progress=-1;
+    else
+        progress=(*it)->timestamp;
     return true;
 }
 
 IndexEntry* Index::lastBefore(int timestamp) {
     for (std::list<IndexEntry*>::reverse_iterator it = index.rbegin(); it != index.rend(); it++)
-        if ((*it)->timestamp <= timestamp && (*it)->hasImages)
+        if ((*it)->timestamp <= timestamp)
         {
             return (IndexEntry*) * it;
         }

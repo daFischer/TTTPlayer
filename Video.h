@@ -56,9 +56,11 @@ private:
     Message** messages;
     int numMessages;
     int currentMessage;
+    
     Index* index;
     SDL_Rect lastThumbnail;
     bool original;
+    int lastTime;
     ProtocolPreferences prefs;
     
     Inflater* inflater;

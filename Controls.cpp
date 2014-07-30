@@ -17,6 +17,7 @@ Controls::Controls(Video* video, AudioInterface* audio) {
     
     duration=audio->getDuration();
     ProtocolPreferences prefs;
+    progress=0;
     
     //TODO: might make these relative to video's height
     timeLineHeight=16;
@@ -192,6 +193,11 @@ void Controls::draw(SDL_Surface *screen, bool hasDrawn){
     //timeLine background
     redefineRect(&rect, 0, y, width, timeLineHeight);
     SDL_FillRect(screen, &rect, emColor(0x333333));
+    if(progress>=0)
+    {
+        redefineRect(&rect, progress/1000*width/duration, y, width-progress/1000*width/duration, timeLineHeight);
+        SDL_FillRect(screen, &rect, emColor(0x000000));
+    }
     
     int currentPosition=audio->getPosition();
     //timeLine foreground
@@ -228,11 +234,11 @@ void Controls::draw(SDL_Surface *screen, bool hasDrawn){
         SDL_BlitSurface(times,NULL,screen,&rect);
         SDL_FreeSurface(times);
         TTF_SetFontOutline(Player::font,0);*/
-        times=TTF_RenderText_Solid(Player::font,oss2.str().c_str(),black);
+        times=TTF_RenderText_Solid(Player::font,oss2.str().c_str(),white);
 #ifdef EMSCRIPTEN
-        drawScaledText(screen,times,max(0,min(width-times->w*2,mouseX-times->w - 2)),y-22,2);
+        drawScaledText(screen,times,max(0,min(width-times->w*2,mouseX-times->w - 2)),y,2);
 #else
-        redefineRect(&rect,max(0,min(width-times->w,mouseX-times->w/2 - 2)),y-24,times->w+4,times->h+4);
+        redefineRect(&rect,max(0,min(width-times->w,mouseX-times->w/2 - 2)),y-3,times->w+4,times->h+4);
         SDL_BlitSurface(times,NULL,screen,&rect);
 #endif
         SDL_FreeSurface(times);

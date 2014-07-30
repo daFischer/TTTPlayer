@@ -124,35 +124,43 @@ bool Video::loadAsync() {
             if(index==NULL)
                 index=new Index(messages,numMessages);
             lastThumbnail.w=0;
-            loadPhase=8;
-        case 8:
+            loadPhase=9;
+        /*case 8:               //Inefficient, instead using gradual or "Just In Time" (when needed) filling of Surfaces
             for(int i=0;i<3;i++)
                 if(!index->fillSurface(screen,messages,numMessages,&prefs))
                 {
                     loadPhase=9;
                     break;
                 }
-            break;
+            break;*/
         case 9:
+            lastTime=1;
             failed=false;
             break;
     }
     return failed;
 }
 
-void Video::update(int zeit, Controls* controls)
+void Video::update(int time, Controls* controls)
 {
     bool blitRaw=false;
     bool blitAnn=false;
     //check whether audio has restarted
-    if(zeit<=2 && (currentMessage>0 && messages[currentMessage-1]->timestamp>zeit*1000+5000))
+    if(time<=2 && (currentMessage>0 && messages[currentMessage-1]->timestamp>time*1000+5000))
         currentMessage=0;
+    
+    if(time-lastTime>=1)        //only fill IndexEntries every second to avoid slowness
+    {
+        lastTime=time;
+        index->fillSurface(screen,messages,numMessages,&prefs);
+        controls->progress=index->progress;
+    }
     
     while(currentMessage<numMessages)
     {
-        if(messages[currentMessage]->timestamp > zeit*1000)
+        if(messages[currentMessage]->timestamp > time*1000)
             break;
-        if(zeit>445 && zeit<460)
+        if(time>445 && time<460)
             printf("message: %d\n",messages[currentMessage]->encoding);
         switch(messages[currentMessage]->type){
             case ANNOTATION:
@@ -270,8 +278,18 @@ void Video::seekPosition(int position, Controls* controls){
         else
             min=(min+max)/2+1;
     min--;
-    IndexEntry* indexEntry=index->lastBefore(messages[min]->timestamp);
+    if(VERBOSE)
+        printf("Seeking position at %d seconds. Last message was at %d seconds.\n",position,messages[min]->timestamp/1000);
+    
+    IndexEntry* indexEntry=index->lastBefore(position*1000);
     int lastEntry=indexEntry->timestamp;
+    if(VERBOSE)
+        printf("Last IndexEntry was at %d seconds\n",lastEntry/1000);
+    if(!indexEntry->hasImages)
+    {
+        index->loadUntil(indexEntry,screen,messages,numMessages,&prefs);
+        controls->progress=index->progress;
+    }
     
     WhiteboardMessage::number=std::min(WhiteboardMessage::number,0);
     int firstAnnotation=0;
@@ -280,7 +298,7 @@ void Video::seekPosition(int position, Controls* controls){
     for(int i= min;i>=0;i--)
     {
         //printf("%s\n",messages[i]->type);
-        if(     (firstRaw!=0 || (lastEntry >= messages[i]->timestamp && indexEntry->hasImages)) &&
+        if(     (firstRaw!=0 || (lastEntry >= messages[i]->timestamp)) &&
                 (firstAnnotation!=0 || !containsAnnotations) &&
                 (foundCursor || !containsCursorMessages))
         {
@@ -301,7 +319,7 @@ void Video::seekPosition(int position, Controls* controls){
                     firstAnnotation=i;
                 break;
             case RAW:
-                if((lastEntry < messages[i]->timestamp || !indexEntry->hasImages) && (firstRaw==0 && messages[i]->completeScreen(prefs.framebufferWidth, prefs.framebufferHeight)))
+                if(firstRaw==0 && ((lastEntry >= messages[i]->timestamp) || messages[i]->completeScreen(prefs.framebufferWidth, prefs.framebufferHeight)))
                     firstRaw=i;
                 break;
             case CURSOR:
@@ -311,9 +329,11 @@ void Video::seekPosition(int position, Controls* controls){
                 break;
         }
     }
+    if(VERBOSE)
+        printf("Redrawing raw messages beginning at %d s,\nAnnotations at %d s\n\n",messages[firstRaw]->timestamp/1000,messages[firstAnnotation]->timestamp/1000);
     
     //printf("IndexEntry at %d has%s Images\n",lastEntry, indexEntry->hasImages ? "" : " no");
-    if(lastEntry>=messages[firstRaw]->timestamp && indexEntry->hasImages)
+    if(lastEntry>=messages[firstRaw]->timestamp)
     {
         indexEntry->paintWaypoint(rawScreen);
     }

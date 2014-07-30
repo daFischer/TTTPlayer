@@ -27,13 +27,14 @@ public:
     
     int timestamp;
     bool hasImages;
+    bool hasThumbnail;
     
 private:
     SDL_Surface* scaleDownSurface(SDL_Surface* source, char factor);
     
     char* title;
     SizedArray* searchable;
-    SDL_Surface* image;
+    SDL_Surface* thumbnail;
     SDL_Surface* waypoint;
 };
 

@@ -37,6 +37,7 @@ public:
     void draw(SDL_Surface *screen, bool hasDrawn);
     
     SDL_Rect videoUpdate;
+    int progress;           //timestamp of next to be filled IndexEntry, -1 if all have been filled
     
 private:
     

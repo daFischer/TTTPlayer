@@ -14,15 +14,21 @@ IndexEntry::IndexEntry(char* title, int timestamp, SizedArray* searchable, SDL_S
     this->title=title;
     this->timestamp=timestamp;
     this->searchable=searchable;
-    this->image=image;
+    this->thumbnail=image;
     waypoint=NULL;
+    hasThumbnail=image!=NULL;
     hasImages=false;
 }
 
 void IndexEntry::setWaypoint(SDL_Surface* waypoint) {
     this->waypoint=waypoint;
-    if(image==NULL)
-        image=scaleDownSurface(waypoint, 5);
+    if(thumbnail==NULL)
+    {
+        SDL_LockSurface(waypoint);
+        thumbnail=scaleDownSurface(waypoint, 5);
+        SDL_UnlockSurface(waypoint);
+        hasThumbnail=true;
+    }
     hasImages=true;
 }
 
@@ -32,7 +38,7 @@ void IndexEntry::paintWaypoint(SDL_Surface* screen) {
 }
 
 IndexEntry::~IndexEntry() {
-    SDL_FreeSurface(image);
+    SDL_FreeSurface(thumbnail);
     SDL_FreeSurface(waypoint);
     if(title!=NULL)
         free(title);
@@ -40,20 +46,20 @@ IndexEntry::~IndexEntry() {
 }
 
 SDL_Rect IndexEntry::getRect(SDL_Surface* screen, int x, int y) {
-    if(image==NULL)
+    if(!hasThumbnail)
     {
         SDL_Rect r= {0,0,0,0};
         return r;
     }
-    SDL_Rect r= {max(0,min(screen->w-image->w,x-image->w/2)),y-image->h,image->w,image->h};
+    SDL_Rect r= {max(0,min(screen->w-thumbnail->w,x-thumbnail->w/2)),y-thumbnail->h,thumbnail->w,thumbnail->h};
     return r;
 }
 
 void IndexEntry::paintThumbnail(SDL_Surface* screen, int x, int y) {
-    if(image==NULL)
+    if(!hasThumbnail)
         return;
     SDL_Rect rect = getRect(screen,x,y);
-    SDL_BlitSurface(image,NULL,screen,&rect);
+    SDL_BlitSurface(thumbnail,NULL,screen,&rect);
     SDL_UpdateRect(screen, rect.x,rect.y,rect.w,rect.h);
 }
 

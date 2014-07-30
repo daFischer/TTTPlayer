@@ -28,6 +28,9 @@ public:
     IndexEntry* lastBefore(int timestamp);
     bool fillSurface(SDL_Surface* screen, Message** messages, int numMessages, ProtocolPreferences* prefs);
     bool readIndexEntry(Inflater* in);
+    void loadUntil(IndexEntry* entry, SDL_Surface* screen, Message** messages, int numMessages, ProtocolPreferences* prefs);
+    
+    int progress;           //timestamp of next to be filled IndexEntry, -1 if all have been filled
     
 private:
     //void fillSurfaces(SDL_Surface* screen, Message** messages, int numMessages, ProtocolPreferences* prefs);
