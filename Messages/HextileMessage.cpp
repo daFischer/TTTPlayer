@@ -56,6 +56,16 @@ void HextileMessage::paint(SDL_Surface *screen, ProtocolPreferences* prefs)
     SDL_UpdateRect(screen, x,y,w,h);
 }
 
+/**
+ * This method has been copied from the Java TTT-Player and adjusted to C++
+ * It draws a subrectangle to the screen at (tx,ty)
+ * @param screen
+ * @param prefs
+ * @param tx
+ * @param ty
+ * @param tw
+ * @param th
+ */
 void HextileMessage::handleHextileSubrect(SDL_Surface *screen, ProtocolPreferences* prefs, int tx, int ty, int tw, int th)
 {
     unsigned char subencoding;
@@ -149,6 +159,16 @@ void HextileMessage::handleHextileSubrect(SDL_Surface *screen, ProtocolPreferenc
     }
 }
 
+/**
+ * This method has been copied from the Java TTT-Player and adjusted to C++
+ * It draws raw Pixels to the screen
+ * @param screen
+ * @param prefs
+ * @param tx
+ * @param ty
+ * @param tw
+ * @param th
+ */
 void HextileMessage::handleRawRect(SDL_Surface *screen, ProtocolPreferences* prefs, int tx, int ty, int tw, int th)
 {
     SDL_Rect rect = {0, 0, 1, 1};

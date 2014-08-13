@@ -48,6 +48,14 @@ void setUp(){
     containsWhiteboard = false;
 }
 
+/**
+ * Reads messages from the Inflater and writes to the list
+ * This method has been copied from the Java TTT-Player and adjusted to C++
+ * @param messages
+ * @param in
+ * @param prefs
+ * @return 
+ */
 bool readMessages(list<Message*>* messages, Inflater* in, ProtocolPreferences* prefs){
     int timestamp;
     if(messages->size()==0)
@@ -128,6 +136,13 @@ bool readMessages(list<Message*>* messages, Inflater* in, ProtocolPreferences* p
     return false;
 }
 
+/**
+ * This method has been copied from the Java TTT-Player and adjusted to C++
+ * Reads a single Message from Inflater and returns it
+ * @param in
+ * @param prefs
+ * @return 
+ */
 Message* readMessage(Inflater* in, ProtocolPreferences* prefs){
     Message* message;
     

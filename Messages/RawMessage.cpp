@@ -32,6 +32,12 @@ void RawMessage::paint(SDL_Surface* screen, ProtocolPreferences* prefs){
     //printf("Drawn RawMessage at {%d, %d, %d, %d}\n",x,y,w,h);
 }
 
+/**
+ * This method has been copied from the Java TTT-Player and adjusted to C++
+ * It draws raw Pixels to the screen
+ * @param screen
+ * @param prefs
+ */
 void RawMessage::handleRawRect(SDL_Surface *screen, ProtocolPreferences* prefs)
 {
     SDL_Rect rect = {0, 0, 1, 1};
