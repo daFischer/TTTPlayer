@@ -1,6 +1,6 @@
 /* 
  * File:   DeleteAnnotation.cpp
- * Author: user
+ * Author: Johannes Fischer
  * 
  * Created on July 14, 2014, 5:47 PM
  */
@@ -19,7 +19,6 @@ DeleteAnnotation::~DeleteAnnotation() {
 
 void DeleteAnnotation::paint(SDL_Surface *screen, ProtocolPreferences* prefs)
 {
-    printf("Deleted Annotation at (%d, %d)\n",x,y);
     deleteAnnotation(x,y);
     mustRedraw=true;
 }

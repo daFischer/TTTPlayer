@@ -1,6 +1,6 @@
 /* 
  * File:   Index.cpp
- * Author: user
+ * Author: Johannes Fischer
  * 
  * Created on July 23, 2014, 10:10 PM
  */
@@ -40,7 +40,7 @@ Index::Index(Message** messages, int numMessages) {
         Message* message = messages[i];
 
         // sum up area(s)
-        if (message->type == RAW) {
+        if (message->type == FRAMEBUFFER) {
             area += message->getArea();
             //printf("%d,",area);
         } else if (area == 0)
@@ -196,7 +196,7 @@ bool Index::fillSurface(SDL_Surface* screen, Message** messages, int numMessages
     while (currentMessage < numMessages) {
         if (messages[currentMessage]->timestamp > (*it)->timestamp)
             break;
-        if (messages[currentMessage]->type == RAW)
+        if (messages[currentMessage]->type == FRAMEBUFFER)
             messages[currentMessage]->paint(waypoint, prefs);
         currentMessage++;
     }

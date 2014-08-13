@@ -1,6 +1,6 @@
 /* 
  * File:   ProtocolPreferences.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on May 5, 2014, 10:11 PM
  */

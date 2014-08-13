@@ -1,6 +1,6 @@
 /* 
  * File:   EmptyMessage.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on May 22, 2014, 4:47 PM
  */

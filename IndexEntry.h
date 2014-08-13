@@ -1,6 +1,6 @@
 /* 
  * File:   IndexEntry.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on July 24, 2014, 12:54 AM
  */

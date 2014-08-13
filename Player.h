@@ -1,6 +1,6 @@
 /* 
  * File:   Player.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on April 30, 2014, 4:30 PM
  */
@@ -34,7 +34,7 @@ using namespace std;
 
 class Player {
 public:
-    Player(const char*, const char*);
+    Player(string filename);
     void loop();
     virtual ~Player();
 #ifdef EMSCRIPTEN

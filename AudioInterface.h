@@ -1,6 +1,6 @@
 /* 
  * File:   AudioInterface.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on July 13, 2014, 2:15 PM
  */
@@ -8,7 +8,7 @@
 #ifndef AUDIOINTERFACE_H
 #define	AUDIOINTERFACE_H
 
-using namespace std;
+//using namespace std;
 
 class AudioInterface {
 public:
@@ -20,6 +20,7 @@ public:
     virtual int getDuration();
     virtual bool hasFailed();
     virtual void changeVolume(float volume);
+    virtual void changeSpeed(float volume);
     virtual bool isPlaying();
     
 };

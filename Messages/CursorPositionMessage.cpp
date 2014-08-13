@@ -1,6 +1,6 @@
 /* 
  * File:   CursorPositionMessage.cpp
- * Author: user
+ * Author: Johannes Fischer
  * 
  * Created on July 27, 2014, 12:05 AM
  */

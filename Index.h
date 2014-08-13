@@ -1,6 +1,6 @@
 /* 
  * File:   Index.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on July 23, 2014, 10:10 PM
  */

@@ -1,6 +1,6 @@
 /* 
  * File:   WhiteboardMessage.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on May 22, 2014, 4:55 PM
  */

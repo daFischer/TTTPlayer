@@ -1,9 +1,6 @@
 /* 
  * File:   Audio.cpp
- * Author: user
- * http://wiki.delphigl.com/index.php/OpenAL-Funktions%C3%BCbersicht
- * http://www.codeproject.com/Articles/656543/The-LAME-wrapper-An-audio-converter
- * https://github.com/sopel39/audioconverter.js
+ * Author: Johannes Fischer
  * Created on April 30, 2014, 3:39 PM
  */
 
@@ -94,13 +91,13 @@ int Audio::getPosition()
     if((error = alGetError())!= AL_NO_ERROR)
         printf("getTime error: %d\n", error);
     //printf("%f\n",(float) time);
-    return (int)time;
+    return (int)(time*1000);
 }
 
 
 void Audio::setPosition(int pos)
 {
-    ALfloat time=(ALfloat)pos;
+    ALfloat time=(ALfloat)(pos/1000);
     alSourcef(source, AL_SEC_OFFSET, time);
     uint error;
     if((error=alGetError()) != AL_NO_ERROR)
@@ -110,6 +107,11 @@ void Audio::setPosition(int pos)
 void Audio::changeVolume(float volume){
     ALfloat v=volume;
     alSourcef(source,AL_GAIN,v);
+}
+
+void Audio::changeSpeed(float speed){
+    ALfloat s=speed;
+    alSourcef(source,AL_PITCH,s);
 }
 
 int Audio::getDuration()
@@ -132,7 +134,7 @@ int Audio::getDuration()
     if(alGetError()!= AL_NO_ERROR)
         printf("getDuration error\n");
     
-    return (int)seconds;
+    return (int)(seconds*1000);
 }
 
 bool Audio::hasFailed()

@@ -1,6 +1,6 @@
 /* 
  * File:   FreehandAnnotation.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on July 27, 2014, 5:30 PM
  */

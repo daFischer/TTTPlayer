@@ -1,6 +1,6 @@
 /* 
  * File:   RectangleAnnotation.cpp
- * Author: user
+ * Author: Johannes Fischer
  * 
  * Created on July 15, 2014, 10:38 AM
  */

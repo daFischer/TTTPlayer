@@ -1,6 +1,6 @@
 /* 
  * File:   HighlightAnnotation.cpp
- * Author: user
+ * Author: Johannes Fischer
  * 
  * Created on July 28, 2014, 4:26 PM
  */

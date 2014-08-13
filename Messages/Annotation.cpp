@@ -1,6 +1,6 @@
 /* 
  * File:   Annotation.cpp
- * Author: user
+ * Author: Johannes Fischer
  * 
  * Created on July 15, 2014, 11:00 AM
  */
@@ -81,7 +81,7 @@ void Annotation::drawLine(SDL_Surface* screen, Uint32 color, short startX, short
 struct condRemove{
     int x,y;
     bool operator() (Annotation* annotation){
-        if(annotation->x==x && annotation->y==y)
+        if(VERBOSE && annotation->x==x && annotation->y==y)
             printf("Deleted Annotation at position %d, %d\n",x,y);
         return (annotation->x==x && annotation->y==y);
     }

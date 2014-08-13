@@ -1,6 +1,6 @@
 /* 
  * File:   Message.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on May 22, 2014, 3:11 PM
  */

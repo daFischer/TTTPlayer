@@ -1,6 +1,6 @@
 /* 
  * File:   ColorConverter.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on June 4, 2014, 3:55 PM
  */

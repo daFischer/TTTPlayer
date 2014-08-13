@@ -1,6 +1,6 @@
 /* 
  * File:   IndexEntry.cpp
- * Author: user
+ * Author: Johannes Fischer
  * 
  * Created on July 24, 2014, 12:54 AM
  */
@@ -89,6 +89,7 @@ void writePixel(SDL_Surface* target, int x, int y, Uint32 color){
 
 SDL_Surface* IndexEntry::scaleDownSurface(SDL_Surface* source, char factor) {
     SDL_Surface* result=SDL_CreateRGBSurface(0,source->w/factor,source->h/factor,source->format->BitsPerPixel,source->format->Rmask,source->format->Gmask,source->format->Bmask,source->format->Amask);
+    SDL_LockSurface(result);
     Uint32 alpha,red,green,blue;
     Uint32 color, colorPart;
     for(int i=0;i<result->w;i++)
@@ -102,5 +103,6 @@ SDL_Surface* IndexEntry::scaleDownSurface(SDL_Surface* source, char factor) {
                     readPixel(source,i+k,j+l);
                 }*/
         }
+    SDL_UnlockSurface(result);
     return result;
 }

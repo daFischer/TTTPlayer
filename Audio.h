@@ -1,6 +1,6 @@
 /* 
  * File:   Audio.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on April 30, 2014, 3:39 PM
  */
@@ -42,6 +42,7 @@ public:
     int getDuration();
     bool hasFailed();
     void changeVolume(float volume);
+    void changeSpeed(float volume);
     bool isPlaying();
 
 private:

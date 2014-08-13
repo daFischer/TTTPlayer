@@ -1,6 +1,6 @@
 /* 
  * File:   Inflater.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on May 8, 2014, 12:46 PM
  */
@@ -14,10 +14,11 @@
 #include <zlib.h>
 #include <assert.h>
 #include "SizedArray.h"
+#include "Constants.h"
 
 using namespace std;
 
-#define CHUNK 32768 //16384
+#define CHUNK 32768
 
 class Inflater {
 public:

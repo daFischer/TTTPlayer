@@ -1,6 +1,6 @@
 /* 
  * File:   SizedArray.cpp
- * Author: user
+ * Author: Johannes Fischer
  * 
  * Created on May 24, 2014, 3:41 PM
  */

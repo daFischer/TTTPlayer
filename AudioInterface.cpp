@@ -1,6 +1,6 @@
 /* 
  * File:   AudioInterface.cpp
- * Author: user
+ * Author: Johannes Fischer
  * 
  * Created on July 13, 2014, 2:15 PM
  */
@@ -26,6 +26,9 @@ void AudioInterface::setPosition(int pos){
 }
 
 void AudioInterface::changeVolume(float volume){
+}
+
+void AudioInterface::changeSpeed(float volume){
 }
 
 bool AudioInterface::hasFailed(){

@@ -1,6 +1,6 @@
 /* 
  * File:   CursorMessage.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on July 26, 2014, 12:07 PM
  */

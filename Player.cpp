@@ -1,6 +1,6 @@
 /* 
  * File:   Player.cpp
- * Author: user
+ * Author: Johannes Fischer
  * 
  * Created on April 30, 2014, 4:30 PM
  */
@@ -12,24 +12,21 @@
 Player *player;
 TTF_Font* Player::font;
 
-Player::Player(const char* cpath, const char* cfilename) {
+Player::Player(string filename) {
     
     atexit(cleanUp);
     paused=false;
     
     player=this;
     
-    std::string filename=cfilename;
-    std::string path=cpath;
-    
     //Initialize BOTH SDL video and SDL audio
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
+    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
     {
         printf("Unable to initialize SDL: %s\n", SDL_GetError());
         return;
     }
     
-    if(TTF_Init()<0){
+    if(TTF_Init() < 0){
         printf("Unable to initialize TTF: %s\n", TTF_GetError());
         return;
     }
@@ -48,7 +45,7 @@ Player::Player(const char* cpath, const char* cfilename) {
 #ifdef EMSCRIPTEN
     audio=new AudioJS();
 #else
-    audio=new Audio((path+"/"+filename+"_a/"+filename).c_str());
+    audio=new Audio(filename.c_str());
 #endif
     
     if(audio->hasFailed())
@@ -57,7 +54,7 @@ Player::Player(const char* cpath, const char* cfilename) {
         return;
     }
     
-    video=new Video((path+"/"+filename+"_a/"+filename+".ttt").c_str());
+    video=new Video((filename+".ttt").c_str());
 #ifdef EMSCRIPTEN
     emscripten_set_main_loop(loadAsync,0,0);
 #else
@@ -65,6 +62,10 @@ Player::Player(const char* cpath, const char* cfilename) {
 #endif
 }
 
+/**
+ * This function will be looped and loads Video from File step by step.
+ * @return true if compiled without Emscripten and loading has not yet finished
+ */
 #ifdef EMSCRIPTEN
 void Player::loadAsync() {
     if(player->video->loadAsync())
@@ -87,6 +88,9 @@ bool Player::loadAsync() {
 }
 #endif
 
+/**
+ * Called after the video object has been loaded completely
+ */
 void Player::videoCallback() {
     if(video->failed)
     {
@@ -115,7 +119,11 @@ void Player::videoCallback() {
 #endif
 }
 
-
+/**
+ * This is the main loop
+ * First events are being polled, then controls and video update
+ * This loop isn't canceled unless the program is being stopped
+ */
 void Player::loop()
 {
     SDL_Event event;
@@ -171,6 +179,7 @@ Player::~Player() {
 #endif
     SDL_Quit();
     player=NULL;
-    printf("Deleted everything\n");
+    if(VERBOSE)
+        printf("Freeing Memory completed\n");
 }
 

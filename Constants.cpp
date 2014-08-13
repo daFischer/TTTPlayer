@@ -1,6 +1,6 @@
 /* 
  * File:   Constants.cpp
- * Author: user
+ * Author: Johannes Fischer
  * 
  * Created on May 5, 2014, 5:39 PM
  */

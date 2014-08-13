@@ -1,6 +1,6 @@
 /* 
  * File:   Video.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on April 30, 2014, 8:36 PM
  */
@@ -46,21 +46,21 @@ public:
 private:    
     void readExtension(Inflater* in);
     void showProgress();
-    long int fileSize;
+    long int fileSize;          //size of the .ttt FILE. needed to show parsing progress
     long int progress;
     
-    SDL_Surface* screen;			//Pointer to the main screen surface
-    SDL_Surface* rawScreen;                     //Pointer to screen for messages with type RAW
-    SDL_Surface* annScreen;                     //Screen that buffers Annotations
+    SDL_Surface* screen;	//Pointer to the main screen surface
+    SDL_Surface* rawScreen;     //SDL_Surface that buffers FrameBuffer Messages
+    SDL_Surface* annScreen;     //SDL_Surface that buffers Annotations
     list<Message*> m;
     Message** messages;
     int numMessages;
     int currentMessage;
     
     Index* index;
-    SDL_Rect lastThumbnail;
+    SDL_Rect lastThumbnail;     //Bounding Box of the last drawn IndexEntry. needed when redrawing screen 
     bool original;
-    int lastTime;
+    int lastTime;               //Milliseconds since the last IndexEntry has been filled
     ProtocolPreferences prefs;
     
     Inflater* inflater;

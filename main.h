@@ -1,6 +1,6 @@
 /* 
  * File:   main.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on May 6, 2014, 10:59 AM
  */
@@ -33,8 +33,8 @@ bool paused=false;
 const string path = "TTT";
 string filename = "";
 #else
-const string path = "/home/user/NetBeansProjects/TTTPlayer/emBuild/TTT";
-string filename = "Diskrete_Strukturen_2013_11_26";// GAD_2014_04_08-merged , Diskrete_Strukturen_2013_11_26 , Programmiersprachen_2013_10_21 , Programmoptimierung_2013_10_16 , ZUE_Diskrete_Strukturen_2013_10_30
+const string path = "TTT";
+string filename = "GAD_2014_04_08-merged";// Diskrete_Strukturen_2013_11_26 , Programmiersprachen_2013_10_21 , GAD_2014_04_08-merged , Programmoptimierung_2013_10_16 , ZUE_Diskrete_Strukturen_2013_10_30
 #endif
 
 int main();

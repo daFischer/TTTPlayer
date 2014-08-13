@@ -1,6 +1,6 @@
 /* 
  * File:   Controls.cpp
- * Author: user
+ * Author: Johannes Fischer
  * 
  * Created on July 13, 2014, 6:40 PM
  */
@@ -10,6 +10,7 @@
 #include "Player.h"
 
 bool mouseOnFullScreenButton;
+bool mouseOnPlayButton;
 
 Controls::Controls(Video* video, AudioInterface* audio) {
     this->video=video;
@@ -19,36 +20,41 @@ Controls::Controls(Video* video, AudioInterface* audio) {
     ProtocolPreferences prefs;
     progress=0;
     
-    //TODO: might make these relative to video's height
+    //TODO: maybe make these relative to the screen's height
     timeLineHeight=16;
     height=timeLineHeight+32;
     
     width=prefs.framebufferWidth;
     screenHeight=prefs.framebufferHeight;
-    y=screenHeight;
-    visible=false;
+    y=screenHeight-height;
+    visible=true;
+    
+    //In the beginning, the whole screen should be redrawn
     redefineRect(&videoUpdate,0,0,width,screenHeight);
     
     timeLineClicked=false;
     volumeClicked=false;
     volume=1;
+    speedClicked=false;
+    speed=1;
 
     mouseOnFullScreenButton=false;
+    mouseOnPlayButton=false;
 #ifdef EMSCRIPTEN
+    //Make Fullscreen and starting the <audio> element possible
+    
     EM_ASM(
-        x_setupFullScreen();
+        x_setupListener();
     );
+#endif
     surfPlay=SDL_LoadBMP("Assets/PlayPause.bmp");
     surfVolume=SDL_LoadBMP("Assets/volume.bmp");
     surfVolume2=SDL_LoadBMP("Assets/volume2.bmp");
     surfFullscreen=SDL_LoadBMP("Assets/fullscreen.bmp");
-#else
-    surfPlay=SDL_LoadBMP("/home/user/NetBeansProjects/TTTPlayer/emBuild/Assets/PlayPause.bmp");
-    surfVolume=SDL_LoadBMP("/home/user/NetBeansProjects/TTTPlayer/emBuild/Assets/volume.bmp");
-    surfVolume2=SDL_LoadBMP("/home/user/NetBeansProjects/TTTPlayer/emBuild/Assets/volume2.bmp");
-    surfFullscreen=SDL_LoadBMP("/home/user/NetBeansProjects/TTTPlayer/emBuild/Assets/fullscreen.bmp");
-#endif
-    if(surfPlay==NULL||surfVolume==NULL||surfVolume2==NULL||surfFullscreen==NULL)
+    surfSpeed=SDL_LoadBMP("Assets/speed.bmp");
+    surfSpeed2=SDL_LoadBMP("Assets/speed2.bmp");
+    
+    if(surfPlay==NULL||surfVolume==NULL||surfVolume2==NULL||surfFullscreen==NULL||surfSpeed==NULL||surfSpeed2==NULL)
         printf("BMPs ARE NULL\n");
 }
 
@@ -56,11 +62,16 @@ Controls::~Controls() {
     SDL_FreeSurface(surfPlay);
     SDL_FreeSurface(surfVolume);
     SDL_FreeSurface(surfVolume2);
+    SDL_FreeSurface(surfSpeed);
+    SDL_FreeSurface(surfSpeed2);
     SDL_FreeSurface(surfFullscreen);
     audio=NULL;
     video=NULL;
 }
 
+/**
+ * Will be called after the user presses the left mouse button
+ */
 void Controls::registerClick(Uint16 mx, Uint16 my){
     if(my<y)
         return;
@@ -70,45 +81,66 @@ void Controls::registerClick(Uint16 mx, Uint16 my){
     }
     else
     {
+#ifndef EMSCRIPTEN
         if(mx<48)
             togglePlay();
         else if(mx>=width-48)
             toggleFullscreen();
-        else if(mx<=128 && mx>=64)
+        else
+#endif
+        if(mx<=128 && mx>=64)
             volumeClicked=true;
+        else if(mx<=196 && mx>=160)
+            speedClicked=true;
     }
     registerMovement(mx,my);
 }
 
+/**
+ * Will be called after the user releases the left mouse button
+ */
 void Controls::registerMouseUp(){
     if(timeLineClicked)
     {
         redefineRect(&videoUpdate,0,0,width,screenHeight-height);
-        skipTo(duration*mouseX/width);
+        skipTo(duration/width*mouseX);
     }
     timeLineClicked=false;
     volumeClicked=false;
+    speedClicked=false;
 }
 
+/**
+ * Will be called whenever the mouse has moved
+ */
 void Controls::registerMovement(Uint16 mx, Uint16 my) {
-    visible=(my>=screenHeight-height)||timeLineClicked||volumeClicked;
+    visible=(my>=screenHeight-height)||timeLineClicked||volumeClicked||speedClicked;
     mouseX=mx;
     mouseY=my;
     if(volumeClicked)
         changeVolume(max(min((float)(mx-64),(float)64),(float)0)/64);
+    if(speedClicked)
+        changeSpeed(max(min((float)(mx-160),(float)36),(float)0)/72+1);
 //#ifdef EMSCRIPTEN
     mouseOnFullScreenButton=(mx>=width-48 && my>=y+timeLineHeight);
+    mouseOnPlayButton=(mx<48 && my>=y+timeLineHeight);
 //#endif
     
 }
 
-//#ifdef EMSCRIPTEN
+#ifdef EMSCRIPTEN
 extern "C" bool getOnFullScreenButton(){
     return mouseOnFullScreenButton;
 }
-//#endif
 
+extern "C" bool getOnPlayButton(){
+    return mouseOnPlayButton;
+}
+#endif
 
+/**
+ * When the mouse is not hovering over Controls' position, Controls moves out of the screen
+ */
 void Controls::update(){
     if(visible)
     {
@@ -155,7 +187,6 @@ void Controls::draw(SDL_Surface *screen, bool hasDrawn){
     
     //play/pause
     redefineRect(&rect, 0, y+timeLineHeight, 48, height-timeLineHeight);
-    SDL_FillRect(screen, &rect, emColor(0x338844));
     if(surfPlay!=NULL)
     {
         if(audio->isPlaying())
@@ -166,24 +197,31 @@ void Controls::draw(SDL_Surface *screen, bool hasDrawn){
     }
     
     //volume
-    redefineRect(&rect, 64, y+timeLineHeight, 64, height-timeLineHeight);
-    SDL_FillRect(screen, &rect, emColor(0x333333));
-    redefineRect(&rect, 64, y+timeLineHeight, (int)(volume*64.0), height-timeLineHeight);
-    SDL_FillRect(screen, &rect, emColor(0x00ff00));
     if(surfVolume!=NULL && surfVolume2!=NULL)
     {
         redefineRect(&rect, 64, y+timeLineHeight, 64, 32);
         redefineRect(&srcRect,0,0,64, 32);
         SDL_BlitSurface(surfVolume2,&srcRect,screen,&rect);
         redefineRect(&srcRect,0,0,(int)(volume*64.0),32);
-        redefineRect(&rect,64,y+timeLineHeight,(int)(volume*64.0),32);
-        if((int)(volume*64.0)>=1)
+        redefineRect(&rect,64,y+timeLineHeight,srcRect.w,32);
+        if(srcRect.w>=1)
                 SDL_BlitSurface(surfVolume,&srcRect,screen,&rect);
+    }
+    
+    //speed
+    if(surfSpeed!=NULL && surfSpeed2!=NULL)
+    {
+        redefineRect(&rect, 160, y+timeLineHeight, 36, 32);
+        redefineRect(&srcRect,0,0,36, 32);
+        SDL_BlitSurface(surfSpeed2,&srcRect,screen,&rect);
+        redefineRect(&srcRect,0,0,(int)(speed*72.0)-72,32);
+        redefineRect(&rect,160,y+timeLineHeight,srcRect.w,32);
+        if(srcRect.w>=1)
+                SDL_BlitSurface(surfSpeed,&srcRect,screen,&rect);
     }
     
     //fullscreen button
     redefineRect(&rect, width-48, y+timeLineHeight, 48, height-timeLineHeight);
-    SDL_FillRect(screen, &rect, emColor(0x338844));
     if(surfFullscreen!=NULL)
     {
         redefineRect(&srcRect,0,0,48, 32);
@@ -195,14 +233,14 @@ void Controls::draw(SDL_Surface *screen, bool hasDrawn){
     SDL_FillRect(screen, &rect, emColor(0x333333));
     if(progress>=0)
     {
-        redefineRect(&rect, progress/1000*width/duration, y, width-progress/1000*width/duration, timeLineHeight);
+        redefineRect(&rect, (progress/1000)*width/(duration/1000), y, width-(progress/1000)*width/(duration/1000), timeLineHeight);
         SDL_FillRect(screen, &rect, emColor(0x000000));
     }
     
     int currentPosition=audio->getPosition();
     //timeLine foreground
     if(!timeLineClicked)
-        redefineRect(&rect, 0, y, currentPosition*width/duration, timeLineHeight);
+        redefineRect(&rect, 0, y, (currentPosition/1000)*width/(duration/1000), timeLineHeight);
     else
         redefineRect(&rect, 0, y, mouseX, timeLineHeight);
     SDL_FillRect(screen, &rect, emColor(0xaa0000));
@@ -210,7 +248,7 @@ void Controls::draw(SDL_Surface *screen, bool hasDrawn){
     //draw "time / duration"
     SDL_Color white = {0xff,0xff,0xff,0xff};
     ostringstream oss;
-    oss << currentPosition/60 << ":" << ((currentPosition%60<10) ? "0" : "") << currentPosition%60 << "/" << duration/60 << ":" << ((duration%60<10) ? "0" : "") << duration%60;
+    oss << (currentPosition/1000)/60 << ":" << (((currentPosition/1000)%60<10) ? "0" : "") << (currentPosition/1000)%60 << "/" << (duration/1000)/60 << ":" << (((duration/1000)%60<10) ? "0" : "") << (duration/1000)%60;
     
     SDL_Surface* times=TTF_RenderText_Solid(Player::font,oss.str().c_str(),white);
 #ifdef EMSCRIPTEN
@@ -223,10 +261,10 @@ void Controls::draw(SDL_Surface *screen, bool hasDrawn){
     
     if(mouseY>=y&&mouseY<y+timeLineHeight)
     {
-        video->drawThumbnail(duration*mouseX/width*1000,mouseX,y);
+        video->drawThumbnail(duration/width*mouseX,mouseX,y);
         //draw time at cursor position
         ostringstream oss2;
-        oss2 << duration*mouseX/width/60 << ":" << (((duration*mouseX/width)%60<10) ? "0" : "") << (duration*mouseX/width)%60;
+        oss2 << (duration/1000)*mouseX/width/60 << ":" << ((((duration/1000)*mouseX/width)%60<10) ? "0" : "") << ((duration/1000)*mouseX/width)%60;
         SDL_Color black={0,0,0,0xff};
         /*TTF_SetFontOutline(Player::font,2);
         times=TTF_RenderText_Solid(Player::font,oss2.str().c_str(),black);
@@ -260,6 +298,13 @@ Uint32 Controls::emColor(unsigned int color){
 #endif
 }
 
+/**
+ * Needed to draw the text indicating the times scaled
+ * @param source source text image
+ * @param x
+ * @param y
+ * @return Color in the source images color format
+ */
 Uint32 Controls::readPixel(SDL_Surface* source, int x, int y){
     switch(source->format->BytesPerPixel)
     {
@@ -272,6 +317,14 @@ Uint32 Controls::readPixel(SDL_Surface* source, int x, int y){
     }
 }
 
+/**
+ * Font size doesn't work right with Emscripten. Therefore we have to scale it up manually
+ * @param screen the target surface
+ * @param text the original (small) text image
+ * @param x
+ * @param y
+ * @param factor how strong the image should be upscaled
+ */
 void Controls::drawScaledText(SDL_Surface* screen, SDL_Surface* text, short x, short y, char factor) {
     SDL_Rect rect={0,0,factor,factor};
     SDL_LockSurface(text);
@@ -300,4 +353,9 @@ void Controls::skipTo(int position){
 void Controls::changeVolume(float volume){
     this->volume=volume;
     audio->changeVolume(volume);
+}
+
+void Controls::changeSpeed(float speed){
+    this->speed=speed;
+    audio->changeSpeed(speed);
 }

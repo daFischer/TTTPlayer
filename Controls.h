@@ -1,6 +1,6 @@
 /* 
  * File:   Controls.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on July 13, 2014, 6:40 PM
  */
@@ -47,6 +47,7 @@ private:
     Uint32 emColor(Uint32);
     void redefineRect(SDL_Rect* rect, int x, int y, int w, int h);
     void changeVolume(float volume);
+    void changeSpeed(float volume);
     void drawScaledText(SDL_Surface* screen, SDL_Surface* text, short x, short y, char factor);
     Uint32 readPixel(SDL_Surface* source, int x, int y);
 
@@ -60,16 +61,21 @@ private:
     int mouseX, mouseY;
     bool volumeClicked;
     float volume;
+    bool speedClicked;
+    float speed;
     int duration;
     
     SDL_Surface* surfPlay;
     SDL_Surface* surfVolume;
     SDL_Surface* surfVolume2;
     SDL_Surface* surfFullscreen;
+    SDL_Surface* surfSpeed;
+    SDL_Surface* surfSpeed2;
 };
 
 //#ifdef EMSCRIPTEN
 extern "C" bool getOnFullScreenButton();
+extern "C" bool getOnPlayButton();
 //#endif
 
 

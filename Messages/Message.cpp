@@ -1,6 +1,6 @@
 /* 
  * File:   Message.cpp
- * Author: user
+ * Author: Johannes Fischer
  * 
  * Created on May 22, 2014, 3:11 PM
  */
@@ -114,7 +114,7 @@ bool readMessages(list<Message*>* messages, Inflater* in, ProtocolPreferences* p
             case ENCODINGHEXTILE:
                 total += ((HextileMessage*) message)->getArea();
             case ENCODINGRAW:
-                message->type=RAW;
+                message->type=FRAMEBUFFER;
                 break;
                 
             default:

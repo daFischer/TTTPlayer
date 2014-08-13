@@ -137,7 +137,11 @@
 
     <script type='text/javascript'>
       var x_path="TTT";
-      var x_filename="Diskrete_Strukturen_2013_11_26"; //"<?php $path=$_GET['path']; echo $path; ?>"
+      var x_filename="Programmiersprachen_2013_10_21"; //"<?php $path=$_GET['path']; echo $path; ?>"
+
+      var x_getPath=function(end){
+        return x_path+"/"+x_filename+"_a/"+x_filename+"."+end;
+      };
     </script>
 
     <div class="emscripten_border" id="canvas_div">
@@ -148,7 +152,6 @@
         <!-- filled by Audio.js -->
     </audio>
     <script type="text/javascript" src="Audio.js"></script>
-
 
 
     <textarea id="output" rows="8"></textarea>

@@ -1,6 +1,6 @@
 /* 
  * File:   Video.cpp
- * Author: user
+ * Author: Johannes Fischer
  * 
  * Created on April 30, 2014, 8:36 PM
  */
@@ -15,7 +15,7 @@ Video::Video(const char* path) {
     
     original=true;
     failed=true;
-    FILE* f = fopen (path , "r");
+    FILE* f = fopen(path, "r");
     progress=0;
     fseek(f,0,SEEK_END);
     fileSize=ftell(f);
@@ -31,12 +31,21 @@ Video::Video(const char* path) {
     if(readServerInit(inflater))
         if(VERBOSE)
             printf("Video Initialization success: \n%s\n", prefs.name);
-    
+
     index=NULL;
-    
     loadPhase=0;
+    
+    if (ProtocolPreferences::bitsPerPixel!=16)
+    {
+        printf("Error, only 16 bit videos are supported.\n");
+        loadPhase=100;//error state
+    }
 }
 
+/**
+ * Without emscripten: prints "x%" when x% of the .ttt file have been read.
+ * with emscripten: sets the progress of an html5 progress bar
+ */
 void Video::showProgress() {
     if(loadPhase<=7)
     {
@@ -54,6 +63,10 @@ void Video::showProgress() {
     }
 }
 
+/**
+ * Completely parses the .ttt File asynchronously
+ * @return true if there is still something left to load, false if loading has finished (failed or successful)
+ */
 bool Video::loadAsync() {
     showProgress();
     long int old;
@@ -134,40 +147,51 @@ bool Video::loadAsync() {
                 }
             break;*/
         case 9:
-            lastTime=1;
+            lastTime=-1;
             failed=false;
+            break;
+            
+            
+        case 100:               //error state
+            failed=true;
+            return false;
             break;
     }
     return failed;
 }
 
+/**
+ * Handles messages that have to be drawn and updates the screen
+ * @param time position in the audio stream, used to determine which messages have to paint
+ * @param controls the Controls object, needs to be drawn to the screen as well
+ */
 void Video::update(int time, Controls* controls)
 {
     bool blitRaw=false;
     bool blitAnn=false;
     //check whether audio has restarted
-    if(time<=2 && (currentMessage>0 && messages[currentMessage-1]->timestamp>time*1000+5000))
+    if(time<=2000 && (currentMessage>0 && messages[currentMessage-1]->timestamp>time+5000))
         currentMessage=0;
     
-    if(time-lastTime>=1)        //only fill IndexEntries every second to avoid slowness
+    if(lastTime<0)
+        lastTime=SDL_GetTicks();
+    if(SDL_GetTicks()-lastTime>=500)        //only fill IndexEntries every second to avoid slowness
     {
-        lastTime=time;
         index->fillSurface(screen,messages,numMessages,&prefs);
         controls->progress=index->progress;
+        lastTime=SDL_GetTicks();
     }
     
     while(currentMessage<numMessages)
     {
-        if(messages[currentMessage]->timestamp > time*1000)
+        if(messages[currentMessage]->timestamp > time)
             break;
-        if(time>445 && time<460)
-            printf("message: %d\n",messages[currentMessage]->encoding);
         switch(messages[currentMessage]->type){
             case ANNOTATION:
                 blitAnn=true;
                 messages[currentMessage]->paint(annScreen, &prefs);
                 break;
-            case RAW:
+            case FRAMEBUFFER:
                 blitRaw=true;
                 messages[currentMessage]->paint(rawScreen, &prefs);
                 break;
@@ -182,7 +206,8 @@ void Video::update(int time, Controls* controls)
                 }
                 messages[currentMessage]->paint(screen, &prefs);
                 //printf("CURSOR encoding = %d\n",messages[currentMessage]->encoding);
-                SDL_BlitSurface(CursorMessage::cursor,NULL,screen,&cm);
+                if(CursorMessage::showCursor)
+                    SDL_BlitSurface(CursorMessage::cursor,NULL,screen,&cm);
                 break;
         }
         currentMessage++;
@@ -249,6 +274,12 @@ void Video::redrawScreen(Controls* controls, bool fully) {
     SDL_Flip(screen);
 }
 
+/**
+ * Called by Controls, draws the last thumbnail before timestamp on the given position
+ * @param timestamp
+ * @param x
+ * @param y
+ */
 void Video::drawThumbnail(int timestamp, int x, int y) {
     if(index!=NULL)
     {
@@ -257,7 +288,10 @@ void Video::drawThumbnail(int timestamp, int x, int y) {
     }
 }
 
-
+/**
+ * This is only being called, when no Emscripten has been used.
+ * Should toggle the Fullscreen mode, but doesn't work yet.
+ */
 void Video::toggleFullscreen(){
     return; //doesn't work yet, but not really important
     {
@@ -266,22 +300,30 @@ void Video::toggleFullscreen(){
     }
 }
 
+/**
+ * This is used when the user jumps to a different position in the Video.
+ * @param position the position to jump to in milliseconds
+ * @param controls needed for redrawing
+ */
 void Video::seekPosition(int position, Controls* controls){
     
     //binary search for message closest to position
     int min, max;
     min=1;
     max= numMessages;
+    
+    //use binary search to find the last message before position
     while(min!=max)
-        if(messages[(min+max)/2]->timestamp > position*1000)
+        if(messages[(min+max)/2]->timestamp > position)
             max=(min+max)/2;
         else
             min=(min+max)/2+1;
     min--;
     if(VERBOSE)
-        printf("Seeking position at %d seconds. Last message was at %d seconds.\n",position,messages[min]->timestamp/1000);
+        printf("Seeking position at %d seconds. Last message was at %d seconds.\n",position/1000,messages[min]->timestamp/1000);
     
-    IndexEntry* indexEntry=index->lastBefore(position*1000);
+    //find the last IndexEntry before position and load its Surface if not done already
+    IndexEntry* indexEntry=index->lastBefore(position);
     int lastEntry=indexEntry->timestamp;
     if(VERBOSE)
         printf("Last IndexEntry was at %d seconds\n",lastEntry/1000);
@@ -291,16 +333,17 @@ void Video::seekPosition(int position, Controls* controls){
         controls->progress=index->progress;
     }
     
+    //cancel WhiteBoard effects
     WhiteboardMessage::number=std::min(WhiteboardMessage::number,0);
     int firstAnnotation=0;
     int firstRaw=0;
-    bool foundCursor=false;
+    char foundCursor=0;
     for(int i= min;i>=0;i--)
     {
-        //printf("%s\n",messages[i]->type);
+        //continue the search until the first message to redraw has been found for all types
         if(     (firstRaw!=0 || (lastEntry >= messages[i]->timestamp)) &&
                 (firstAnnotation!=0 || !containsAnnotations) &&
-                (foundCursor || !containsCursorMessages))
+                (foundCursor==3 || !containsCursorMessages))
         {
             firstRaw=std::max(i,firstRaw);
             firstAnnotation=std::max(i,firstAnnotation);
@@ -318,27 +361,44 @@ void Video::seekPosition(int position, Controls* controls){
                 if(firstAnnotation==0 && messages[i]->completeScreen(prefs.framebufferWidth, prefs.framebufferHeight))
                     firstAnnotation=i;
                 break;
-            case RAW:
+            case FRAMEBUFFER:
                 if(firstRaw==0 && ((lastEntry >= messages[i]->timestamp) || messages[i]->completeScreen(prefs.framebufferWidth, prefs.framebufferHeight)))
                     firstRaw=i;
                 break;
             case CURSOR:
-                if(!foundCursor)
+                if(foundCursor % 2 == 0 && messages[i]->encoding==ENCODINGTTTCURSORPOSITION)
+                {
+                    //Is a CursorPositionMessage
                     messages[i]->paint(screen,&prefs);
-                foundCursor=true;
+                    foundCursor |= 1;
+                }
+                else if(foundCursor < 2 && messages[i]->encoding!=ENCODINGTTTCURSORPOSITION)
+                {
+                    //Is a CursorMessage
+                    messages[i]->paint(screen,&prefs);
+                    foundCursor |= 2;
+                }
                 break;
         }
     }
+    //WhiteboardMessages are not deleted by DeleteAllAnnotation. Therefore we have to search for them separately
+    if(containsWhiteboard)
+        for(int i= min;i>=0;i--)
+            if(messages[i]->encoding==ENCODINGWHITEBOARD)
+            {
+                messages[i]->paint(annScreen,&prefs);
+                break;
+            }
+    
     if(VERBOSE)
         printf("Redrawing raw messages beginning at %d s,\nAnnotations at %d s\n\n",messages[firstRaw]->timestamp/1000,messages[firstAnnotation]->timestamp/1000);
     
-    //printf("IndexEntry at %d has%s Images\n",lastEntry, indexEntry->hasImages ? "" : " no");
     if(lastEntry>=messages[firstRaw]->timestamp)
     {
         indexEntry->paintWaypoint(rawScreen);
     }
     for(int i=firstRaw;i<min;i++)
-        if(messages[i]->type==RAW)
+        if(messages[i]->type==FRAMEBUFFER)
             messages[i]->paint(rawScreen,&prefs);
     
     if(containsAnnotations){
@@ -360,16 +420,13 @@ void Video::seekPosition(int position, Controls* controls){
     
     redrawScreen(controls,true);
     
-    /*//search backwards for raw message that changes the whole screen
-    printf("From %d ",currentMessage);
-    for(currentMessage;currentMessage>0;currentMessage--)
-    {
-        if(messages[currentMessage]->completeScreen((int)prefs.framebufferWidth, (int)prefs.framebufferHeight))
-            break;
-    }
-    printf("back to %d(%d)\n",currentMessage, messages[currentMessage]->encoding);*/
 }
 
+/**
+ * Reads a few global values from the File
+ * @param in The Inflater object used to inflate the file
+ * @return returns true if there weren't any errors
+ */
 bool readServerInit(Inflater* in)
 {
     ProtocolPreferences prefs;
@@ -408,9 +465,9 @@ bool readServerInit(Inflater* in)
         prefs.name=in->readCharArray(nameLength,true);
         
         // For some reason sometimes nameLength is 1 larger than it should be
-        // In that case we have to give a byte back, or the Inflater becomes corrupt.
+        // In that case we have to give a byte back, or the Inflater becomes corrupted.
         if(nameLength>strlen(prefs.name))
-            in->addChar(0);
+            in->addChar(prefs.name[nameLength-1]);
         return true;
     }
     return false;

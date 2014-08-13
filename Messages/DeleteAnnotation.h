@@ -1,6 +1,6 @@
 /* 
  * File:   DeleteAnnotation.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on July 14, 2014, 5:47 PM
  */

@@ -10,14 +10,14 @@ var x_getSeek=function(){
 }
 
 var x_getPosition=function(){
-	return x_audio.currentTime;
+	return x_audio.currentTime*1000;
 }
 var x_setPosition=function(pos){
-	x_audio.currentTime=pos;
+	x_audio.currentTime=pos/1000;
 }
 
 var x_getDuration=function(){
-	return x_audio.duration;
+	return x_audio.duration*1000;
 }
 var x_togglePlay=function(){
 	if(x_audio.paused)
@@ -30,11 +30,13 @@ var x_canvas=document.getElementById('canvas');
 var x_rect;
 
 var x_onFull;
+var x_onPlay;
 
-var x_setupFullScreen=function(){
+var x_setupListener=function(){
 	x_rect=x_canvas.getBoundingClientRect();
 	x_onFull=Module.cwrap('getOnFullScreenButton', 'bool');
-	x_canvas.addEventListener('click', function(e) {
+	x_onPlay=Module.cwrap('getOnPlayButton', 'bool');
+	x_canvas.addEventListener('mousedown', function(e) {
 		if(x_onFull())
 		{
 			var x_canvas_div=document.getElementById('canvas_div');
@@ -53,11 +55,17 @@ var x_setupFullScreen=function(){
 				Module.requestFullScreen(false, false)
 			}
 		}
+		else if(x_onPlay())
+			x_togglePlay();
 	}, false);
 }
 
 var x_changeVolume=function(volume){
 	x_audio.volume=volume;
+}
+
+var x_changeSpeed=function(playbackRate){
+	x_audio.playbackRate=playbackRate
 }
 
 var x_audioLoaded=function(){
@@ -86,16 +94,7 @@ var x_setProgress=function(percentage)
 	}
 }
 
-var x_getPath=function(end){
-	return x_path+"/"+x_filename+"_a/"+x_filename+"."+end;
-};
 var x_setAudioSource=function(){
 	x_audio.innerHTML='<source src="'+x_getPath("ogg")+'" type="audio/ogg"><source src="'+x_getPath("mp3")+'" type="audio/mp3"><source src="'+x_getPath("wav")+'" type="audio/wav">Your browser does not support the audio element.';
 }
 x_setAudioSource();
-
-
-var x_resizeCanvas = function(){
-	var x_canvas_div=document.getElementById('canvas_div');
-}
-window.onresize=x_resizeCanvas;

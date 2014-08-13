@@ -1,6 +1,6 @@
 /* 
  * File:   Annotation.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on July 15, 2014, 11:00 AM
  */

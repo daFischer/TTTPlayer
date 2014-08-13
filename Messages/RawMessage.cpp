@@ -1,6 +1,6 @@
 /* 
  * File:   RawMessage.cpp
- * Author: user
+ * Author: Johannes Fischer
  * 
  * Created on July 14, 2014, 11:38 AM
  */

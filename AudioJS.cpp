@@ -1,6 +1,6 @@
 /* 
  * File:   AudioJS.cpp
- * Author: user
+ * Author: Johannes Fischer
  * 
  * Created on July 13, 2014, 2:51 PM
  */
@@ -47,6 +47,12 @@ void AudioJS::changeVolume(float volume){
     EM_ASM_INT({
         x_changeVolume($0);
     },volume);
+}
+
+void AudioJS::changeSpeed(float speed){
+    EM_ASM_INT({
+        x_changeSpeed($0);
+    },speed);
 }
 
 bool AudioJS::isPlaying(){

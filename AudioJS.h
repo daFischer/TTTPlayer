@@ -1,6 +1,6 @@
 /* 
  * File:   AudioJS.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Created on July 13, 2014, 2:51 PM
  */
@@ -30,6 +30,7 @@ public:
     int getDuration();
     bool hasFailed();
     void changeVolume(float volume);
+    void changeSpeed(float volume);
     bool isPlaying();
 private:
     int duration;

@@ -1,6 +1,6 @@
 /* 
  * File:   Constants.h
- * Author: user
+ * Author: Johannes Fischer
  *
  * Original by Fabian Petter on 10/11/10.
  * https://www2.in.tum.de/repos/ttt/branches/iOS/viewer/1.0/Classes/Constants.h
@@ -22,7 +22,7 @@
 //message kinds
 #define ANNOTATION 'a'
 #define EMPTY '0'
-#define RAW 'r'
+#define FRAMEBUFFER 'r'
 #define CURSOR 'c'
 
 //message types

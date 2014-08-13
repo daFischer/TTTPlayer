@@ -1,37 +1,34 @@
 /* 
  * File:   Inflater.cpp
- * Author: user
- * using http://zlib.net/zlib_how.html
+ * Author: Johannes Fischer
  * 
  * Created on May 8, 2014, 12:46 PM
+ * 
+ * Credits to http://zlib.net/zlib_how.html
  */
 
 #include "Inflater.h"
 
 Inflater::Inflater(FILE* f)
 {
-    //printf("Constructor of Inflater\n");
     source=f;
     outOffset=0;
     
-    /*fseek(source,0,SEEK_END);
-    printf("Inflater file size: %ld\n",ftell(source));
-    fseek(source,0,SEEK_SET);*/
-    
     // allocate inflate state
-    strm.zalloc = Z_NULL;
     strm.zfree = Z_NULL;
+    strm.zalloc = Z_NULL;
     strm.opaque = Z_NULL;
     strm.avail_in = 0;
     strm.next_in = Z_NULL;
     ret = inflateInit(&strm);
     if (ret != Z_OK)
     {
-        printf("Inflater fail 1\n");
+        printf("There has been an error in Inflater (1)\n");
         return;
     }
     
-    strm.avail_in = fread(in, 1, CHUNK, source);        //from the outer loop of the example
+    //Read CHUNK bytes from the file
+    strm.avail_in = fread(in, 1, CHUNK, source);
     if (ferror(source)) {
         (void)inflateEnd(&strm);
         ret = Z_ERRNO;
@@ -41,27 +38,30 @@ Inflater::Inflater(FILE* f)
         ret = Z_ERRNO;
     if (ret != Z_OK)
     {
-        printf("Inflater fail 2\n");
+        if(VERBOSE)
+            printf("There has been an error in Inflater (2)\n");
         return;
     }
     
     strm.next_in = in;
     
-    strm.avail_out = CHUNK;     //from the inner loop of the example
+    strm.avail_out = CHUNK;
     strm.next_out = out;
     
+    //Inflate the read chunk and write to the char Array out
     ret = inflate(&strm, Z_NO_FLUSH);
-    assert(ret != Z_STREAM_ERROR);  //state not clobbered
+    
+    //Test for any problem that might have appeared
+    assert(ret != Z_STREAM_ERROR);
     switch (ret) {
         case Z_NEED_DICT:
-            ret = Z_DATA_ERROR;     //and fall through
+            ret = Z_DATA_ERROR;
         case Z_DATA_ERROR:
         case Z_MEM_ERROR:
             (void)inflateEnd(&strm);
-                printf("Inflater fail 3\n");
+                printf("There has been an error in Inflater (3)\n");
             return;
     }
-    //printf("Constructor of Inflater: success\n");
 }
 
 Inflater::~Inflater()
@@ -69,10 +69,16 @@ Inflater::~Inflater()
     //clean up and return
     (void)inflateEnd(&strm);
     ret = Z_STREAM_END ? Z_OK : Z_DATA_ERROR;
-    printf("Inflater Endresult: %d\n",ret);
+    if(VERBOSE)
+        printf("Inflater Endresult: %d\n",ret);
     fclose(source);
 }
 
+/**
+ * inflates and reads one Char from the File
+ * @param Byte The char to be filled by reading
+ * @return returns Z_OK if no problem has occurred
+ */
 bool Inflater::readByte(char* Byte)
 {
     if(addedChars.size()>0)
@@ -83,18 +89,21 @@ bool Inflater::readByte(char* Byte)
     }
     if (ret != Z_OK)
     {
-        //printf("Video Inflation failed: %d\n",ret);
+        //There has been an error, but the function is still being called. To avoid random results we 'read' 0.
         *Byte=0;
         return Z_ERRNO;
     }
-    while(outOffset >= CHUNK - strm.avail_out)      //Array out has to be refilled
+    //If all chars from the inflated chunk in the char array have been read, out has to be refilled
+    while(outOffset >= CHUNK - strm.avail_out)
     {
-        //printf("Refill Array out, %d\n", ret);
+        //If everything has been inflated already, nothing can be done anymore; return.
         if (ret == Z_STREAM_END)
             return ret;
-        if(strm.avail_out != 0)     //Array in has to be refilled
+        
+        //Check whether Array in has to be refilled
+        if(strm.avail_out != 0)
         {
-            //printf("Refill Array in\n");
+            //Fill Array in with CHUNK bytes from the file
             strm.avail_in = fread(in, 1, CHUNK, source);
             if (ferror(source)) {
                 (void)inflateEnd(&strm);
@@ -108,9 +117,12 @@ bool Inflater::readByte(char* Byte)
         strm.avail_out = CHUNK;
         strm.next_out = out;
 
+        //Inflate a part of the char array in and write to the char array out
         ret = inflate(&strm, Z_NO_FLUSH);
+        
+        //Test for any problem that might have appeared
         if(ret == Z_STREAM_ERROR)
-            printf("this assert fails\n");
+            printf("There has been an error in Inflater (4)\n");
         assert(ret != Z_STREAM_ERROR);  //state not clobbered
         switch (ret) {
             case Z_NEED_DICT:
@@ -124,12 +136,15 @@ bool Inflater::readByte(char* Byte)
     }
     *Byte = out[outOffset];
     outOffset++;
-    //printf("%c",*Byte);
-    //printf(".");
+    
     return ret;
 }
 
-/* The SizedArray has to be initialized beforehand
+/**
+ * Fills a SizedArray with as many Chars as memory has been reserved
+ * The SizedArray has to be initialized beforehand
+ * @param sArray Pointer to the SizedArray
+ * @return returns Z_OK if successful
  */
 bool Inflater::readSizedArray(SizedArray* sArray)
 {
@@ -143,8 +158,11 @@ bool Inflater::readSizedArray(SizedArray* sArray)
     return Z_OK;
 }
 
-/* mallocs and fills the [length] bytes in memory, starting from [byteArray]
- * if [end], the char array ends with \0 (malloced bytes are [length]+1 in that case)
+/**
+ * mallocs and fills a char array
+ * @param length how many bytes have to be read
+ * @param end if this is true, the char array ends with \0 (malloced bytes are [length]+1 in that case)
+ * @return Pointer to the char Array
  */
 char* Inflater::readCharArray(int length, bool end)
 {
@@ -191,18 +209,6 @@ bool Inflater::readInt(int* s)
     return Z_OK;
 }
 
-/*bool Inflater::readLong(long* s) {
-    bool r;
-    char* pointer=(char*)s;
-    for(int i=sizeof(long)-1; i>=0; i--)
-    {
-        r=readByte(&(pointer[i]));
-        if(r!=Z_OK)
-            return r;
-    }
-    return Z_OK;
-}*/
-
 bool Inflater::skipBytes(int number) {
     bool r;
     char waste;
@@ -211,13 +217,16 @@ bool Inflater::skipBytes(int number) {
         r=readByte(&waste);
         if(r!=Z_OK)
         {
-            //printf("current position in file: %ld\n",ftell(source));
             return r;
         }
     }
     return r;
 }
 
+/**
+ * If too many chars have been read, this can be used to give them back.
+ * @param c
+ */
 void Inflater::addChar(char c) {
     addedChars+=c;
 }
