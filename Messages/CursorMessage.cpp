@@ -50,6 +50,8 @@ void CursorMessage::paint(SDL_Surface* screen, ProtocolPreferences* prefs) {
     //printf("CursorMessage 1, encoding = %d\n",encoding);
     if(cursor==NULL)
     {
+        if (w * h == 0)
+            return;
         cursor = SDL_CreateRGBSurface(screen->flags, mask.w, mask.h, screen->format->BitsPerPixel, screen->format->Rmask, screen->format->Gmask, screen->format->Bmask, 0xffffffff-screen->format->Rmask-screen->format->Gmask-screen->format->Bmask);
     }
     showCursor=true;
@@ -59,6 +61,7 @@ void CursorMessage::paint(SDL_Surface* screen, ProtocolPreferences* prefs) {
     SDL_LockSurface(cursor);
     memset(cursor->pixels,0x0,cursor->w*cursor->h*cursor->format->BytesPerPixel);
     SDL_UnlockSurface(cursor);
+    cursor
     handleCursorShapeUpdate();
     //printf("CursorMessage last\n");
 }
