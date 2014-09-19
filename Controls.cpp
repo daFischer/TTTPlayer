@@ -26,11 +26,7 @@ Controls::Controls(Video* video, AudioInterface* audio) {
     
     width=prefs.framebufferWidth;
     screenHeight=prefs.framebufferHeight;
-    y=screenHeight-height;
-    visible=true;
-    
-    //In the beginning, the whole screen should be redrawn
-    redefineRect(&videoUpdate,0,0,width,screenHeight);
+    y=screenHeight;
     
     timeLineClicked=false;
     volumeClicked=false;
@@ -102,7 +98,6 @@ void Controls::registerClick(Uint16 mx, Uint16 my){
 void Controls::registerMouseUp(){
     if(timeLineClicked)
     {
-        redefineRect(&videoUpdate,0,0,width,screenHeight-height);
         skipTo(duration/width*mouseX);
     }
     timeLineClicked=false;
@@ -114,7 +109,7 @@ void Controls::registerMouseUp(){
  * Will be called whenever the mouse has moved
  */
 void Controls::registerMovement(Uint16 mx, Uint16 my) {
-    visible=(my>=screenHeight-height)||timeLineClicked||volumeClicked||speedClicked;
+    //visible=(my>=screenHeight-height)||timeLineClicked||volumeClicked||speedClicked;
     mouseX=mx;
     mouseY=my;
     if(volumeClicked)
@@ -142,7 +137,7 @@ extern "C" bool getOnPlayButton(){
  * When the mouse is not hovering over Controls' position, Controls moves out of the screen
  */
 void Controls::update(){
-    if(visible)
+    /*if(visible)
     {
         if(y>screenHeight-height)
             y-=4;
@@ -157,7 +152,7 @@ void Controls::update(){
             redefineRect(&videoUpdate,0,y,width,4);
             y+=4;
         }
-    }
+    }*/
 }
 
 void Controls::togglePlay(){
@@ -172,20 +167,15 @@ void Controls::toggleFullscreen(){
     
 }
 
-void Controls::draw(SDL_Surface *screen, bool hasDrawn){
-    if(y>=screenHeight)
-    {
-        return;
-    }
+void Controls::draw(SDL_Surface *screen){
     
-    SDL_Rect srcRect={0,0,48,32};
     
     //main body
     SDL_Rect rect = {0, y+timeLineHeight, width, height-timeLineHeight};
-    if(SDL_FillRect(screen, &rect, emColor(0x000000))==-1)
-        printf("fill rect error\n");
+    SDL_FillRect(screen, &rect, emColor(0x000000));
     
     //play/pause
+    SDL_Rect srcRect={0,0,48,32};
     redefineRect(&rect, 0, y+timeLineHeight, 48, height-timeLineHeight);
     if(surfPlay!=NULL)
     {
@@ -227,6 +217,9 @@ void Controls::draw(SDL_Surface *screen, bool hasDrawn){
         redefineRect(&srcRect,0,0,48, 32);
         SDL_BlitSurface(surfFullscreen,&srcRect,screen,&rect);
     }
+    
+    if(duration==0)
+        duration=audio->getDuration();
     
     //timeLine background
     redefineRect(&rect, 0, y, width, timeLineHeight);

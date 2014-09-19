@@ -9,13 +9,15 @@
 #include "Inflater.h"
 
 Index::Index(Inflater* in, int numBytes) {
-    
+    waypoint = NULL;
     this->numBytes=numBytes;
     in->readShort(&entryNumber);
     this->numBytes -= 2;
+    
 }
 
 Index::Index(Message** messages, int numMessages) {
+    waypoint = NULL;
     if (VERBOSE)
         printf("\ncompute index table:\n");
 
@@ -114,6 +116,7 @@ Index::Index(Message** messages, int numMessages) {
     if (VERBOSE)
         printf("\n\nGenerated index with %d entries.\n\n", index.size());
     it = index.begin();
+    currentMessage=0;
 }
 
 SDL_Surface* Index::readThumbnail(Inflater* in, int* numBytes) {
@@ -164,6 +167,7 @@ bool Index::readIndexEntry(Inflater* in) {
         in->skipBytes(numBytes);
     }
     it = index.begin();
+    currentMessage=0;
     //TODO: what if too many bytes have been read?
     
     return false;
@@ -174,13 +178,43 @@ bool Index::readIndexEntry(Inflater* in) {
 void Index::loadUntil(IndexEntry* entry, SDL_Surface* screen, Message** messages, int numMessages, ProtocolPreferences* prefs) {
     if(VERBOSE)
         printf("Loading IndexEntries from %d s until %d s\n",(*it)->timestamp/1000,entry->timestamp/1000);
-    for(; it!=index.end() && (*it)->timestamp<=entry->timestamp;)//it is incremented in fill'Surface
-        fillSurface(screen,messages,numMessages,prefs);
+    for(; it!=index.end() && (*it)->timestamp<=entry->timestamp;)//'it' is incremented in fillSurface
+        fillSurface(screen,messages,numMessages,1000000,prefs);
 }
 
 
-bool Index::fillSurface(SDL_Surface* screen, Message** messages, int numMessages, ProtocolPreferences* prefs) {
-    if (it == index.end())
+bool Index::fillSurface(SDL_Surface* screen, Message** messages, int numMessages, int areaLeft, ProtocolPreferences* prefs) {
+    if (it == index.end() || currentMessage >= numMessages)
+    {
+        progress=-1;
+        return false;
+    }
+    while(areaLeft > 0 && currentMessage < numMessages && it != index.end())
+    {
+        if (messages[currentMessage]->timestamp > (*it)->timestamp)
+        {
+            progress=(*it)->timestamp;
+            (*it)->setWaypoint(waypoint);
+            it++;
+            if (it == index.end())
+            {
+                progress=-1;
+                return false;
+            }
+            waypoint=NULL;
+        }
+        if(waypoint==NULL)
+            waypoint = SDL_CreateRGBSurface(SDL_ANYFORMAT, screen->w, screen->h, screen->format->BitsPerPixel, screen->format->Rmask, screen->format->Gmask, screen->format->Bmask, screen->format->Amask);
+        
+        if (messages[currentMessage]->type == FRAMEBUFFER)
+        {
+            messages[currentMessage]->paint(waypoint, prefs);
+            areaLeft-=messages[currentMessage]->getArea();
+        }
+        currentMessage++;
+    }
+    return true;
+    /*if (it == index.end())
         return false;
 
     SDL_Surface* waypoint = SDL_CreateRGBSurface(SDL_ANYFORMAT, screen->w, screen->h, screen->format->BitsPerPixel, screen->format->Rmask, screen->format->Gmask, screen->format->Bmask, screen->format->Amask);
@@ -207,7 +241,7 @@ bool Index::fillSurface(SDL_Surface* screen, Message** messages, int numMessages
         progress=-1;
     else
         progress=(*it)->timestamp;
-    return true;
+    return true;*/
 }
 
 IndexEntry* Index::lastBefore(int timestamp) {

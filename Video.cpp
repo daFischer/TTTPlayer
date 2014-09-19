@@ -120,13 +120,13 @@ bool Video::loadAsync() {
 
             if(VERBOSE)
                 printf("%d x %d, color depth: %d\n",prefs.framebufferWidth, prefs.framebufferHeight, prefs.bytesPerPixel);
-            screen = SDL_SetVideoMode(prefs.framebufferWidth, prefs.framebufferHeight, prefs.bitsPerPixel, SDL_ANYFORMAT|SDL_DOUBLEBUF);
+            screen = SDL_SetVideoMode(prefs.framebufferWidth, prefs.framebufferHeight+48, prefs.bitsPerPixel, SDL_ANYFORMAT|SDL_DOUBLEBUF);
             //prefs.format->Amask=0xffffffff-screen->format->Rmask-screen->format->Gmask-screen->format->Bmask;
-            rawScreen=SDL_CreateRGBSurface(screen->flags,screen->w,screen->h,screen->format->BitsPerPixel,screen->format->Rmask,screen->format->Gmask,screen->format->Bmask,0xffffffff-screen->format->Rmask-screen->format->Gmask-screen->format->Bmask);
+            rawScreen=SDL_CreateRGBSurface(screen->flags,screen->w,prefs.framebufferHeight,screen->format->BitsPerPixel,screen->format->Rmask,screen->format->Gmask,screen->format->Bmask,0xffffffff-screen->format->Rmask-screen->format->Gmask-screen->format->Bmask);
             prefs.format=rawScreen->format;
             if(containsAnnotations)
             {
-                annScreen=SDL_CreateRGBSurface(screen->flags,screen->w,screen->h,screen->format->BitsPerPixel,screen->format->Rmask,screen->format->Gmask,screen->format->Bmask,0xffffffff-screen->format->Rmask-screen->format->Gmask-screen->format->Bmask);
+                annScreen=SDL_CreateRGBSurface(screen->flags,screen->w,prefs.framebufferHeight,screen->format->BitsPerPixel,screen->format->Rmask,screen->format->Gmask,screen->format->Bmask,0xffffffff-screen->format->Rmask-screen->format->Gmask-screen->format->Bmask);
             }
 
             if (screen == NULL)
@@ -173,14 +173,7 @@ void Video::update(int time, Controls* controls)
     if(time<=2000 && (currentMessage>0 && messages[currentMessage-1]->timestamp>time+5000))
         currentMessage=0;
     
-    if(lastTime<0)
-        lastTime=SDL_GetTicks();
-    if(SDL_GetTicks()-lastTime>=500)        //only fill IndexEntries every second to avoid slowness
-    {
-        index->fillSurface(screen,messages,numMessages,&prefs);
-        controls->progress=index->progress;
-        lastTime=SDL_GetTicks();
-    }
+    int updatedArea=0;
     
     while(currentMessage<numMessages)
     {
@@ -194,11 +187,12 @@ void Video::update(int time, Controls* controls)
             case FRAMEBUFFER:
                 blitRaw=true;
                 messages[currentMessage]->paint(rawScreen, &prefs);
+                updatedArea+=messages[currentMessage]->getArea();
                 break;
             case CURSOR:
                 SDL_Rect cm=CursorMessage::getMask();
                 cm.x=max(min((int)cm.x,(int)screen->w-cm.w),0);
-                cm.y=max(min((int)cm.y,(int)screen->h-cm.h),0);
+                cm.y=max(min((int)cm.y,(int)prefs.framebufferHeight-cm.h),0);
                 if(CursorMessage::showCursor){
                     // repair place on screen, where the cursor was
                     SDL_BlitSurface(rawScreen,&cm,screen,&cm);
@@ -218,14 +212,17 @@ void Video::update(int time, Controls* controls)
         if(Annotation::mustRedraw)
             Annotation::redraw(annScreen,&prefs);
     }
-    redrawScreen(controls, blitAnn||blitRaw);
+    redrawScreen(controls, blitAnn || blitRaw);
+
+    index->fillSurface(rawScreen,messages,numMessages,screen->w*prefs.framebufferHeight-updatedArea,&prefs);
+    controls->progress=index->progress;
 }
 
 void Video::redrawScreen(Controls* controls, bool fully) {
     if(fully)
     {
         //redraw screen completely
-        SDL_Rect rect = {0,0,screen->w,controls->videoUpdate.y+controls->videoUpdate.h};
+        SDL_Rect rect = {0,0,screen->w,prefs.framebufferHeight};
         if(WhiteboardMessage::number>0)
             SDL_FillRect(screen,&rect,SDL_MapRGBA(ProtocolPreferences::format,0xff,0xff,0xff,0xff));
         else
@@ -254,7 +251,7 @@ void Video::redrawScreen(Controls* controls, bool fully) {
             }
             lastThumbnail.w=0;
         }
-        if(controls->videoUpdate.h!=0)
+        /*if(controls->videoUpdate.h!=0)
         {
             //only redraw the part that controls releases when moving downwards
             if(WhiteboardMessage::number>0)
@@ -267,10 +264,10 @@ void Video::redrawScreen(Controls* controls, bool fully) {
                 SDL_Rect cm=CursorMessage::getMask();
                 SDL_BlitSurface(CursorMessage::cursor,NULL,screen,&cm);
             }
-        }
+        }*/
     }
     //always redraw controls
-    controls->draw(screen, fully);
+    controls->draw(screen);
     SDL_Flip(screen);
 }
 

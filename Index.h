@@ -26,7 +26,7 @@ public:
     Index(Message** messages, int numMessages);
     virtual ~Index();
     IndexEntry* lastBefore(int timestamp);
-    bool fillSurface(SDL_Surface* screen, Message** messages, int numMessages, ProtocolPreferences* prefs);
+    bool fillSurface(SDL_Surface* screen, Message** messages, int numMessages, int areaLeft, ProtocolPreferences* prefs);
     bool readIndexEntry(Inflater* in);
     void loadUntil(IndexEntry* entry, SDL_Surface* screen, Message** messages, int numMessages, ProtocolPreferences* prefs);
     
@@ -38,6 +38,7 @@ private:
     list<IndexEntry*> index;
     std::list<IndexEntry*>::iterator it;
     int currentMessage;
+    SDL_Surface* waypoint;
     
     short entryNumber;
     int numBytes;

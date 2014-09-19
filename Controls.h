@@ -34,9 +34,8 @@ public:
     void registerClick(Uint16 mx, Uint16 my);
     void registerMouseUp();
     void registerMovement(Uint16 mx, Uint16 my);
-    void draw(SDL_Surface *screen, bool hasDrawn);
+    void draw(SDL_Surface *screen);
     
-    SDL_Rect videoUpdate;
     int progress;           //timestamp of next to be filled IndexEntry, -1 if all have been filled
     
 private:
@@ -53,7 +52,6 @@ private:
 
     Video* video;
     AudioInterface* audio;
-    bool visible;
     int y;
     int width, height, screenHeight;
     int timeLineHeight;

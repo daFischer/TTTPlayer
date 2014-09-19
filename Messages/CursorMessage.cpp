@@ -61,7 +61,7 @@ void CursorMessage::paint(SDL_Surface* screen, ProtocolPreferences* prefs) {
     SDL_LockSurface(cursor);
     memset(cursor->pixels,0x0,cursor->w*cursor->h*cursor->format->BytesPerPixel);
     SDL_UnlockSurface(cursor);
-    cursor
+    
     handleCursorShapeUpdate();
     //printf("CursorMessage last\n");
 }
